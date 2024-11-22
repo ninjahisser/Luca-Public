@@ -40,6 +40,7 @@ figure {
 
 .element {
     position: absolute; /* Position relative to the figure */
+    opacity: 100%;
 }
 
 #start_button{
@@ -107,4 +108,23 @@ figure {
     font-family: ZenoFont;
     color: white;
     font-size: 16px;
+}
+
+#cat-container{
+    pointer-events: none;
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+}
+
+#background{
+    background-color: red;
+    height: 78vh;
+    z-index: 2;
+    margin-top: 13.5vh;
+    transform: scaleX(96%);
+    margin-bottom: 10vh;
 }

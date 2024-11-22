@@ -1,7 +1,7 @@
 const elements = [
     {
-        pos: [20, 35],
-        scale: 70,
+        pos: [-25, 20],
+        scale: 150,
         image_url: "res/Cat/Body.png",
 
         html_element: null,
@@ -18,23 +18,23 @@ const elements = [
     },
     {
         pos: [10, 63],
-        scale: 90,
+        scale: 200,
         image_url: "res/Cat/Tail.png",
 
         html_element: null,
 
         rotation: 0,
         updateTransform(micInterface){
-            let loudness = micInterface.getVolumePercent() * 0.02;
+            let loudness = micInterface.getVolumePercent() * 0.2;
             if(loudness){
                 this.rotation = lerp(this.rotation, loudness, .1);
-                this.html_element.style.transform = `rotateZ(${this.rotation - 180}deg) translateX(50%)`;
+                this.html_element.style.transform = `rotateZ(${this.rotation - 180}deg) translateX(90%)`;
             }
         }
     },
     {
-        pos: [40, 32],
-        scale: 15,
+        pos: [20, 15],
+        scale: 30,
         image_url: "res/Cat/ear_left.png",
 
         html_element: null,
@@ -50,8 +50,8 @@ const elements = [
         }    
     },
     {
-        pos: [58, 32],
-        scale: 15,
+        pos: [58, 17    ],
+        scale: 30,
         image_url: "res/Cat/ear_right.png",
 
         html_element: null,
@@ -67,8 +67,8 @@ const elements = [
         }    
     },
     {
-        pos: [52, 40],
-        scale: 8,
+        pos: [52, 35],
+        scale: 15,
         image_url: "res/Cat/pupil.png",
 
         html_element: null,
@@ -83,8 +83,8 @@ const elements = [
         }    
     },
     {
-        pos: [65, 40],
-        scale: 8,
+        pos: [75, 35],
+        scale: 15,
         image_url: "res/Cat/pupil.png",
 
         html_element: null,
@@ -99,8 +99,8 @@ const elements = [
         }    
     },
     {
-        pos: [55, 40],
-        scale: 2,
+        pos: [80, 35],
+        scale: 4,
         image_url: "res/Cat/eyePupil.png",
 
         html_element: null,
@@ -115,8 +115,8 @@ const elements = [
         }    
     },
     {
-        pos: [67, 40],
-        scale: 2,
+        pos: [58, 35],
+        scale: 4,
         image_url: "res/Cat/eyePupil.png",
 
         html_element: null,
@@ -148,7 +148,9 @@ function load_scene(){
         newElement.src = element.image_url;
         newElement.classList.add("element");
 
-        var parent = document.getElementsByTagName("figure")[0];
+        //var parent = document.getElementsByTagName("figure")[0];
+        var parent = document.getElementById("cat-container");
+        parent.style.opacity = "0%";
         parent.appendChild(newElement);
         element.html_element = newElement;
 
