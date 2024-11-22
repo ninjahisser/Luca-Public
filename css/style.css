@@ -32,3 +32,8 @@ figure {
 .element {
     position: absolute; /* Position relative to the figure */
 }
+
+#start_button{
+    cursor: pointer;
+    color: green;
+}

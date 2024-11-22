@@ -82,5 +82,3 @@ const micInterface = {
         this.sensitivity = new_sensitivity;
     }
 };
-
-micInterface.initiateAudio();
