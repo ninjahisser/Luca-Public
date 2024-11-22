@@ -70,6 +70,7 @@ const micInterface = {
     },
 
     getVolumePercent() {
+        console.log(this.calculateLoudness());
         return Math.min(Math.max(this.calculateLoudness() * 100, 0), 100) * this.sensitivity;
     },
 
