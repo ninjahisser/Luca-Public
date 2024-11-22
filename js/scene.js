@@ -6,7 +6,7 @@ const elements = [
 
         html_element: null,
         updateTransform(micInterface){
-            loudness = micInterface.getVolumePercent() * .01;
+            loudness = micInterface.getVolumePercent() * .02;
             this.html_element.style.transform = `scaleX(${loudness + 100}%) scaleY(${loudness*2 + 100}%)`;
         },
     },
@@ -23,7 +23,7 @@ const elements = [
             if(loudness){
                 this.rotation = lerp(this.rotation, loudness, .1);
                 console.log("Rotating", this.rotation);
-                this.html_element.style.transform = `rotateZ(${this.rotation + 180}deg) translateX(50%)`;
+                this.html_element.style.transform = `rotateZ(${this.rotation - 180}deg) translateX(50%)`;
             }
         }
     }
