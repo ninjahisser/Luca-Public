@@ -13,6 +13,8 @@
     --ZenoGrey: #222222;
     --CustomYellow: rgb(239, 202, 65);
     --CustomOrange: rgb(203, 86, 49);
+    --cursorX: 0px;
+    --cursorY: 0px;
 }
 
 body {
@@ -74,4 +76,30 @@ figure {
     border: 2px solid var(--CustomOrange);
     color: var(--CustomOrange);
     background-color: var(--CustomYellow);
+}
+
+#laserlight{
+    position: absolute;
+    z-index: 1;
+    width: 20px;
+    height: 20px;
+    left: 0px;
+    right: 0px;
+    transform: translateX(var(--cursorX)) translateY(var(--cursorY));
+    pointer-events: none;
+}
+
+.slider-container {
+    width: 300px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.slider {
+    width: 100%;
+}
+
+.label {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
 }

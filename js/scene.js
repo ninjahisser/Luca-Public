@@ -5,14 +5,20 @@ const elements = [
         image_url: "res/Cat/Body.png",
 
         html_element: null,
+
+        size: 0,
         updateTransform(micInterface){
-            loudness = micInterface.getVolumePercent() * .02;
-            this.html_element.style.transform = `scaleX(${loudness + 100}%) scaleY(${loudness*2 + 100}%)`;
+            loudness = micInterface.getVolumePercent() * 0.02;
+            if(loudness){
+                this.size = lerp(this.size, loudness, .1);
+                console.log("Size:", this.size);
+                this.html_element.style.transform = `scaleX(${this.size + 100}%) scaleY(${this.size * 2 + 100}%)`;
+            }
         },
     },
     {
-        pos: [10, 65],
-        scale: 70,
+        pos: [10, 63],
+        scale: 90,
         image_url: "res/Cat/Tail.png",
 
         html_element: null,
@@ -22,10 +28,107 @@ const elements = [
             let loudness = micInterface.getVolumePercent() * 0.02;
             if(loudness){
                 this.rotation = lerp(this.rotation, loudness, .1);
-                console.log("Rotating", this.rotation);
                 this.html_element.style.transform = `rotateZ(${this.rotation - 180}deg) translateX(50%)`;
             }
         }
+    },
+    {
+        pos: [40, 32],
+        scale: 15,
+        image_url: "res/Cat/ear_left.png",
+
+        html_element: null,
+
+        size: 0,
+        updateTransform(micInterface){
+            let loudness = micInterface.getVolumePercent() * 0.1;
+            if(loudness){
+                this.size = lerp(this.size, loudness, .1);
+                this.html_element.style.transform = `translateY(${-1 * this.size}%)`;
+
+            }
+        }    
+    },
+    {
+        pos: [58, 32],
+        scale: 15,
+        image_url: "res/Cat/ear_right.png",
+
+        html_element: null,
+
+        size: 0,
+        updateTransform(micInterface){
+            let loudness = micInterface.getVolumePercent() * 0.1;
+            if(loudness){
+                this.size = lerp(this.size, loudness, .1);
+                this.html_element.style.transform = `translateY(${-1 * this.size}%)`;
+
+            }
+        }    
+    },
+    {
+        pos: [52, 40],
+        scale: 8,
+        image_url: "res/Cat/pupil.png",
+
+        html_element: null,
+
+        size: 0,
+        updateTransform(micInterface){
+            let loudness = micInterface.getVolumePercent() * 0.1;
+            if(loudness){
+                this.size = lerp(this.size, loudness, .1);
+                this.html_element.style.transform = `translateY(${-1 * this.size}%) scale(${100 - this.size * 0.3}%)`;
+            }
+        }    
+    },
+    {
+        pos: [65, 40],
+        scale: 8,
+        image_url: "res/Cat/pupil.png",
+
+        html_element: null,
+
+        size: 0,
+        updateTransform(micInterface){
+            let loudness = micInterface.getVolumePercent() * 0.1;
+            if(loudness){
+                this.size = lerp(this.size, loudness, .1);
+                this.html_element.style.transform = `translateY(${-1 * this.size}%) scale(${100 - this.size * 0.3}%)`;
+            }
+        }    
+    },
+    {
+        pos: [55, 40],
+        scale: 2,
+        image_url: "res/Cat/eyePupil.png",
+
+        html_element: null,
+
+        size: 0,
+        updateTransform(micInterface){
+            let loudness = micInterface.getVolumePercent() * 0.1;
+            if(loudness){
+                this.size = lerp(this.size, loudness, .1);
+                this.html_element.style.transform = `translateY(${-1 * this.size + (CursorPos.y+.1)*150}%) translateX(${CursorPos.x*250}%)`;
+            }
+        }    
+    },
+    {
+        pos: [67, 40],
+        scale: 2,
+        image_url: "res/Cat/eyePupil.png",
+
+        html_element: null,
+
+        size: 0,
+        updateTransform(micInterface){
+            let loudness = micInterface.getVolumePercent() * 0.1;
+            if(loudness){
+                this.size = lerp(this.size, loudness, .1);
+                this.html_element.style.transform = `translateY(${-1 * this.size + (CursorPos.y+.1)*150}%) translateX(${CursorPos.x*250}%)`;
+            }
+        }    
     }
 ]
 

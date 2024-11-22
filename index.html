@@ -7,16 +7,26 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="slider-container">
+        <label for="sensitivity-slider" class="label">Sensitivity: <span id="sensitivity-value">3</span></label>
+        <input type="range" id="sensitivity-slider" class="slider" min="1" max="10" step="0.1" value="3">
+    </div>
+
     <div id="start">
         <a id="start_button">BEGIN</a>
     </div>
+    
+    <img src="res/laserlight.png" id="laserlight">
+
     <figure>
         <img src="res/ZENO.png" id="zeno">
     </figure>
     <script src="js/helpers.js"></script>
+    <script src="js/parallax.js"></script>
     <script src="js/fade.js"></script>
     <script src="js/micInterface.js"></script>
     <script src="js/scene.js"></script>
     <script src="js/start_button.js"></script>
+    <script src="js/slider.js"></script>
 </body>
 </html>
