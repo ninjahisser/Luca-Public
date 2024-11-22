@@ -1,7 +1,7 @@
 const elements = [
     {
-        pos: [-25, 20],
-        scale: 150,
+        pos: [-12, 20],
+        scale: 120,
         image_url: "res/Cat/Body.png",
 
         html_element: null,
@@ -17,8 +17,8 @@ const elements = [
         },
     },
     {
-        pos: [10, 63],
-        scale: 200,
+        pos: [-20, 40],
+        scale: 100,
         image_url: "res/Cat/Tail.png",
 
         html_element: null,
@@ -28,7 +28,7 @@ const elements = [
             let loudness = micInterface.getVolumePercent() * 0.2;
             if(loudness){
                 this.rotation = lerp(this.rotation, loudness, .1);
-                this.html_element.style.transform = `rotateZ(${this.rotation - 180}deg) translateX(90%)`;
+                this.html_element.style.transform = `rotateZ(${this.rotation - 180}deg) translateX(20%)`;
             }
         }
     },

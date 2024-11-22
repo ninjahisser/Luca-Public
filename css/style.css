@@ -11,8 +11,8 @@
 
 :root {
     --ZenoGrey: #222222;
-    --CustomYellow: rgb(239, 202, 65);
-    --CustomOrange: rgb(203, 86, 49);
+    --CustomYellow: rgb(249, 202, 59);
+    --CustomOrange: rgb(216, 91, 53);
     --cursorX: 0px;
     --cursorY: 0px;
 }
@@ -91,6 +91,7 @@ figure {
 }
 
 .slider-container {
+    opacity: 50%;
     position: absolute;
     width: 300px;
     margin: 20px auto;
@@ -121,7 +122,7 @@ figure {
 }
 
 #background{
-    background-color: red;
+    background-color: var(--CustomYellow);
     height: 78vh;
     z-index: 2;
     margin-top: 13.5vh;
