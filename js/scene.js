@@ -6,7 +6,7 @@ const elements = [
 
         html_element: null,
         updateTransform(micInterface){
-            loudness = micInterface.getVolumePercent() * .02;
+            loudness = micInterface.getVolumePercent() * .01;
             this.html_element.style.transform = `scaleX(${loudness + 100}%) scaleY(${loudness*2 + 100}%)`;
         },
     },
@@ -19,10 +19,12 @@ const elements = [
 
         rotation: 0,
         updateTransform(micInterface){
-            loudness = micInterface.getVolumePercent() * 0.02;
-            this.rotation = lerp(this.rotation, loudness, .1);
-            console.log("Rotating", this.loudness);
-            this.html_element.style.transform = `rotateZ(${this.rotation}deg) translateX(50%)`;
+            let loudness = micInterface.getVolumePercent() * 0.02;
+            if(loudness){
+                this.rotation = lerp(this.rotation, loudness, .1);
+                console.log("Rotating", this.rotation);
+                this.html_element.style.transform = `rotateZ(${this.rotation + 180}deg) translateX(50%)`;
+            }
         }
     }
 ]
