@@ -1,0 +1,34 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --ZenoGrey: #222222;
+}
+
+body {
+    background-color: var(--ZenoGrey);
+    display: flex;
+    height: 100vh; /* Ensure the body takes up the full viewport height */
+    justify-content: center;
+}
+
+figure {
+    position: relative; /* Make the figure the reference point for absolute positioning */
+    padding: 0; /* Remove any padding */
+    display: block; /* Set to block to ensure figure takes the image's size */
+    margin: 0; /* Remove default margin */
+    height: 100vh;
+    overflow: hidden;
+}
+
+#zeno{
+    display: block; /* Prevent any extra space below the image */
+    height: 100%; /* Maintain the aspect ratio */
+}
+
+.element {
+    position: absolute; /* Position relative to the figure */
+}
