@@ -6,6 +6,7 @@ const micInterface = {
 
     sensitivity: 5,
     initialized: false,
+    highest_volume: 0,
 
     async initiateAudio() {
         // Initialize audio context and analyser
@@ -30,6 +31,10 @@ const micInterface = {
         const rms = Math.sqrt(
             this.dataArray.reduce((sum, value) => sum + value ** 2, 0) / this.dataArray.length
         );
+
+        if(rms > this.highest_volume){
+            this.highest_volume = rms;
+        }
         return rms;
     },
 
@@ -71,7 +76,7 @@ const micInterface = {
 
     getVolumePercent() {
         console.log(this.calculateLoudness());
-        return Math.min(Math.max(this.calculateLoudness() * 100, 0), 100) * this.sensitivity;
+        return Math.min(Math.max(this.calculateLoudness() * 100, 0), 100) * (1/this.highest_volume) * this.sensitivity;
     },
 
     getPitch() {

@@ -4,8 +4,15 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: ZenoFont;
+    src: url(../res/Fonts/MuseoSans-900.otf);
+}
+
 :root {
     --ZenoGrey: #222222;
+    --CustomYellow: rgb(239, 202, 65);
+    --CustomOrange: rgb(203, 86, 49);
 }
 
 body {
@@ -36,4 +43,35 @@ figure {
 #start_button{
     cursor: pointer;
     color: green;
+}
+
+#start{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .8);
+    backdrop-filter: blur(5px);
+    z-index: 1;    
+}
+
+#start a{
+    font-family: ZenoFont;
+    display: block;
+    position: relative;
+    font-size: 1em;
+    top: 50%;
+    padding: 10px;
+    border: 2px solid var(--CustomYellow);
+    color: var(--CustomYellow);
+    background-color: var(--CustomOrange);
+    text-align: center;
+    width: 200px;
+    left: calc(50% - 100px);
+    transition-duration: .1s;
+}
+
+#start a:hover{
+    border: 2px solid var(--CustomOrange);
+    color: var(--CustomOrange);
+    background-color: var(--CustomYellow);
 }

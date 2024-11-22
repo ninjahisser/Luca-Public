@@ -19,8 +19,9 @@ const elements = [
 
         rotation: 0,
         updateTransform(micInterface){
-            loudness = micInterface.getVolumePercent() * .2 + 180;
+            loudness = micInterface.getVolumePercent() * 0.02;
             this.rotation = lerp(this.rotation, loudness, .1);
+            console.log("Rotating", this.loudness);
             this.html_element.style.transform = `rotateZ(${this.rotation}deg) translateX(50%)`;
         }
     }
