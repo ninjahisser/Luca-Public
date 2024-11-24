@@ -313,7 +313,7 @@ function playTypeSound(){
         playSoundIndex = 0;
     }
     if(playSoundIndex == 0){
-        var audio = new Audio("../Res/Audio/Dialogue.wav");
+        var audio = new Audio("../Hyperfoundation/Res/Audio/Dialogue.wav");
         audio.play();
     }
 
