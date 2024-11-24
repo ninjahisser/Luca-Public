@@ -1,0 +1,141 @@
+:root{
+    --cursorX: 0px;
+    --cursorY: 0px;
+}
+
+@font-face {
+    font-family: AldrichRegular;
+    src: url(../Res/Fonts/Aldrich-Regular.ttf);
+}
+
+body{
+    background-color: black;
+}
+
+#sceneImageParent {
+    position: absolute;
+    overflow: hidden;
+}
+
+#sceneImageParent img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;         
+    height: 100%;
+    object-fit: contain; 
+}
+
+.scene-layer-interaction, .scene-layer-audio-source{
+    user-select: none;
+    position: absolute; 
+
+    width: 20px;
+    height: 20px;
+    z-index: 1;
+}
+
+.scene-layer-interaction{
+    z-index: 2;
+    cursor: help;
+}
+
+@keyframes slide {
+    0% {
+      transform: translate(0px);
+      opacity: 0%;
+    }
+    50%{
+        opacity: 60%;
+    }
+    100% {
+      transform: translate(calc(-50%));
+      opacity: 0%;
+    }
+}
+
+.scene-overlay{
+    position: absolute;
+    object-fit: cover !important;
+    animation: slide 10s linear infinite;
+    width: 200% !important;
+}
+
+.scene-text{
+    position: absolute; 
+
+    color: white;
+    font-family: AldrichRegular;
+    font-size: 2em;
+    font-weight: 800;
+    width: 800px;
+    height: 300px;
+
+    text-align: center;
+    top: calc(50vh - 300px/2);
+    left: calc(50vw - 800px/2);
+    
+    transform: translateX(calc(50px * var(--cursorX))) translateY(calc(50px * var(--cursorY)));
+}
+
+.game-over-text{
+    color: red;
+}
+
+.dialogue-text{
+    position: absolute;
+
+    font-family: AldrichRegular;
+    background-color: rgba(0, 0, 0, .6);
+    text-shadow: 2px 2px 2px black;
+    font-size: 1.2em;
+    font-weight: 750;
+    
+    max-width: 500px;
+
+    padding: 10px;
+
+    z-index: 2;
+    text-align: center;
+
+    top: calc(100% - 80px);
+    left: calc(50% - 500px/2);
+
+    transform: translateX(calc(-10px * var(--cursorX))) translateY(calc(-10px * var(--cursorY)));
+}
+
+#choice-text-parent{
+    position: absolute;
+    z-index: 2;
+
+    top: calc(100% - 135px);
+    left: calc(50% - 500px/2);
+
+    transform: translateX(calc(-20px * var(--cursorX))) translateY(calc(-20px * var(--cursorY)));
+
+    display: inline-flex;
+
+    transform: translateX(calc(-10px * var(--cursorX))) translateY(calc(-10px * var(--cursorY)));
+}
+
+.choice-text{
+    cursor: pointer;
+    padding: 10px;
+    margin-right: 10px;
+
+    text-align: center;
+
+    color: black;
+    background-color: white;
+    outline: 2px solid black;
+
+    font-family: AldrichRegular;
+    font-weight: 800;
+    font-size: .9em;
+}
+
+.choice-text:hover{
+    color: white;
+    background-color: black;
+    outline: 2px solid white;
+}
