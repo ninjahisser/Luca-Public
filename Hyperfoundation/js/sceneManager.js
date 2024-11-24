@@ -11,7 +11,7 @@ let talkerColors = [];
 parentElement.innerHTML = '';
 
 async function fetch_scenes() {
-    const response = await fetch("../Data/scenes.json");
+    const response = await fetch("../Hyperfoundation/Data/scenes.json");
     const json = await response.json();
 
     json.hasScene = function(scenename) {
