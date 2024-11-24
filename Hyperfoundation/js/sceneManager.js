@@ -681,10 +681,10 @@ async function listScenes(){
 
 function addOverlay(overlay){
     if(overlay == "snow"){
-        overlayPath = "Res/Overlay/Snow.png"
+        overlayPath = "../Hyperfoundation/Res/Overlay/Snow.png"
     }
     if(overlay == "sandstorm"){
-        overlayPath = "Res/Overlay/Sandstorm.png"
+        overlayPath = "../Hyperfoundation/Res/Overlay/Sandstorm.png"
     }
 
     const imageSrc = overlayPath;
