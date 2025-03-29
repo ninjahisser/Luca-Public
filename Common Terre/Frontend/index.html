@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Terre</title>
+
+    <link rel="stylesheet" href="style/style.css">
+    
+    <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    </head>
+<body>
+    <main>
+        <section id="auth-panel">
+            <div id="g_id_onload"
+                data-client_id="647953299647-2agji0t4frtj0oe848l6adphj6haibts.apps.googleusercontent.com"
+                data-callback="handleCredentialResponse"
+                data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                data-type="standard"
+                data-shape="rectangular"
+                data-theme="outline"
+                data-text="sign_in_with"
+                data-size="large"
+                data-logo_alignment="left">
+            </div>
+        </section>
+
+        <section id="input-panel" style="display: none;">
+            <h1>Add Calendar Item</h1>
+            
+            <label for="poster-name">Poster Name:</label>
+            <input id="poster-name" type="text" placeholder="Enter your name" readonly>
+            
+            <label for="date-picker">Date:</label>
+            <input id="date-picker" type="date" required>
+            
+            <label for="time-picker">Time:</label>
+            <input id="time-picker" type="time" required>
+            
+            <label for="title-input">Title:</label>
+            <input id="title-input" type="text" placeholder="Enter event title" required>
+            
+            <label for="description-input">Description:</label>
+            <textarea id="description-input" placeholder="Enter event description" required></textarea>
+            
+            <button id="add-btn">Add Calendar Item</button>
+        </section>
+
+        <section id="calendar">
+            <div id="calendar-header">
+                <button id="prev-month-btn">&lt;</button>
+                <h2 id="current-month"></h2>
+                <button id="next-month-btn">&gt;</button>
+            </div>
+            <div id="calendar-grid">
+                <!-- Calendar grid will be dynamically generated here -->
+            </div>
+        </section>
+    </main>
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
