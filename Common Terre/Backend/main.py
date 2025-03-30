@@ -10,6 +10,16 @@ app = FastAPI()
 CALENDAR_DIR = Path("calendar_data")
 CALENDAR_DIR.mkdir(exist_ok=True)
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this to restrict origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Request model for adding a calendar item
 class CalendarItem(BaseModel):
     poster_name: str
