@@ -126,9 +126,36 @@ main {
     padding: 2px 5px;
     font-size: 12px;
     cursor: pointer;
-    display: none; /* Initially hidden */
+    margin-top: 5px;
 }
 
 .delete-btn:hover {
+    background-color: #a71d2a;
+}
+
+body.developer-mode {
+    background-color: #f0f8ff;
+}
+
+body.developer-mode .delete-btn {
+    background-color: #ff4500;
+}
+
+body.developer-mode #lock-calendar-btn {
+    display: inline-block;
+}
+
+#logout-btn {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#logout-btn:hover {
     background-color: #a71d2a;
 }

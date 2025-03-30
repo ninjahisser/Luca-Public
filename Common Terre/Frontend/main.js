@@ -1,25 +1,40 @@
 let currentYear, currentMonth;
-let loggedInUser = null; // Store the logged-in user's name
+let loggedInUser = null; // Store the logged-in user's email
+let isDeveloperMode = false; // Track Developer Mode state
 
 // Function to handle Google login response
 function handleCredentialResponse(response) {
-    const data = jwt_decode(response.credential);
-    console.log('User Info:', data);
+    try {
+        const data = jwt_decode(response.credential);
+        console.log('User Info:', data);
 
-    // Store the logged-in user's name
-    loggedInUser = data.name;
+        // Store the logged-in user's email and name
+        loggedInUser = data.email;
+        const loggedInUserName = data.name;
 
-    // Update the UI
-    document.getElementById('auth-panel').style.display = 'none';
-    document.getElementById('input-panel').style.display = 'block';
-    document.getElementById('poster-name').value = loggedInUser;
+        // Save the user's email and name in localStorage
+        localStorage.setItem('loggedInUser', loggedInUser);
+        localStorage.setItem('loggedInUserName', loggedInUserName);
 
-    // Fetch the current month's data
-    const { year, month } = getCurrentYearAndMonth();
-    currentYear = year;
-    currentMonth = month;
-    fetchMonthData(currentYear, currentMonth);
+        // Update the UI
+        document.getElementById('auth-panel').style.display = 'none';
+        document.getElementById('input-panel').style.display = 'block';
+        document.getElementById('logout-btn').style.display = 'block';
+        document.getElementById('poster-name').value = loggedInUserName; // Show the real name
+
+        // Fetch the current month's data
+        const { year, month } = getCurrentYearAndMonth();
+        currentYear = year;
+        currentMonth = month;
+        fetchMonthData(currentYear, currentMonth);
+    } catch (error) {
+        console.error("Error decoding JWT:", error);
+        alert("Failed to log in. Please try again.");
+    }
 }
+
+// Make the function globally accessible
+window.handleCredentialResponse = handleCredentialResponse;
 
 // Function to fetch calendar items for a specific month and year
 async function fetchMonthData(year, month) {
@@ -33,10 +48,17 @@ async function fetchMonthData(year, month) {
 
         if (response.ok) {
             const data = await response.json();
+            console.log('Fetched calendar items:', data); // Debugging log
+
+            // Handle the case where no items are returned
+            if (Array.isArray(data) && data.length === 0) {
+                console.log('No calendar items found for this month.');
+            }
+
             displayCalendarGrid(year, month, data);
         } else {
             const error = await response.json();
-            alert('Failed to fetch calendar items: ' + error.detail);
+            alert('Failed to fetch calendar items: ' + JSON.stringify(error));
         }
     } catch (error) {
         console.error('Error:', error);
@@ -73,17 +95,11 @@ function displayCalendarGrid(year, month, items) {
         dayCell.className = 'calendar-cell';
         dayCell.innerHTML = `<div class="date">${day}</div>`;
 
-        // Add a "+" button for adding events
+        // Add an "Add" button for adding events
         const addButton = document.createElement('button');
         addButton.className = 'add-btn';
         addButton.textContent = '+';
-        addButton.addEventListener('click', () => {
-            if (!loggedInUser) {
-                alert('You must be logged in to add calendar items.');
-                return;
-            }
-            openAddEventModal(day);
-        });
+        addButton.addEventListener('click', () => openAddEventModal(day));
         dayCell.appendChild(addButton);
 
         // Add calendar items for this day
@@ -97,8 +113,8 @@ function displayCalendarGrid(year, month, items) {
             `;
             itemDiv.setAttribute('data-tooltip', `Author: ${item.poster_name}\nDescription: ${item.description}`);
 
-            // Add a delete button only for the logged-in user's events
-            if (loggedInUser === item.poster_name) {
+            // Add a "Delete" button for all events if Developer Mode is enabled
+            if (isDeveloperMode || localStorage.getItem('loggedInUserName') === item.poster_name) {
                 const deleteButton = document.createElement('button');
                 deleteButton.className = 'delete-btn';
                 deleteButton.textContent = 'Delete';
@@ -118,6 +134,7 @@ function displayCalendarGrid(year, month, items) {
 // Function to open the add event modal
 function openAddEventModal(day) {
     const date = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    console.log(`Opening modal for date: ${date}`); // Debugging log
     document.getElementById('date-picker').value = date;
     document.getElementById('input-panel').scrollIntoView({ behavior: 'smooth' });
 }
@@ -125,7 +142,7 @@ function openAddEventModal(day) {
 // Function to delete a calendar item
 async function deleteCalendarItem(itemId) {
     if (!loggedInUser) {
-        alert('You must be logged in to delete calendar items.');
+        alert("You must be logged in to delete calendar items.");
         return;
     }
 
@@ -134,6 +151,7 @@ async function deleteCalendarItem(itemId) {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'X-User-Email': loggedInUser, // Pass the user's email in the headers
             },
         });
 
@@ -158,8 +176,234 @@ function getCurrentYearAndMonth() {
 
 // Fetch the current month's data on page load
 document.addEventListener('DOMContentLoaded', () => {
-    const { year, month } = getCurrentYearAndMonth();
-    currentYear = year;
-    currentMonth = month;
+    // Restore the logged-in user's state from localStorage
+    const savedUser = localStorage.getItem('loggedInUser');
+    const savedUserName = localStorage.getItem('loggedInUserName');
+    if (savedUser && savedUserName) {
+        loggedInUser = savedUser;
+
+        // Update the UI to reflect the logged-in state
+        document.getElementById('auth-panel').style.display = 'none';
+        document.getElementById('input-panel').style.display = 'block';
+        document.getElementById('logout-btn').style.display = 'block'; // Ensure the logout button is visible
+        document.getElementById('poster-name').value = savedUserName; // Show the real name
+    } else {
+        // If no user is logged in, ensure the logout button is hidden
+        document.getElementById('logout-btn').style.display = 'none';
+    }
+
+    // Restore the selected month and year from localStorage
+    const savedYear = localStorage.getItem('selectedYear');
+    const savedMonth = localStorage.getItem('selectedMonth');
+    if (savedYear && savedMonth) {
+        currentYear = parseInt(savedYear, 10);
+        currentMonth = parseInt(savedMonth, 10);
+    } else {
+        const { year, month } = getCurrentYearAndMonth();
+        currentYear = year;
+        currentMonth = month;
+    }
+
+    // Validate that currentYear and currentMonth are valid numbers
+    if (isNaN(currentYear) || isNaN(currentMonth)) {
+        const { year, month } = getCurrentYearAndMonth();
+        currentYear = year;
+        currentMonth = month;
+    }
+
+    // Restore Developer Mode state
+    const savedDevMode = localStorage.getItem('isDeveloperMode');
+    if (savedDevMode === 'true') {
+        isDeveloperMode = true;
+        document.body.classList.add('developer-mode');
+        document.getElementById('dev-mode-btn').textContent = 'Disable Developer Mode';
+        document.getElementById('lock-calendar-btn').style.display = 'block'; // Show the lock calendar button
+    } else {
+        document.getElementById('dev-mode-btn').textContent = 'Enable Developer Mode';
+        document.getElementById('lock-calendar-btn').style.display = 'none'; // Hide the lock calendar button
+    }
+
+    // Fetch the calendar data for the selected month and year
     fetchMonthData(currentYear, currentMonth);
+});
+
+// Add event listener for adding calendar items
+document.getElementById('add-btn').addEventListener('click', async () => {
+    if (!loggedInUser) {
+        alert('You must be logged in to add calendar items.');
+        return;
+    }
+
+    const posterName = localStorage.getItem('loggedInUserName'); // Use the real name
+    const date = document.getElementById('date-picker').value;
+    const time = document.getElementById('time-picker').value;
+    const title = document.getElementById('title-input').value;
+    const description = document.getElementById('description-input').value;
+
+    if (!date || !time || !title || !description) {
+        alert('Please fill out all fields.');
+        return;
+    }
+
+    console.log('Submitting calendar item:', { posterName, date, time, title, description }); // Debugging log
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/calendar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                poster_name: posterName, // Use the real name here
+                date: date,
+                time: time,
+                title: title,
+                description: description,
+            }),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert('Calendar item added successfully: ' + JSON.stringify(result));
+
+            // Refresh the calendar items for the currently selected month
+            fetchMonthData(currentYear, currentMonth);
+        } else {
+            const error = await response.json();
+            alert('Failed to add calendar item: ' + error.detail);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while adding the calendar item.');
+    }
+});
+
+// Add event listeners for month navigation
+document.getElementById('prev-month-btn').addEventListener('click', () => {
+    // Decrement the month
+    currentMonth -= 1;
+    if (currentMonth < 1) {
+        currentMonth = 12;
+        currentYear -= 1;
+    }
+
+    // Fetch and display the updated calendar
+    fetchMonthData(currentYear, currentMonth);
+});
+
+document.getElementById('next-month-btn').addEventListener('click', () => {
+    // Increment the month
+    currentMonth += 1;
+    if (currentMonth > 12) {
+        currentMonth = 1;
+        currentYear += 1;
+    }
+
+    // Fetch and display the updated calendar
+    fetchMonthData(currentYear, currentMonth);
+});
+
+// Add event listener for enabling developer mode
+document.getElementById('dev-mode-btn').addEventListener('click', async () => {
+    if (!loggedInUser) {
+        alert("You must be logged in to toggle Developer Mode.");
+        return;
+    }
+
+    if (isDeveloperMode) {
+        // Disable Developer Mode
+        isDeveloperMode = false;
+        localStorage.removeItem('isDeveloperMode'); // Remove Developer Mode state
+        document.body.classList.remove('developer-mode');
+        document.getElementById('dev-mode-btn').textContent = 'Enable Developer Mode';
+        document.getElementById('lock-calendar-btn').style.display = 'none'; // Hide the lock calendar button
+
+        // Refresh the calendar to hide delete buttons for all events
+        fetchMonthData(currentYear, currentMonth);
+        alert("Developer Mode has been disabled.");
+    } else {
+        // Enable Developer Mode
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/developers`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-User-Email': loggedInUser, // Pass the user's email in the headers
+                },
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                alert(result.message);
+                isDeveloperMode = true;
+                localStorage.setItem('isDeveloperMode', 'true'); // Save Developer Mode state
+                document.body.classList.add('developer-mode');
+                document.getElementById('dev-mode-btn').textContent = 'Disable Developer Mode';
+                document.getElementById('lock-calendar-btn').style.display = 'block'; // Show the lock calendar button
+
+                // Refresh the calendar to show delete buttons for all events
+                fetchMonthData(currentYear, currentMonth);
+            } else {
+                const error = await response.json();
+                alert('Failed to enable Developer Mode: ' + error.detail);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while enabling Developer Mode.');
+        }
+    }
+});
+
+// Add event listener for locking/unlocking the calendar
+document.getElementById('lock-calendar-btn').addEventListener('click', async () => {
+    if (!isDeveloperMode) {
+        alert("You must be in Developer Mode to lock or unlock the calendar.");
+        return;
+    }
+
+    const lock = confirm("Do you want to lock the calendar? Click 'Cancel' to unlock.");
+    console.log(`Attempting to ${lock ? 'lock' : 'unlock'} the calendar.`); // Debugging log
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/calendar/lock`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-User-Email': loggedInUser, // Pass the user's email in the headers
+            },
+            body: JSON.stringify({ lock }), // Ensure the lock value is sent correctly
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert(result.message);
+
+            // Update the button text based on the lock state
+            document.getElementById('lock-calendar-btn').textContent = lock ? 'Unlock Calendar' : 'Lock Calendar';
+        } else {
+            const error = await response.json();
+            console.error('Failed to lock/unlock calendar:', error); // Debugging log
+            alert('Failed to lock/unlock the calendar: ' + error.detail);
+        }
+    } catch (error) {
+        console.error('Error:', error); // Debugging log
+        alert('An error occurred while locking/unlocking the calendar.');
+    }
+});
+
+// Add event listener for logging out
+document.getElementById('logout-btn').addEventListener('click', () => {
+    // Clear the logged-in user's email
+    loggedInUser = null;
+    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('loggedInUserName');
+    localStorage.removeItem('isDeveloperMode'); // Clear Developer Mode state
+
+    // Reset the UI
+    document.getElementById('auth-panel').style.display = 'block';
+    document.getElementById('input-panel').style.display = 'none';
+    document.getElementById('logout-btn').style.display = 'none';
+    document.body.classList.remove('developer-mode');
+
+    alert('You have been logged out.');
 });

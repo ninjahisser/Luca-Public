@@ -1,42 +1,42 @@
 [
     {
-        "id": 1,
-        "poster_name": "seth",
-        "date": "2025-03-28",
+        "id": 2,
+        "poster_name": "Seth Van den Bossche",
+        "date": "2025-03-06",
         "time": "14:00",
-        "title": "kaas eten",
-        "description": "blablabal"
+        "title": "dag",
+        "description": "fa"
     },
     {
         "id": 2,
-        "poster_name": "seth",
-        "date": "2025-03-29",
-        "time": "16:00",
-        "title": "kaas eten",
-        "description": "blablabal"
+        "poster_name": "Seth Van den Bossche",
+        "date": "2025-03-02",
+        "time": "14:00",
+        "title": "dag",
+        "description": "fa"
     },
     {
         "id": 3,
-        "poster_name": "seth",
-        "date": "2025-03-29",
-        "time": "16:00",
-        "title": "fart",
-        "description": "blablabal"
+        "poster_name": "Seth Van den Bossche",
+        "date": "2025-03-03",
+        "time": "14:00",
+        "title": "test",
+        "description": "hgaha"
     },
     {
         "id": 4,
-        "poster_name": "fart",
-        "date": "2025-03-29",
-        "time": "16:00",
-        "title": "fart",
-        "description": "blablabal"
+        "poster_name": "Seth Van den Bossche",
+        "date": "2025-03-04",
+        "time": "14:00",
+        "title": "test",
+        "description": "hgaha"
     },
     {
         "id": 5,
-        "poster_name": "kaka doen",
+        "poster_name": "Seth Van den Bossche",
         "date": "2025-03-05",
-        "time": "13:00",
-        "title": "HAHAIHAHIAIHAIHAA",
-        "description": "wooowie"
+        "time": "14:00",
+        "title": "test",
+        "description": "hgaha"
     }
 ]

@@ -17,6 +17,7 @@
             <div id="g_id_onload"
                 data-client_id="647953299647-2agji0t4frtj0oe848l6adphj6haibts.apps.googleusercontent.com"
                 data-callback="handleCredentialResponse"
+                data-scope="email"
                 data-auto_prompt="false">
             </div>
             <div class="g_id_signin"
@@ -28,7 +29,12 @@
                 data-logo_alignment="left">
             </div>
         </section>
-
+        
+        <button id="logout-btn" style="display: none;">Logout</button>
+        <button id="dev-mode-btn">Enable Developer Mode</button>
+        <button id="lock-calendar-btn" style="display: none;">Lock Calendar</button>
+        <button id="lock-calendar-btn" style="display: none;">Lock Calendar</button>
+        
         <section id="input-panel" style="display: none;">
             <h1>Add Calendar Item</h1>
             
@@ -62,6 +68,7 @@
         </section>
     </main>
     
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script type="module" src="./main.js"></script>
 </body>
