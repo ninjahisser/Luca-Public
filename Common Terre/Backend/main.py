@@ -6,7 +6,6 @@ from pathlib import Path
 
 app = FastAPI()
 
-
 # Directory to store calendar items
 CALENDAR_DIR = Path("calendar_data")
 CALENDAR_DIR.mkdir(exist_ok=True)

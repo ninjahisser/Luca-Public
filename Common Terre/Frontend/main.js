@@ -225,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch the calendar data for the selected month and year
     fetchMonthData(currentYear, currentMonth);
+    checkCalendarLockStatus();
 });
 
 // Add event listener for adding calendar items
@@ -354,24 +355,60 @@ document.getElementById('dev-mode-btn').addEventListener('click', async () => {
     }
 });
 
+// Function to check if the calendar is locked
+async function checkCalendarLockStatus() {
+    try {
+        // Backend URL for checking the lock status
+        const url = 'http://127.0.0.1:8000/calendar/lock';
+
+        // Send the GET request to check the lock status
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Calendar lock status:', result);
+
+            // Update the button text based on the lock state
+            const lockButton = document.getElementById('lock-calendar-btn');
+            if (result.locked) {
+                lockButton.textContent = 'Unlock Calendar';
+            } else {
+                lockButton.textContent = 'Lock Calendar';
+            }
+        } else {
+            const error = await response.json();
+            console.error('Failed to fetch calendar lock status:', error); // Debugging log
+            alert('Failed to fetch calendar lock status: ' + error.detail);
+        }
+    } catch (error) {
+        console.error('Error:', error); // Debugging log
+        alert('An error occurred while checking the calendar lock status.');
+    }
+}
+
+
+// Add event listener for locking/unlocking the calendar
 // Add event listener for locking/unlocking the calendar
 document.getElementById('lock-calendar-btn').addEventListener('click', async () => {
-    if (!isDeveloperMode) {
-        alert("You must be in Developer Mode to lock or unlock the calendar.");
-        return;
-    }
-
-    const lock = confirm("Do you want to lock the calendar? Click 'Cancel' to unlock.");
-    console.log(`Attempting to ${lock ? 'lock' : 'unlock'} the calendar.`); // Debugging log
-
     try {
-        const response = await fetch(`http://127.0.0.1:8000/calendar/lock`, {
+        // Determine the current lock state based on the button text
+        const lock = !checkCalendarLockStatus();
+
+        // Backend URL for locking/unlocking the calendar
+        const url = `http://127.0.0.1:8000/calendar/lock?lock=${lock}`; // Include the lock parameter in the query string
+
+        // Send the POST request to lock/unlock the calendar
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-User-Email': loggedInUser, // Pass the user's email in the headers
             },
-            body: JSON.stringify({ lock }), // Ensure the lock value is sent correctly
         });
 
         if (response.ok) {
@@ -383,7 +420,7 @@ document.getElementById('lock-calendar-btn').addEventListener('click', async () 
         } else {
             const error = await response.json();
             console.error('Failed to lock/unlock calendar:', error); // Debugging log
-            alert('Failed to lock/unlock the calendar: ' + error.detail);
+            alert('Failed to lock/unlock the calendar: ' + error.detail[0].msg);
         }
     } catch (error) {
         console.error('Error:', error); // Debugging log
