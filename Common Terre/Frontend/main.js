@@ -359,7 +359,7 @@ document.getElementById('dev-mode-btn').addEventListener('click', async () => {
 async function checkCalendarLockStatus() {
     try {
         // Backend URL for checking the lock status
-        const url = 'http://127.0.0.1:8000/calendar/lock';
+        const url = 'http://127.0.0.1:8000/calendar/get_lock';
 
         // Send the GET request to check the lock status
         const response = await fetch(url, {
@@ -380,30 +380,41 @@ async function checkCalendarLockStatus() {
             } else {
                 lockButton.textContent = 'Lock Calendar';
             }
+
+            return result; // Return the lock status
         } else {
             const error = await response.json();
             console.error('Failed to fetch calendar lock status:', error); // Debugging log
             alert('Failed to fetch calendar lock status: ' + error.detail);
+            return null; // Return null if the request fails
         }
     } catch (error) {
         console.error('Error:', error); // Debugging log
         alert('An error occurred while checking the calendar lock status.');
+        return null; // Return null if an exception occurs
     }
 }
 
 
 // Add event listener for locking/unlocking the calendar
-// Add event listener for locking/unlocking the calendar
 document.getElementById('lock-calendar-btn').addEventListener('click', async () => {
+    if (!isDeveloperMode) {
+        alert("You must be in Developer Mode to lock or unlock the calendar.");
+        return;
+    }
+
+    // Await the result of checkCalendarLockStatus to get the current lock state
+    const currentLockStatus = await checkCalendarLockStatus();
+    if (!currentLockStatus) {
+        alert("Failed to retrieve the current lock status. Please try again.");
+        return;
+    }
+
+    const lock = !currentLockStatus.locked; // Toggle the lock state
+    console.log(`Lock value being sent: ${lock}`); // Debugging log
+
     try {
-        // Determine the current lock state based on the button text
-        const lock = !checkCalendarLockStatus();
-
-        // Backend URL for locking/unlocking the calendar
-        const url = `http://127.0.0.1:8000/calendar/lock?lock=${lock}`; // Include the lock parameter in the query string
-
-        // Send the POST request to lock/unlock the calendar
-        const response = await fetch(url, {
+        const response = await fetch(`http://127.0.0.1:8000/calendar/lock`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -420,7 +431,7 @@ document.getElementById('lock-calendar-btn').addEventListener('click', async () 
         } else {
             const error = await response.json();
             console.error('Failed to lock/unlock calendar:', error); // Debugging log
-            alert('Failed to lock/unlock the calendar: ' + error.detail[0].msg);
+            alert('Failed to lock/unlock the calendar: ' + error.detail);
         }
     } catch (error) {
         console.error('Error:', error); // Debugging log

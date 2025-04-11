@@ -144,10 +144,17 @@ def delete_calendar_item(item_id: int, x_user_email: str = Header(...)):
     # If no matching item was found in any file
     raise HTTPException(status_code=404, detail=f"Calendar item with ID {item_id} not found.")
 
+from fastapi import Body
+
+from fastapi import Body
+
 @app.post("/calendar/lock")
-def lock_calendar(lock: bool, x_user_email: str = Header(...)):
+def lock_calendar(x_user_email: str = Header(...)):
+    lock = not get_lock_state()["locked"]
     """Lock or unlock the calendar. Only developers can perform this action."""
     print(f"Received request to {'lock' if lock else 'unlock'} the calendar from {x_user_email}")
+    print(f"Lock value received: {lock}")  # Debugging log
+
     if not is_developer(x_user_email):
         print(f"Unauthorized access attempt by {x_user_email}")
         raise HTTPException(status_code=403, detail="You do not have permission to lock or unlock the calendar.")
@@ -162,8 +169,8 @@ def lock_calendar(lock: bool, x_user_email: str = Header(...)):
     except Exception as e:
         print(f"Error while locking/unlocking calendar: {e}")
         raise HTTPException(status_code=500, detail="Failed to lock/unlock the calendar.")
-
-@app.get("/calendar/lock")
+    
+@app.get("/calendar/get_lock")
 def get_lock_state():
     print("getting locked status")
     """Get the current lock state of the calendar."""
