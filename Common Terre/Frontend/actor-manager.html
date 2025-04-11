@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actor Manager</title>
+    
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="actor-manager.html">Actor Manager</a>
+        </nav>
+        <h1>Actor Manager</h1>
+    </header>
+    <main>
+        <section id="actor-list">
+            <h2>Actors</h2>
+            <ul id="actors">
+                <!-- Actor list will be dynamically populated -->
+            </ul>
+        </section>
+        <section id="add-actor">
+            <h2>Add New Actor</h2>
+            <form id="add-actor-form">
+                <label for="actor-name">Name:</label>
+                <input type="text" id="actor-name" name="actor-name" required>
+                <label for="actor-role">Role:</label>
+                <input type="text" id="actor-role" name="actor-role" required>
+                <button type="submit">Add Actor</button>
+            </form>
+        </section>
+    </main>
+    <script type="module">
+        import { isDeveloperMode } from './script/developerMode.js';
+
+        // Redirect to home page if not in Developer Mode
+        if (!isDeveloperMode) {
+            alert('You must be in Developer Mode to access this page.');
+            window.location.href = 'index.html';
+        }
+    </script>
+    <script type="module" src="script/actor-manager.js"></script>
+</body>
+</html>

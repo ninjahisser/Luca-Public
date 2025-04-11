@@ -195,3 +195,21 @@ def enable_developer_mode(x_user_email: str = Header(...)):
         return {"message": "Developer Mode enabled successfully."}
     else:
         raise HTTPException(status_code=403, detail="You are not authorized to enable Developer Mode.")
+    
+actors = []
+
+@app.get("/actors")
+def get_actors():
+    return actors
+
+@app.post("/actors")
+def add_actor(actor: dict):
+    actor['id'] = len(actors) + 1
+    actors.append(actor)
+    return actor
+
+@app.delete("/actors/{actor_id}")
+def delete_actor(actor_id: int):
+    global actors
+    actors = [actor for actor in actors if actor['id'] != actor_id]
+    return {"message": "Actor deleted successfully"}
