@@ -159,3 +159,32 @@ body.developer-mode #lock-calendar-btn {
 #logout-btn:hover {
     background-color: #a71d2a;
 }
+
+#map{
+    border: 1px solid red;
+}
+
+#icon{
+    border: 'px solid blue;
+}
+
+/* Actor Details Page */
+#actor-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.actor-section {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin: 5px;
+    text-align: center;
+}
+
+.audio-container {
+    margin-top: 20px;
+    text-align: center;
+}

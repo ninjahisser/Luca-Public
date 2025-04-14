@@ -1,0 +1,13 @@
+{
+    "name": "fartu",
+    "id": 2,
+    "description": "ghaha",
+    "order": "DESCRIPTION, EMPTY_SPACE, IMAGE",
+    "categories": [
+        "organisch",
+        "biodiversiteit",
+        "de wroeters"
+    ],
+    "x_position": 47.0,
+    "y_position": 41.0
+}

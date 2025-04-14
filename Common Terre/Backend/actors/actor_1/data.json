@@ -1,0 +1,14 @@
+{
+    "name": "test actor 2",
+    "id": 1,
+    "description": "test",
+    "order": "IMAGE, DESCRIPTION, EMPTY_SPACE",
+    "categories": [
+        "biodiversiteit",
+        "organisch",
+        "de wroeters"
+    ],
+    "x_position": 57.0,
+    "y_position": 55.0,
+    "audio": "actors\\actor_1\\whooshes.wav"
+}
