@@ -38,3 +38,13 @@ class ContentTypeMiddleware(BaseHTTPMiddleware):
         return response
 
 app.add_middleware(ContentTypeMiddleware)
+
+from fastapi import FastAPI
+from routes.calendar import router as calendar_router
+
+app = FastAPI()
+
+app.include_router(calendar_router, prefix="/calendar")
+app.include_router(actor.router, prefix="/actors", tags=["Actor"])
+app.include_router(calendar.router, prefix="/calendar", tags=["Calendar"])
+app.mount("/static/actors", StaticFiles(directory="actors"), name="static-actors")

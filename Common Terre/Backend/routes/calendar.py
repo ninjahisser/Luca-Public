@@ -23,3 +23,17 @@ def lock_calendar_route(x_user_email: str = Header(...)):
 @router.get("/get_lock")
 def get_lock_state_route():
     return get_lock_state()
+
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/events")
+def get_events():
+    return [
+        {"title": "Weder", "date": "2025-03-29"},
+        {"title": "Verftuin Workshop", "date": "2025-04-05"},
+        {"title": "Biodynamische Tuin", "date": "2025-04-12"},
+        {"title": "Co-creatie Dag", "date": "2025-04-19"}
+    ]
+

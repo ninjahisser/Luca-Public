@@ -1,0 +1,237 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+}
+
+article, aside, figcaption, figure, footer, header, main, nav, section {
+  display: block;
+}
+
+
+body {
+  font-family: 'helvetica', sans-serif;
+  background: #EEE3D6;
+  color: #41464f;
+}
+
+h1 {
+  color: #E63C6F;
+  border-bottom: 3px solid #E63C6F;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+p {
+  font-size: 15px;
+  text-align: justify;
+}
+
+
+figure {
+  width: 100%;
+}
+
+img {
+  width: 100%;
+}
+
+
+header {
+  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+  font-weight: 900;
+  color: #E63C6F;
+  font-size: 3em;
+  letter-spacing: -5px;
+  margin-left: 20px;
+}
+
+
+.homesamen {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin: 2rem;
+}
+
+
+.plattegrond {
+  flex: 1;
+  width: 35%;
+}
+
+.plattegrond img {
+  max-width: 75%;
+  height: auto;
+  margin-left: 50px;
+}
+
+
+.content-right {
+  margin-top: 25px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+
+.kalender {
+  border: 2px solid #E63C6F;
+  padding: 1rem;
+}
+
+.kalender h2:first-child {
+  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+  font-weight: 900;
+  color: #E63C6F;
+  font-size: 3em;
+  border-bottom: 3px solid #E63C6F;
+  display: inline-block;
+  width: 100%;
+}
+
+.kalender h2:nth-child(2) {
+  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+  font-weight: 900;
+  color: #E63C6F;
+  font-size: 2em;
+}
+
+.kalender p em {
+  font-style: italic;
+  color: #c85872;
+}
+
+.kalender p strong {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Info section */
+.info {
+  border: 2px solid #E63C6F;
+  padding: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #543416;
+  padding-bottom: 187px;
+}
+
+/* Actor list */
+.actor-list {
+  padding: 40px;
+  border: 2px solid #E63C6F;
+  max-width: 100%;
+  font-family: sans-serif;
+  margin: 2rem;
+}
+
+.actor-list h2 {
+  color: #E63C6F;
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.actor-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.actor-list li {
+  margin-bottom: 1.5rem;
+}
+
+.actor-list a {
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 700;
+  color: #E63C6F;
+
+}
+
+.actor-list a:hover {
+  text-decoration: underline;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #E63C6F;  
+  padding: 1rem 2rem;
+  font-family: 'Helvetica', sans-serif;
+  color: #EDE2D6;
+
+}
+
+.footer-left h1 {
+  margin-top: -10px;
+  font-size: 2rem;
+  color: #EDE2D6;
+  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+  font-weight: 900;
+  letter-spacing: -3px;
+}
+
+.footer-left p {
+  margin: 0;
+  margin-top: -35px;
+  font-size: 0.9rem;
+}
+
+.footer-right {
+  display: flex;
+  gap: 1rem;
+}
+
+.footer-icon {
+  height: 30px;
+  object-fit: contain;
+}
+
+
+
+#map-icons-container {
+  position: absolute;
+  pointer-events: none; /* Allow clicks to pass through to the map image */
+}
+
+.map-icon {
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  pointer-events: auto; /* Enable clicks on the icons */
+  cursor: pointer;
+}
+
+#map-icons-container {
+  position: absolute;
+  pointer-events: none; /* Allow clicks to pass through to the map image */
+}
+
+.map-icon {
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  pointer-events: auto; /* Enable clicks on the icons */
+  cursor: pointer;
+  transform: translate(-50%, -50%); /* Center the icon on its position */
+}
+
+.map-icon {
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  pointer-events: auto; /* Enable clicks on the icons */
+  cursor: pointer;
+  transform: translate(-50%, -50%); /* Center the icon on its position */
+}

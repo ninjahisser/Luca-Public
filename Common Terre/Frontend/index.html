@@ -1,79 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!doctype html>
+<html lang="nl">
+<head>
     <title>Common Terre</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/stijl.css">
+    <link href="css/lightbox.css" rel="stylesheet" />
+</head>
 
-    <link rel="stylesheet" href="style/style.css">
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="actor-manager.html">Actor Manager</a>
-    </nav>
-
-    <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    </head>
 <body>
-    <main>
-        <section id="auth-panel">
-            <div id="g_id_onload"
-                data-client_id="647953299647-2agji0t4frtj0oe848l6adphj6haibts.apps.googleusercontent.com"
-                data-callback="handleCredentialResponse"
-                data-scope="email"
-                data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin"
-                data-type="standard"
-                data-shape="rectangular"
-                data-theme="outline"
-                data-text="sign_in_with"
-                data-size="large"
-                data-logo_alignment="left">
-            </div>
-        </section>
-        
-        <button id="logout-btn" style="display: none;">Logout</button>
-        <button id="dev-mode-btn">Enable Developer Mode</button>
-        <button id="lock-calendar-btn" style="display: none;">Lock Calendar</button>
-        <button id="lock-calendar-btn" style="display: none;">Lock Calendar</button>
-        
-        <section id="input-panel" style="display: none;">
-            <h1>Add Calendar Item</h1>
-            
-            <label for="poster-name">Poster Name:</label>
-            <input id="poster-name" type="text" placeholder="Enter your name" readonly>
-            
-            <label for="date-picker">Date:</label>
-            <input id="date-picker" type="date" required>
-            
-            <label for="time-picker">Time:</label>
-            <input id="time-picker" type="time" required>
-            
-            <label for="title-input">Title:</label>
-            <input id="title-input" type="text" placeholder="Enter event title" required>
-            
-            <label for="description-input">Description:</label>
-            <textarea id="description-input" placeholder="Enter event description" required></textarea>
-            
-            <button id="add-btn">Add Calendar Item</button>
-        </section>
+    <header>
+        <h1>CommonTerre</h1>
+    </header>
 
-        <section id="calendar">
-            <div id="calendar-header">
-                <button id="prev-month-btn">&lt;</button>
-                <h2 id="current-month"></h2>
-                <button id="next-month-btn">&gt;</button>
+    <main>
+        <div class="homesamen">
+            <div class="plattegrond">
+                <img id="map-image" src="res/images/plattegrond.png" alt="plattegrond">
+                <div id="map-icons-container"></div>
             </div>
-            <div id="calendar-grid">
-                <!-- Calendar grid will be dynamically generated here -->
+
+            <div class="content-right">
+                <div class="kalender">
+                    <h2>Kalender</h2>
+                    <div id="event-list">
+                        <!-- Upcoming events will be dynamically populated here -->
+                    </div>
+                </div>
+
+                <div class="info">
+                    <p>
+                        Common Terre is een regeneratieve gemeenschap waar planten, dieren en mensen samenleven en een levendig ecosysteem en kenniscentrum vormen. De site ligt in Park/Kasteel Ter Beken in Gent en heeft een gelaagde geschiedenis die gevormd is door menselijke en niet-menselijke interacties, hoewel alleen mensgerichte verhalen bewaard zijn gebleven. Het is nu een Living Lab onder LUCA School of Arts en promoot co-creatie met meerdere soorten. Het biedt onderdak aan een verftuin, het SIT-PLU lab en een biodynamische groentetuin ter ondersteuning van risicojongeren. Common Terre bevordert de samenwerking tussen onderzoekers, studenten, activisten en biodynamische boeren en onderzoekt alternatieve landbouw, op zorg gebaseerde economieën en nieuwe vormen van gemeengoed.
+                    </p>
+                </div>
             </div>
+        </div>
+
+        <section id="actors" class="actor-list">
+            <h2>Actoren</h2>
+            <ul id="actor-list">
+                <!-- Actors will be dynamically populated here -->
+            </ul>
         </section>
     </main>
-    
-    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
-    <script type="module" src="script/main.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <footer class="footer">
+        <div class="footer-left">
+            <h1>CommonTerre</h1>
+            <p>Beekstraat 1-3, 9030 Gent</p>
+        </div>
+        <div class="footer-right">
+            <img src="res/images/gent-logo.png" alt="Gent logo" class="footer-icon" />
+            <img src="res/images/luca-logo.png" alt="LUCA logo" class="footer-icon" />
+        </div>
+    </footer>
+    <script type="module" src="script/actors.js"></script>
+    <script type="module" src="script/calendar.js"></script>
 </body>
 </html>

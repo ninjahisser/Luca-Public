@@ -139,3 +139,11 @@ def delete_actor(actor_id: int):
             return {"message": "Actor deleted successfully"}
 
     raise HTTPException(status_code=404, detail="Actor not found")
+
+@router.get("/names")
+def get_actor_names():
+    """
+    Return only the id and name of each actor.
+    This endpoint is specifically for lightweight requests.
+    """
+    return [{"id": actor["id"], "name": actor["name"]} for actor in actors]

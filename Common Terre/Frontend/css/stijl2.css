@@ -1,0 +1,99 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  border-width: 0;
+}
+
+article, aside, figcaption, figure, footer, header, main, nav, section {
+  display: block;
+}
+
+
+body {
+  font-family: 'helvetica', sans-serif;
+  background: #EEE3D6;
+  color: #41464f;
+}
+
+.title1{
+	color: #E63C6F;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  
+}
+
+.devarkentjes {
+  background-color: #EEE3D6;
+  color: #e63e6c;
+  padding: 1rem 2rem;
+  position: relative;
+  
+}
+
+.menu-toggle {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 24px;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 30px;
+  height: 3px;
+  background-color: #e63e6c;
+  margin: 3px 0;
+}
+
+.nav-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  right: 2rem;
+  background-color: #EFE4D7;
+  border: 2px solid #e63e6c;
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+
+.nav-menu a {
+  color: #e63e6c;
+  text-decoration: none;
+  margin: 0.5rem 0;
+  font-weight: bold;
+}
+
+.nav-menu.show {
+  display: flex;
+}
+
+.content-flex {
+  display: flex;
+  margin-top: 50px;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.left, .center, .right {
+  flex: 1;
+}
+
+.label {
+  font-weight: bold;
+  color: #e63e6c;
+  padding-left: 0.5rem;
+  margin-top: 1rem;
+}
+
+.description {
+  border: 2px solid #e63e6c;
+  padding: 1rem;
+  background-color: #EFE4D7;
+}
