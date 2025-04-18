@@ -1,13 +1,13 @@
 {
-    "name": "fartu",
+    "name": "zesty",
     "id": 2,
-    "description": "ghaha",
-    "order": "DESCRIPTION, EMPTY_SPACE, IMAGE",
+    "description": "haha",
+    "order": "EMPTY_SPACE, DESCRIPTION, IMAGE",
     "categories": [
-        "organisch",
-        "biodiversiteit",
-        "de wroeters"
+        "de wroeters",
+        "zorg",
+        "vrijwilligerswerking"
     ],
-    "x_position": 47.0,
-    "y_position": 41.0
+    "x_position": 38.0,
+    "y_position": 19.0
 }

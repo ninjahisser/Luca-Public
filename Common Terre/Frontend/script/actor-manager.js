@@ -10,51 +10,44 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadActors(map) {
     try {
         const actors = await fetchAPI('actors', 'GET');
-        console.log('Actors loaded:', actors); // Debug de acteurgegevens
+        console.log('Actors loaded:', actors); // Debug the actor data
+
+        if (!Array.isArray(actors) || actors.length === 0) {
+            throw new Error('No actors found.');
+        }
+
         const actorList = document.getElementById('actors');
-        actorList.innerHTML = ''; // Wis de lijst
+        actorList.innerHTML = ''; // Clear the list
 
         actors.forEach(actor => {
-            // Voeg de dataUrl toe om te verwijzen naar het data.json-bestand van de acteur
+            // Add the dataUrl field to point to the actor's data.json file
             actor.dataUrl = `http://127.0.0.1:8000/static/actors/actor_${actor.id}/data.json`;
 
             const listItem = document.createElement('li');
-            listItem.textContent = actor.name; // Toon alleen de naam van de acteur
+            listItem.textContent = actor.name;
 
-            // Voeg een bewerkknop toe
             const editButton = document.createElement('button');
             editButton.textContent = 'Edit';
             editButton.addEventListener('click', () => openEditActorModal(actor));
             listItem.appendChild(editButton);
 
-            // Voeg een verwijderknop toe
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Delete';
             deleteButton.addEventListener('click', () => deleteActor(actor.id));
             listItem.appendChild(deleteButton);
 
-            // Voeg een audio-afspeelknop toe als audio bestaat
-            if (actor.audio) {
-                console.log(`Audio URL for ${actor.name}:`, actor.audio);
-                const playButton = document.createElement('button');
-                playButton.textContent = 'Play Audio';
-                playButton.addEventListener('click', () => {
-                    const audio = new Audio(actor.audio); // Gebruik de URL direct
-                    audio.play();
-                });
-                listItem.appendChild(playButton);
-            } else {
-                console.log(`No audio for ${actor.name}`);
-            }
-
             actorList.appendChild(listItem);
         });
 
-        // Plaats acteur-iconen op de kaart
         await placeIconsOnMap(map, actors);
     } catch (error) {
         console.error('Error loading actors:', error);
-        alert('Failed to load actors.');
+
+        // Only show the alert if no actors were loaded
+        const actorList = document.getElementById('actors');
+        if (!actorList || actorList.children.length === 0) {
+            alert('Failed to load actors.');
+        }
     }
 }
 
@@ -88,15 +81,29 @@ async function deleteActor(actorId) {
 
 async function openEditActorModal(actor) {
     try {
-        // Fetch detailed actor data from the actor's folder
+        if (!actor.dataUrl) {
+            console.error(`Actor "${actor.name}" is missing a dataUrl.`);
+            alert('Failed to load actor details: Missing data URL.');
+            return;
+        }
+
+        console.log(`Fetching actor details from: ${actor.dataUrl}`);
         const response = await fetch(actor.dataUrl);
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch actor details. HTTP status: ${response.status}`);
+        }
+
         const detailedActor = await response.json();
 
         // Populate the edit modal with the detailed actor data
         document.getElementById('edit-actor-name').value = detailedActor.name;
         document.getElementById('edit-actor-description').value = detailedActor.description || '';
         document.getElementById('edit-actor-order').value = detailedActor.order || 'IMAGE, DESCRIPTION, EMPTY_SPACE';
-        document.getElementById('edit-actor-audio').checked = !!detailedActor.audio;
+
+        const hasAudio = !!detailedActor.audio; // Check if audio exists
+        document.getElementById('edit-actor-audio').checked = hasAudio;
+        document.getElementById('edit-actor-audio-file').style.display = hasAudio ? 'block' : 'none';
 
         const categories = detailedActor.categories || [];
         document.getElementById('edit-actor-category-1').value = categories[0] || '';
@@ -112,31 +119,6 @@ async function openEditActorModal(actor) {
         const modal = document.getElementById('edit-actor-modal');
         modal.dataset.actorId = detailedActor.id; // Set the actor ID
         modal.style.display = 'block';
-
-        // Find the actor's icon on the map
-        const actorIcon = Array.from(document.getElementById('map').children).find(
-            icon => icon.alt === detailedActor.name
-        );
-
-        // Add event listeners to sliders to dynamically update the icon's position
-        const xSlider = document.getElementById('edit-actor-x-position');
-        const ySlider = document.getElementById('edit-actor-y-position');
-
-        xSlider.addEventListener('input', () => {
-            const newX = xSlider.value;
-            if (actorIcon) {
-                actorIcon.style.left = `${newX}%`;
-            }
-            document.getElementById('x-position-value').textContent = `${newX}%`;
-        });
-
-        ySlider.addEventListener('input', () => {
-            const newY = ySlider.value;
-            if (actorIcon) {
-                actorIcon.style.top = `${newY}%`;
-            }
-            document.getElementById('y-position-value').textContent = `${newY}%`;
-        });
     } catch (error) {
         console.error('Error fetching detailed actor data:', error);
         alert('Failed to load actor details.');
