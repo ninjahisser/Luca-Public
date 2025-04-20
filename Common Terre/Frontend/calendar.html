@@ -5,17 +5,8 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/stijl.css">
-    <link rel="stylesheet" type="text/css" href="css/calendar.css">µ
+    <link rel="stylesheet" type="text/css" href="css/calendar.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <div id="google-signin-button"></div>
-    <div id="g_id_onload"
-        data-client_id="647953299647-2agji0t4frtj0oe848l6adphj6haibts.apps.googleusercontent.com
-        data-callback="handleCredentialResponse">
-
-        <div id="auth-panel"></div>
-        <div id="input-panel"></div>
-        <button id="logout-btn"></button>
-        <div id="poster-name"></div>
 </head>
 
 <body>
@@ -25,6 +16,50 @@
             <h1>CommonTerre</h1>
         </a>
     </header>
+
+    <section id="auth-panel">
+ 
+        <div id="g_id_onload"
+
+            data-client_id="647953299647-2agji0t4frtj0oe848l6adphj6haibts.apps.googleusercontent.com"
+
+            data-callback="handleCredentialResponse"
+
+            data-scope="email"
+
+            data-auto_prompt="false">
+
+        </div>
+
+        <div class="g_id_signin"
+
+            data-type="standard"
+
+            data-shape="rectangular"
+
+            data-theme="outline"
+
+            data-text="sign_in_with"
+
+            data-size="large"
+
+            data-logo_alignment="left">
+
+        </div>
+
+    </section>
+
+
+
+    <button id="logout-btn" style="display: none;">Logout</button>
+
+    <button id="dev-mode-btn">Enable Developer Mode</button>
+
+    <button id="lock-calendar-btn" style="display: none;">Lock Calendar</button>
+
+    <button id="lock-calendar-btn" style="display: none;">Lock Calendar</button>
+
+
 
     <main>
         <div class="calendar-container">
