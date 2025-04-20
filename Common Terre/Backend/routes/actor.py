@@ -147,3 +147,19 @@ def get_actor_names():
     This endpoint is specifically for lightweight requests.
     """
     return [{"id": actor["id"], "name": actor["name"]} for actor in actors]
+
+@router.get("/{actor_id}")
+def get_actor(actor_id: int):
+    """
+    Return the full details of a specific actor by ID.
+    """
+    for actor in actors:
+        if actor["id"] == actor_id:
+            # Load the actor's full data from their folder
+            actor_file = os.path.join(ACTORS_FOLDER, f"actor_{actor_id}", "data.json")
+            if os.path.exists(actor_file):
+                with open(actor_file, "r") as f:
+                    actor_data = json.load(f)
+                return actor_data
+            raise HTTPException(status_code=404, detail="Actor data file not found")
+    raise HTTPException(status_code=404, detail="Actor not found")

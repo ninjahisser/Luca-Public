@@ -41,7 +41,7 @@ export function initializeAuth() {
     document.getElementById('logout-btn').addEventListener('click', logout);
 }
 
-function handleCredentialResponse(response) {
+export function handleCredentialResponse(response) {
     try {
         console.log("Handling credential response");
         const data = jwt_decode(response.credential); // Decode the JWT token

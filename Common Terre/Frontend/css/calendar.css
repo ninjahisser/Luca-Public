@@ -1,0 +1,213 @@
+:root {
+    --primary-color: #E63C6F;
+    --secondary-color: #EDE2D6;
+}
+
+/* Calendar container */
+.calendar-container {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    margin: 1rem;
+}
+
+/* Calendar view */
+.calendar-view {
+    flex: 2;
+    background-color: var(--secondary-color);
+}
+
+.calendar-view h2 {
+    font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+    font-weight: 900;
+    color: var(--primary-color);
+    font-size: 3em;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+/* Month Picker */
+.month-picker {
+    display: flex;
+    justify-content: center; /* Center the month picker */
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    margin-top: 6.4rem;
+    width: 200px;
+    height: 50px;
+}
+
+/* Month Picker and Day Labels Row */
+.month-day-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.month-button {
+    color: var(--primary-color);
+    background-color: transparent;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.month-label {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-align: center;
+    text-wrap: nowrap;
+}
+
+/* Day Labels (Rounded Buttons) */
+.day-labels {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days of the week */
+    gap: 0.5rem;
+}
+
+.day-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    color: var(--secondary-color);
+    background-color: var(--primary-color);
+    padding: 0.5rem;
+    border-radius: 50%;
+    height: 60px;
+    align-content: center;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days of the week */
+    margin-top: 1rem;
+}
+
+.calendar-cell {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    font-size: 2rem;
+    font-weight: bold;
+    padding: .2rem;
+    height: 100px; /* Ensure consistent height for all cells */
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0.5rem;
+    min-height: 100px; /* Minimum height for consistency */
+    height: auto; /* Allow height to grow dynamically */
+    overflow: visible; /* Allow content to overflow if needed */
+}
+
+.calendar-cell:hover {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    cursor: pointer;
+}
+
+/* Hover effect for calendar cells */
+.calendar-cell:hover .calendar-event {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+}
+
+.calendar-cell.empty {
+    border: none;
+    background-color: transparent;
+    cursor: default;
+    border: 1px solid var(--primary-color);
+
+}
+
+.calendar-event {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 0.2rem 0.5rem;
+    padding-top: 0.5rem;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 20px;
+    display: block;
+    margin-bottom: 0.3rem; /* Add spacing between events */
+    padding: 0.2rem 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 80%;
+}
+
+/* Geplande activiteiten (right content) */
+.content-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.kalender {
+    border: 2px solid var(--primary-color);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--secondary-color);
+}
+
+.kalender h2 {
+    font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
+    font-weight: 900;
+    color: var(--primary-color);
+    font-size: 3em;
+    border-bottom: 3px solid var(--primary-color);
+    display: inline-block;
+    width: 100%;
+}
+
+
+/* Add button styles */
+.add-btn {
+    display: none;
+    top: 5px;
+    right: 5px;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+/* Show the button on hover */
+.calendar-cell:hover .add-btn {
+    display: block;
+}
+
+/* Button hover effect */
+.add-btn:hover {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    visibility: visible;
+    border: 2px solid var(--secondary-color)
+}
+
+.calendar_cell_top{
+    display: flex;
+    align-items: center;
+}

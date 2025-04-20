@@ -48,6 +48,8 @@ export async function fetchFullActorData() {
     }
 }
 
+let storedMapData = []; // Store map data globally for recalculating positions
+
 export function placeIconsOnMap(mapData) {
     const mapContainer = document.getElementById('map-icons-container');
     const mapImage = document.getElementById('map-image');
@@ -56,6 +58,9 @@ export function placeIconsOnMap(mapData) {
         console.error('Map container or image not found.');
         return;
     }
+
+    // Store the map data globally for recalculating positions
+    storedMapData = mapData;
 
     // Clear existing icons
     mapContainer.innerHTML = '';
@@ -71,34 +76,67 @@ export function placeIconsOnMap(mapData) {
     mapData.forEach(actor => {
         const xPos = actor.x_position || 0; // Default to 0 if undefined
         const yPos = actor.y_position || 0; // Default to 0 if undefined
-    
+
         console.log(`Actor: ${actor.name}, x_position: ${xPos}, y_position: ${yPos}`);
-    
+
         if (isNaN(xPos) || isNaN(yPos)) {
             console.error(`Invalid position for actor: ${actor.name}`);
             return;
         }
-    
+
         const left = (xPos / 100) * mapWidth;
         const top = (yPos / 100) * mapHeight;
-    
+
         console.log(`Placing icon for ${actor.name} at left=${left}px, top=${top}px`);
-    
+
         const icon = document.createElement('div');
         icon.classList.add('map-icon');
         icon.style.position = 'absolute';
         icon.style.left = `${left}px`;
         icon.style.top = `${top}px`;
-    
+
         icon.title = actor.name;
-    
+
+        // Redirect to the actor's page when clicked
         icon.addEventListener('click', () => {
-            alert(`Clicked on: ${actor.name}`);
+            window.location.href = `/Frontend/actor-details.html?id=${actor.id}`;
         });
-    
+
         mapContainer.appendChild(icon);
     });
 }
+
+function updateIconPositions() {
+    const mapContainer = document.getElementById('map-icons-container');
+    const mapImage = document.getElementById('map-image');
+
+    if (!mapContainer || !mapImage) {
+        console.error('Map container or image not found.');
+        return;
+    }
+
+    // Get the updated dimensions and position of the map image
+    const mapRect = mapImage.getBoundingClientRect();
+    const mapWidth = mapRect.width;
+    const mapHeight = mapRect.height;
+
+    console.log(`Updated map dimensions: width=${mapWidth}, height=${mapHeight}`);
+
+    // Update each icon's position
+    Array.from(mapContainer.children).forEach((icon, index) => {
+        const actor = storedMapData[index];
+        const xPos = actor.x_position || 0;
+        const yPos = actor.y_position || 0;
+
+        const left = (xPos / 100) * mapWidth;
+        const top = (yPos / 100) * mapHeight;
+
+        icon.style.left = `${left}px`;
+        icon.style.top = `${top}px`;
+    });
+}
+
+window.addEventListener('resize', updateIconPositions);
 
 document.addEventListener('DOMContentLoaded', async () => {
     const fullActorData = await fetchFullActorData();

@@ -26,14 +26,36 @@ def get_lock_state_route():
 
 from fastapi import APIRouter
 
-router = APIRouter()
+import json
+from pathlib import Path
+from fastapi import APIRouter, HTTPException
+
+from datetime import datetime
+import json
+from pathlib import Path
+from fastapi import APIRouter, HTTPException
+
 
 @router.get("/events")
-def get_events():
-    return [
-        {"title": "Weder", "date": "2025-03-29"},
-        {"title": "Verftuin Workshop", "date": "2025-04-05"},
-        {"title": "Biodynamische Tuin", "date": "2025-04-12"},
-        {"title": "Co-creatie Dag", "date": "2025-04-19"}
-    ]
+def get_events(year: int = None, month: int = None):
+    # Use the current year and month if not provided
+    now = datetime.now()
+    year = year or now.year
+    month = month or now.month
 
+    # Construct the file path based on the year and month
+    file_path = Path(f"calendar_data/{year}-{month:02}.json")
+    
+    # Check if the file exists
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Events file not found")
+    
+    # Read and return the events from the file
+    with file_path.open() as f:
+        events = json.load(f)
+    
+    # Sort events by date and time
+    events.sort(key=lambda event: (event["date"], event["time"]))
+    
+    # Return only the next 5 events
+    return events[:5]

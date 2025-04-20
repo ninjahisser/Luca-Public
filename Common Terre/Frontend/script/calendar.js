@@ -1,6 +1,6 @@
 console.log("Calendar script loaded.");
 
-import { getLoggedInUser } from './auth.js';
+import { getLoggedInUser, initializeAuth } from './auth.js';
 import { fetchAPI } from './api.js';
 import { getCurrentYearAndMonth } from './utils.js';
 import { isDeveloperMode } from './developerMode.js';
@@ -14,7 +14,7 @@ export function initializeCalendar() {
 
     fetchMonthData(currentYear, currentMonth);
 
-    document.getElementById('prev-month-btn').addEventListener('click', () => {
+    document.getElementById('prev-month').addEventListener('click', () => {
         currentMonth -= 1;
         if (currentMonth < 1) {
             currentMonth = 12;
@@ -23,7 +23,7 @@ export function initializeCalendar() {
         fetchMonthData(currentYear, currentMonth);
     });
 
-    document.getElementById('next-month-btn').addEventListener('click', () => {
+    document.getElementById('next-month').addEventListener('click', () => {
         currentMonth += 1;
         if (currentMonth > 12) {
             currentMonth = 1;
@@ -39,7 +39,6 @@ export async function fetchMonthData(year, month) {
         displayCalendarGrid(year, month, data);
     } catch (error) {
         console.error('Error fetching calendar data:', error);
-        alert('Failed to fetch calendar data.');
     }
 }
 
@@ -66,69 +65,84 @@ async function deleteCalendarItem(itemId) {
     }
 }
 
+// Define the month names
+const monthNames = [
+    'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
+    'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'
+];
+
 function displayCalendarGrid(year, month, items) {
-    const calendarGrid = document.getElementById('calendar-grid');
-    const currentMonthLabel = document.getElementById('current-month');
+    const calendarGrid = document.querySelector('.calendar-grid'); // Use querySelector for class
+    if (!calendarGrid) {
+        console.error('calendarGrid element not found.');
+        return;
+    }
+    console.log(`Displaying calendar for ${year}-${month}`);
     calendarGrid.innerHTML = '';
 
-    const monthNames = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    currentMonthLabel.textContent = `${monthNames[month - 1]} ${year}`;
+    const currentMonthLabel = document.getElementById('current-month');
+    currentMonthLabel.textContent = `${monthNames[month - 1]} ${year}`; // Use monthNames array
 
     const firstDay = new Date(year, month - 1, 1).getDay();
     const daysInMonth = new Date(year, month, 0).getDate();
 
+    // Add empty cells for days before the first day of the month
     for (let i = 0; i < firstDay; i++) {
         const emptyCell = document.createElement('div');
         emptyCell.className = 'calendar-cell empty';
         calendarGrid.appendChild(emptyCell);
     }
 
+    // Add cells for each day of the month
     for (let day = 1; day <= daysInMonth; day++) {
         const dayCell = document.createElement('div');
         dayCell.className = 'calendar-cell';
-        dayCell.innerHTML = `<div class="date">${day}</div>`;
+        dayCell.innerHTML = `<div class="calendar_cell_top"><div class="date">${day}</div></div>`;
 
+        // Add the "+" button to the day cell
         const addButton = document.createElement('button');
         addButton.className = 'add-btn';
         addButton.textContent = '+';
+        addButton.style.top = '5px';
+        addButton.style.right = '5px';
+        addButton.style.display = 'hidden';
         addButton.addEventListener('click', () => openAddEventModal(day));
-        dayCell.appendChild(addButton);
+        
+        dayCell.childNodes.forEach((child, index)=>{
+            if (child.className === 'calendar_cell_top'){
+                child.appendChild(addButton);
+            }
+        });
 
+        // Add events for the day
         const dayItems = items.filter(item => new Date(item.date).getDate() === day);
         dayItems.forEach(item => {
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'calendar-item';
-            itemDiv.innerHTML = `
-                <strong>${item.title}</strong>
-                <p>${item.time}</p>
-            `;
-            itemDiv.setAttribute('data-tooltip', `Author: ${item.poster_name}\nDescription: ${item.description}`);
-
-            if (isDeveloperMode || localStorage.getItem('loggedInUserName') === item.poster_name) {
-                const deleteButton = document.createElement('button');
-                deleteButton.className = 'delete-btn';
-                deleteButton.textContent = 'Delete';
-                deleteButton.addEventListener('click', async () => {
-                    await deleteCalendarItem(item.id);
-                });
-                itemDiv.appendChild(deleteButton);
-            }
-
+            itemDiv.className = 'calendar-event';
+            itemDiv.textContent = `${item.time} - ${item.title}`;
+            itemDiv.title = item.description; // Tooltip with event description
             dayCell.appendChild(itemDiv);
         });
 
-        calendarGrid.appendChild(dayCell);
+        calendarGrid.appendChild(dayCell); // Append the day cell to the calendar grid
     }
 }
 
 function openAddEventModal(day) {
+    const loggedInUser = getLoggedInUser();
+
+    // If the user is not logged in, show the Google Sign-In popup
+    if (!loggedInUser) {
+        initializeAuth(); // Trigger Google Sign-In
+        return;
+    }
+
+    // If the user is logged in, proceed to open the event modal
     const date = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     document.getElementById('date-picker').value = date;
     document.getElementById('input-panel').scrollIntoView({ behavior: 'smooth' });
 }
+
 if(document.getElementById('add-btn')){
     document.getElementById('add-btn').addEventListener('click', async () => {
         const loggedInUser = getLoggedInUser();
@@ -178,6 +192,90 @@ if(document.getElementById('add-btn')){
     });
 }
 
+async function DOM_LoadCalendar() {
+    const calendarGrid = document.querySelector('.calendar-grid');
+    const currentMonthLabel = document.getElementById('current-month');
+    const prevMonthButton = document.getElementById('prev-month');
+    const nextMonthButton = document.getElementById('next-month');
+
+    const months = [
+        'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
+        'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'
+    ];
+
+    let currentDate = new Date();
+
+    async function fetchEvents(year, month) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/calendar/${year}/${month}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch events. HTTP status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching events:', error);
+            return [];
+        }
+    }
+    
+    async function renderCalendar() {
+        // Clear the calendar grid
+        calendarGrid.innerHTML = '';
+    
+        // Set the current month label
+        currentMonthLabel.textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    
+        // Get the first day of the month and the number of days in the month
+        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+        const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+    
+        // Fetch events for the current month
+        const events = await fetchEvents(currentDate.getFullYear(), currentDate.getMonth() + 1);
+    
+        // Fill in empty slots for days before the first day of the month
+        for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
+            const emptySlot = document.createElement('div');
+            emptySlot.className = 'calendar-cell empty';
+            calendarGrid.appendChild(emptySlot);
+        }
+    
+        // Add day buttons and populate events
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayCell = document.createElement('div');
+            dayCell.className = 'calendar-cell';
+            dayCell.innerHTML = `<div class="date">${day}</div>`;
+    
+            // Filter events for the current day
+            const dayEvents = events.filter(event => new Date(event.date).getDate() === day);
+    
+            // Add events to the day cell
+            dayEvents.forEach(event => {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'calendar-event';
+                eventDiv.textContent = `${event.time} - ${event.title}`;
+                eventDiv.title = event.description; // Tooltip with event description
+                dayCell.appendChild(eventDiv);
+            });
+    
+            calendarGrid.appendChild(dayCell);
+        }
+    }
+
+    // Handle month navigation
+    prevMonthButton.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+    });
+
+    nextMonthButton.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    });
+
+    // Initial render
+    renderCalendar();
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Calendar script loaded.');
     const eventList = document.getElementById('event-list');
@@ -216,6 +314,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         upcomingEvents.forEach(event => {
             const eventDiv = document.createElement('div');
             eventDiv.classList.add('event');
+            eventDiv.style.cursor = 'pointer'; // Make it look clickable
 
             const eventTitle = document.createElement('h3');
             eventTitle.textContent = event.title;
@@ -225,10 +324,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             eventDiv.appendChild(eventTitle);
             eventDiv.appendChild(eventDate);
+
+            eventDiv.addEventListener('click', () => {
+                window.location.href = `/Frontend/calendar.html`;
+            });
+
             eventList.appendChild(eventDiv);
         });
     } catch (error) {
         console.error('Error loading events:', error);
         eventList.innerHTML = '<p>Fout bij het laden van evenementen.</p>';
     }
+
+    DOM_LoadCalendar();
+    initializeCalendar();
 });
+
