@@ -1,6 +1,6 @@
 console.log("Calendar script loaded.");
 
-import { getLoggedInUser, initializeAuth } from './auth.js';
+import { getLoggedInUser, initializeAuth, logout } from './auth.js';
 import { fetchAPI } from './api.js';
 import { getCurrentYearAndMonth } from './utils.js';
 import { isDeveloperMode } from './developerMode.js';
@@ -107,9 +107,9 @@ function displayCalendarGrid(year, month, items) {
         addButton.style.right = '5px';
         addButton.style.display = 'hidden';
         addButton.addEventListener('click', () => openAddEventModal(day));
-        
-        dayCell.childNodes.forEach((child, index)=>{
-            if (child.className === 'calendar_cell_top'){
+
+        dayCell.childNodes.forEach((child, index) => {
+            if (child.className === 'calendar_cell_top') {
                 child.appendChild(addButton);
             }
         });
@@ -131,37 +131,43 @@ function displayCalendarGrid(year, month, items) {
 function openAddEventModal(day) {
     const loggedInUser = getLoggedInUser();
 
-    // If the user is not logged in, show the Google Sign-In popup
+    // If the user is not logged in, show the auth panel
     if (!loggedInUser) {
-        initializeAuth(); // Trigger Google Sign-In
+        const authPanel = document.getElementById('auth-panel');
+        authPanel.style.display = 'block';
         return;
     }
 
-    // If the user is logged in, proceed to open the event modal
-    const date = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    document.getElementById('date-picker').value = date;
-    document.getElementById('input-panel').scrollIntoView({ behavior: 'smooth' });
+    // Set the selected date in the form
+    const selectedDate = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    console.log(`Selected date: ${selectedDate}`); // Debugging log
+    document.getElementById('selected-date').textContent = `Datum: ${selectedDate}`;
+    document.getElementById('selected-date').dataset.date = selectedDate; // Store the date in a data attribute
+
+    // Show the input panel
+    const inputPanel = document.getElementById('input-panel');
+    inputPanel.style.display = 'block';
 }
 
-if(document.getElementById('add-btn')){
+if (document.getElementById('add-btn')) {
     document.getElementById('add-btn').addEventListener('click', async () => {
         const loggedInUser = getLoggedInUser();
         if (!loggedInUser) {
             alert('You must be logged in to add calendar items.');
             return;
         }
-    
+
         const posterName = localStorage.getItem('loggedInUserName');
         const date = document.getElementById('date-picker').value;
         const time = document.getElementById('time-picker').value;
         const title = document.getElementById('title-input').value;
         const description = document.getElementById('description-input').value;
-    
+
         if (!date || !time || !title || !description) {
             alert('Please fill out all fields.');
             return;
         }
-    
+
         try {
             const response = await fetch('http://127.0.0.1:8000/calendar', {
                 method: 'POST',
@@ -176,7 +182,7 @@ if(document.getElementById('add-btn')){
                     description: description,
                 }),
             });
-    
+
             if (response.ok) {
                 const result = await response.json();
                 alert('Calendar item added successfully: ' + JSON.stringify(result));
@@ -217,37 +223,37 @@ async function DOM_LoadCalendar() {
             return [];
         }
     }
-    
+
     async function renderCalendar() {
         // Clear the calendar grid
         calendarGrid.innerHTML = '';
-    
+
         // Set the current month label
         currentMonthLabel.textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-    
+
         // Get the first day of the month and the number of days in the month
         const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
         const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-    
+
         // Fetch events for the current month
         const events = await fetchEvents(currentDate.getFullYear(), currentDate.getMonth() + 1);
-    
+
         // Fill in empty slots for days before the first day of the month
         for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
             const emptySlot = document.createElement('div');
             emptySlot.className = 'calendar-cell empty';
             calendarGrid.appendChild(emptySlot);
         }
-    
+
         // Add day buttons and populate events
         for (let day = 1; day <= daysInMonth; day++) {
             const dayCell = document.createElement('div');
             dayCell.className = 'calendar-cell';
             dayCell.innerHTML = `<div class="date">${day}</div>`;
-    
+
             // Filter events for the current day
             const dayEvents = events.filter(event => new Date(event.date).getDate() === day);
-    
+
             // Add events to the day cell
             dayEvents.forEach(event => {
                 const eventDiv = document.createElement('div');
@@ -256,7 +262,7 @@ async function DOM_LoadCalendar() {
                 eventDiv.title = event.description; // Tooltip with event description
                 dayCell.appendChild(eventDiv);
             });
-    
+
             calendarGrid.appendChild(dayCell);
         }
     }
@@ -326,7 +332,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             eventDiv.appendChild(eventDate);
 
             eventDiv.addEventListener('click', () => {
-                window.location.href = `/Frontend/calendar.html`;
+                window.location.href = `/calendar.html`;
             });
 
             eventList.appendChild(eventDiv);
@@ -336,7 +342,67 @@ document.addEventListener('DOMContentLoaded', async () => {
         eventList.innerHTML = '<p>Fout bij het laden van evenementen.</p>';
     }
 
+    // Hide the auth panel by default
+    const authPanel = document.getElementById('auth-panel');
+    authPanel.style.display = 'none';
+
+    // Add event listener to the logout button
+    const logoutButton = document.getElementById('logout-btn');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            logout();
+        });
+    }
+
+
     DOM_LoadCalendar();
+    initializeAuth();
     initializeCalendar();
 });
 
+document.getElementById('submit-event-btn').addEventListener('click', async () => {
+    const eventName = document.getElementById('event-name').value;
+    const eventDescription = document.getElementById('event-description').value;
+    const eventTime = document.getElementById('event-time').value;
+    const selectedDate = document.getElementById('selected-date').dataset.date; // Get the selected date
+
+    if (!eventName || !eventDescription || !eventTime || !selectedDate) {
+        alert('Vul alle velden in voordat u het evenement plaatst.');
+        return;
+    }
+
+    console.log('Evenement gegevens:', {
+        naam: eventName,
+        beschrijving: eventDescription,
+        tijd: eventTime,
+        datum: selectedDate,
+    });
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/calendar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                poster_name: localStorage.getItem('loggedInUserName'),
+                date: selectedDate,
+                time: eventTime,
+                title: eventName,
+                description: eventDescription,
+            }),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert('Evenement succesvol geplaatst: ' + JSON.stringify(result));
+            fetchMonthData(currentYear, currentMonth); // Refresh the calendar
+        } else {
+            const error = await response.json();
+            alert('Fout bij het toevoegen van het evenement: ' + error.detail);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Er is een fout opgetreden bij het toevoegen van het evenement.');
+    }
+});

@@ -6,7 +6,6 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/stijl.css">
     <link rel="stylesheet" type="text/css" href="css/calendar.css">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
@@ -17,38 +16,40 @@
         </a>
     </header>
 
-    <section id="auth-panel">
- 
+    <section id="auth-panel" style="display: none;">
         <div id="g_id_onload"
-
             data-client_id="647953299647-2agji0t4frtj0oe848l6adphj6haibts.apps.googleusercontent.com"
-
             data-callback="handleCredentialResponse"
-
             data-scope="email"
-
             data-auto_prompt="false">
-
         </div>
-
         <div class="g_id_signin"
-
             data-type="standard"
-
             data-shape="rectangular"
-
             data-theme="outline"
-
             data-text="sign_in_with"
-
             data-size="large"
-
             data-logo_alignment="left">
-
         </div>
-
     </section>
 
+    <section id="input-panel" style="display: none;">
+        <h1>Evenement Toevoegen</h1>
+        
+        <label for="event-name">Evenement Naam:</label>
+        <input id="event-name" type="text" placeholder="Voer de naam van het evenement in" required>
+        
+        <label for="event-description">Evenement Beschrijving:</label>
+        <textarea id="event-description" placeholder="Voer de beschrijving van het evenement in" required></textarea>
+        
+        <label for="event-time">Evenementen Tijd:</label>
+        <input id="event-time" type="time" required>
+        
+        <div id="selected-date" style="margin-top: 10px; font-weight: bold;">Datum: </div>
+        
+        <button id="submit-event-btn">Plaatsen</button>
+        <button id="close-popup">Sluit</button>
+    </section>
 
 
     <button id="logout-btn" style="display: none;">Logout</button>
@@ -112,6 +113,10 @@
             <img src="res/images/luca-logo.png" alt="LUCA logo" class="footer-icon" />
         </div>
     </footer>
-    <script type="module" src="script/calendar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script type="module" src="./script/auth.js"></script>
+    <script type="module" src="./script/calendar.js"></script>
+
 </body>
 </html>

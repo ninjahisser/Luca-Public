@@ -99,7 +99,7 @@ export function placeIconsOnMap(mapData) {
 
         // Redirect to the actor's page when clicked
         icon.addEventListener('click', () => {
-            window.location.href = `/Frontend/actor-details.html?id=${actor.id}`;
+            window.location.href = `/actor-details.html?id=${actor.id}`;
         });
 
         mapContainer.appendChild(icon);
