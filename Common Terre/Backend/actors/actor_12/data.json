@@ -1,0 +1,17 @@
+{
+    "id": 12,
+    "name": "WILGENLOKAAL",
+    "description": "Outdoor \u2018Wilgen lokaal\u2019 (Paul Nieboer, Research LUCA) : Het planten en construeren van dit Wilgen lokaal zie ik als een fysieke vraag, namelijk wat betekent het om een moment van studie te organiseren in de (natuurlijke) wereld? Het doel van het project: Sensitief worden voor de (natuurlijke) wereld.  Bewustzijn cre\u00ebren bij mijzelf eerst en later bij andere (studenten) van co-existentie met de (natuurlijke) wereld en hoe hier betekenis aan te geven.  Mogelijkheid cre\u00ebren om zorg te dragen voor lokale ecosystemen.",
+    "order": "DESCRIPTION, EMPTY_SPACE, IMAGE",
+    "categories": [
+        "pluriversum",
+        "zorg",
+        "duurzaamheid"
+    ],
+    "x_position": 91.0,
+    "y_position": 94.0,
+    "images": [
+        "actors\\actor_12\\wilgenlokaal image001(1).png",
+        "actors\\actor_12\\wilgenlokaal image001.png"
+    ]
+}

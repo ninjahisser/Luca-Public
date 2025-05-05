@@ -6,6 +6,11 @@ router = APIRouter()
 
 @router.post("/")
 def add_item(item: CalendarItem):
+    # Check if the calendar is locked
+    if get_lock_state():
+        raise HTTPException(status_code=403, detail="De kalender is vergrendeld!.")
+    
+    # Proceed to add the calendar item if not locked
     return add_calendar_item(item)
 
 @router.get("/{year}/{month}")
@@ -13,8 +18,8 @@ def get_items(year: int, month: int):
     return get_calendar_items(year, month)
 
 @router.delete("/{item_id}")
-def delete_item(item_id: int, x_user_email: str = Header(...)):
-    return delete_calendar_item(item_id, x_user_email)
+def delete_item(item_id: int, x_user_name: str = Header(...)):
+    return delete_calendar_item(item_id, x_user_name)
 
 @router.post("/lock")
 def lock_calendar_route(x_user_email: str = Header(...)):

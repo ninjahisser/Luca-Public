@@ -10,13 +10,26 @@ export function initializeMap() {
 
     // Function to update the map container size and position
     function updateMapContainer() {
+        const mapImage = document.getElementById('map-image');
+        const mapContainer = document.getElementById('map-icons-container');
+    
+        if (!mapImage || !mapContainer) {
+            console.error('Map image or container not found.');
+            return;
+        }
+    
+        // Get the bounding rectangle of the map image
         const mapRect = mapImage.getBoundingClientRect();
+    
+        // Update the map container to match the map image's position and size
         mapContainer.style.position = 'absolute';
-        mapContainer.style.top = `${mapRect.top}px`;
-        mapContainer.style.left = `${mapRect.left}px`;
+        mapContainer.style.top = `${mapRect.top + window.scrollY}px`; // Account for scrolling
+        mapContainer.style.left = `${mapRect.left + window.scrollX}px`; // Account for scrolling
         mapContainer.style.width = `${mapRect.width}px`;
         mapContainer.style.height = `${mapRect.height}px`;
         mapContainer.style.pointerEvents = 'none'; // Allow clicks to pass through to icons
+    
+        console.log(`Updated map container: top=${mapContainer.style.top}, left=${mapContainer.style.left}, width=${mapContainer.style.width}, height=${mapContainer.style.height}`);
     }
 
     // Initial update
@@ -84,16 +97,29 @@ export function placeIconsOnMap(mapData) {
             return;
         }
 
-        const left = (xPos / 100) * mapWidth;
-        const top = (yPos / 100) * mapHeight;
-
-        console.log(`Placing icon for ${actor.name} at left=${left}px, top=${top}px`);
+        console.log(`Placing icon for ${actor.name} at left=${xPos}px, top=${yPos}px`);
 
         const icon = document.createElement('div');
         icon.classList.add('map-icon');
         icon.style.position = 'absolute';
-        icon.style.left = `${left}px`;
-        icon.style.top = `${top}px`;
+        icon.style.left = `${xPos}%`;
+        icon.style.top = `${yPos}%`;
+
+        // Use the actor's icon as the background image
+        if (actor.icon) {
+            // Replace backslashes with forward slashes and construct the correct URL
+            const sanitizedIconPath = actor.icon.replace(/\\/g, '/');
+            const url = new URL(window.location.origin); // Parse the current origin
+            url.port = '8000'; // Set the correct port
+            icon.style.backgroundImage = `url(${url.origin}/static/${sanitizedIconPath})`;
+            icon.style.backgroundSize = 'cover';
+            icon.style.backgroundPosition = 'center';
+            icon.style.width = '50px'; // Set a default size for the icon
+            icon.style.height = '50px'; // Set a default size for the icon
+            icon.style.borderRadius = '50%'; // Make the icon circular
+        } else {
+            console.warn(`No icon found for actor: ${actor.name}`);
+        }
 
         icon.title = actor.name;
 
@@ -128,11 +154,11 @@ function updateIconPositions() {
         const xPos = actor.x_position || 0;
         const yPos = actor.y_position || 0;
 
-        const left = (xPos / 100) * mapWidth;
-        const top = (yPos / 100) * mapHeight;
+        let left = xPos;
+        let top = yPos;
 
-        icon.style.left = `${left}px`;
-        icon.style.top = `${top}px`;
+        icon.style.left = `${left}%`;
+        icon.style.top = `${top}%`;
     });
 }
 

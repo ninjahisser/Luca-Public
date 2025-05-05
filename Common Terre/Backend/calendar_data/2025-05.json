@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "poster_name": "Seth Van den Bossche",
+        "date": "2025-05-13",
+        "time": "18:00",
+        "title": "verjaardag",
+        "description": "partyyyy"
+    },
+    {
+        "id": 2,
+        "poster_name": "Seth Van den Bossche",
+        "date": "2025-05-02",
+        "time": "01:00",
+        "title": "voorbeeld",
+        "description": "test"
+    },
+    {
+        "id": 3,
+        "poster_name": "Seth Van den Bossche",
+        "date": "2025-05-03",
+        "time": "10:00",
+        "title": "pizzanacht",
+        "description": "yum yum eten"
+    },
+    {
+        "id": 4,
+        "poster_name": "Seth Van den Bossche",
+        "date": "2025-05-06",
+        "time": "10:00",
+        "title": "uitleg bomen",
+        "description": "zo moooi!"
+    },
+    {
+        "id": 5,
+        "poster_name": "Seth Van den Bossche",
+        "date": "2025-05-04",
+        "time": "10:00",
+        "title": "dansen en zingen",
+        "description": "waar zijn die handjes"
+    }
+]

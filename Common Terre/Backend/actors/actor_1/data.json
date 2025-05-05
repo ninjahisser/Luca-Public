@@ -1,13 +1,14 @@
 {
-    "name": "test actor 2",
     "id": 1,
-    "description": "test",
+    "name": "BRUGBOERBART",
+    "description": "The orchard is the base for a social project. Focused on the neighborhood and people who live in a vulnerable setting. In doing so, they learn about alternative forms of farming, gardening and economic (re-)distribution oriented to inclusion and care-taking. The site is an experimental setting to create new commons and cultivate regenerative practices. As a \u2018brugboer\u2019, Bart wants above all to create a setting where people can connect with each other in a safe way. In particular it offers a safe space for adolescents at risk of homelessness and social/financial exclusion. This in collaboration with a social restaurant in the neighbourhood of Brugse Poort\r\n\r\ninfobrugboerbart.txt\r\n\r\nMeer info\r\nhttps://www.facebook.com/brugboer",
     "order": "IMAGE, DESCRIPTION, EMPTY_SPACE",
     "categories": [
         "biodiversiteit",
         "organisch",
         "de wroeters"
     ],
-    "x_position": 37.0,
-    "y_position": 80.0
+    "x_position": 81.0,
+    "y_position": 88.0,
+    "audio": "actors\\actor_1\\boxShake2.wav"
 }

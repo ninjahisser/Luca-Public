@@ -1,11 +1,11 @@
 import { fetchMonthData } from './calendar.js';
+import { isDeveloperMode } from './developerMode.js';
 
 let loggedInUser = null;
 
 // Function to check and log the login state every second
 setInterval(() => {
     const isLoggedIn = !!getLoggedInUser(); // Check if a user is logged in
-    console.log(`Logged in: ${isLoggedIn ? 'Yes' : 'No'}`);
     updateAuthUI();
 }, 1000);
 
@@ -83,22 +83,32 @@ export function getLoggedInUser() {
 
 
 export function updateAuthUI() {
-    const authPanel = document.getElementById('auth-panel');
     const logoutButton = document.getElementById('logout-btn');
+    const developerButton = document.getElementById('developer-btn');
     const inputPanel = document.getElementById('input-panel'); // Add this for the form
-
-    console.log('Logged in user:', loggedInUser); // Log the current user
 
     if (loggedInUser) {
         // User is logged in
-        authPanel.style.display = 'none'; // Hide the auth panel
-        logoutButton.style.display = 'block'; // Show the logout button
-        console.log('Logout button should now be visible.');
+        if(logoutButton){
+            logoutButton.style.display = 'block'; // Show the logout button
+        }
+        if(isDeveloperMode){
+            if(developerButton){
+                developerButton.style.display = 'block';
+            }
+        }
     } else {
         // User is not logged in
-        logoutButton.style.display = 'none'; // Hide the logout button
-        inputPanel.style.display = 'none'; // Hide the form
-        console.log('Logout button should now be hidden.');
+        if(logoutButton){
+            logoutButton.style.display = 'none'; // Hide the logout button
+        }
+        if(inputPanel){
+            inputPanel.style.display = 'none'; // Hide the form
+        }
+        if(developerButton){
+            developerButton.style.display = 'none';
+        }
+
     }
 }
 

@@ -1,0 +1,17 @@
+{
+    "id": 7,
+    "name": "VARKENTJES",
+    "description": "Dit is de eerste foto van de eerste dag dat de buren kennis maakten met de zwijntjes op Ter Beken (december 2023). De zwijntjes waren de eerste bewoners van de boomgaard en gaven de plek mee vorm. Letterlijk want ze wroeten de aarde om. Sommigen van de buren die je op de foto zijn, geven tot op vandaag nog steeds wekelijks eten aan Zaklien en Zeetje.\r\n",
+    "order": "IMAGE, EMPTY_SPACE, DESCRIPTION",
+    "categories": [
+        "pluriversum",
+        "grondgenoten",
+        "de wroeters"
+    ],
+    "x_position": 32.0,
+    "y_position": 15.0,
+    "images": [
+        "actors\\actor_7\\varken_1.png",
+        "actors\\actor_7\\varken_2.png"
+    ]
+}

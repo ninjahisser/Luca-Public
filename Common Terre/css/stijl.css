@@ -207,7 +207,6 @@ header {
   object-fit: contain;
 }
 
-
 #map-icons-container {
   position: absolute;
   pointer-events: none; /* Allow clicks to pass through to the map image */
@@ -216,11 +215,10 @@ header {
 .map-icon {
   width: 20px;
   height: 20px;
-  background-color: red;
-  border-radius: 50%;
   pointer-events: auto; /* Enable clicks on the icons */
   cursor: pointer;
   transform: translate(-50%, -50%); /* Center the icon on its position */
+  border-radius: 0px !important;
 }
 
 /* Geplande activiteiten (right content) */
@@ -295,4 +293,34 @@ header {
 
 #input-panel button:hover {
   background-color: #c85872;
+}
+
+#logout-btn, #developer-btn {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 10px;
+  width: 150px;
+  font-family: 'Helvetica';
+  transform: translateX(10px);
+  border: 2px solid var(--primary-color)
+
+}
+
+#logout-btn:hover, #developer-btn:hover {
+  background-color: var(--secondary-color); /* Slightly darker shade for hover effect */
+  color: var(--primary-color);
+
+}
+
+#hoplr-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: inline-block;
+  width: 150px;
 }

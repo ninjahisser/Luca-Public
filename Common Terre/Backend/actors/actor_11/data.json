@@ -1,0 +1,17 @@
+{
+    "id": 11,
+    "name": "WEDER",
+    "description": "In de bloementeelt zijn er verschillende bloemsoorten: eenjarigen, tweejarigen en meerjarigen. Eenjarige, bijvoorbeeld Korenbloem, Papaver, Leeuwenbek, zijn bloemen die zo snel mogelijk tot zaad uitgroeien. De zaden rijpen af in hetzelfde jaar als de bloemen worden gezaaid. De tweejarige bloemsoorten, zoals Judaspenning, Vingerhoedskruid, doen er twee jaar over om tot zaad af te rijpen. In het eerste jaar zetten deze bloemsoorten in op ontwikkeling van het wortelgestel. In jaar 2 komen ze tot bloei en rijpen ze af tot zaad.\r\n\r\nWeder staat voor wederkerigheid.\r\nDe wederzijdse relatie tussen aarde en mens staat centraal. Vanuit gelijkwaardigheid dragen we zorg voor plant, bodem, dier en mens.\r\nGeven en ontvangen is het vertrekpunt om als boerin en kunstenaar samen met de natuur te cre\u00c3\u00abren, \u00c3\u00a9n als boerin en community een duurzaam verhaal te schrijven.\r\nBij weder zijn kunst en landbouw verbonden. Ze voeden, verbeelden, ondersteunen, ontroeren, helen en verbazen elkaar. De veldwerker zaait bloemen, de kunstwerker teelt kunst, de deelnemer oogst schoonheid.\r\nElk wezen op deze plek schrijft zijn eigen tempo, samen met de seizoenen glijden we verder in de tijd.      \r\n\r\nIn de bloementeelt zijn er verschillende bloemsoorten: eenjarigen, tweejarigen en meerjarigen. Eenjarige, bijvoorbeeld Korenbloem, Papaver, Leeuwenbek, zijn bloemen die zo snel mogelijk tot zaad uitgroeien. De zaden rijpen af in hetzelfde jaar als de bloemen worden gezaaid. De tweejarige bloemsoorten, zoals Judaspenning, Vingerhoedskruid, doen er twee jaar over om tot zaad af te rijpen. In het eerste jaar zetten deze bloemsoorten in op ontwikkeling van het wortelgestel. In jaar 2 komen ze tot bloei en rijpen ze af tot zaad.",
+    "order": "IMAGE, DESCRIPTION, EMPTY_SPACE",
+    "categories": [
+        "bio-dynamisch",
+        "schoonheid",
+        "gemeenschap"
+    ],
+    "x_position": 79.0,
+    "y_position": 19.0,
+    "images": [
+        "actors\\actor_11\\1.png"
+    ],
+    "icon": "actors\\actor_11\\4.png"
+}

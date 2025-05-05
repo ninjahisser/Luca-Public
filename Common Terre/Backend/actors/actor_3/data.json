@@ -1,0 +1,16 @@
+{
+    "id": 3,
+    "name": "RODE BEUKEN",
+    "description": " ",
+    "order": "IMAGE, DESCRIPTION, EMPTY_SPACE",
+    "categories": [
+        "verbinden",
+        "schoonheid",
+        "grondgenoten"
+    ],
+    "x_position": 50.0,
+    "y_position": 94.0,
+    "images": [
+        "actors\\actor_3\\Beuken_ Screenshot 2025-03-17 at 15.43.20.png"
+    ]
+}

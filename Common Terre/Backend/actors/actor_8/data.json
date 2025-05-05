@@ -1,0 +1,17 @@
+{
+    "id": 8,
+    "name": "VERFPLANTENTUIN",
+    "description": "October 2024, \r\nKings candle/ koningskaars.\r\n\r\nI began to understand how the mullein or kings\u2019 candle in Dutch koningskaars got its beautiful name. I had planted two pairs close together in the last garden bed in the autumn of 2023. And they thrived on the sandy soil of the grass field. The alternation of extensive sun and heavy rain this summer allowed the candles to grow into two giants. They had grown big downy leaves that everyone photographed when they walked through the garden. They were the queens of the field. \r\n\r\nThe dye garden is a communal garden where collectively different wild dye-plants are planted and taken care of. The garden engages with seasonal rhythms, in-permanence in design-practices, stewardship and building relations with raw artists materials, and learning by doing. Collective garden days, walks and workshops \r\nare held around the plants and their active agencies and properties with students, researchers from LUCA, \r\nand the neighborhood.\r\n\r\ncontact\r\nannelotte.lammertse@luca-arts.be",
+    "order": "IMAGE, DESCRIPTION, EMPTY_SPACE",
+    "categories": [
+        "biodiversiteit",
+        "precariteit",
+        "diversiteit"
+    ],
+    "x_position": 50.0,
+    "y_position": 50.0,
+    "images": [
+        "actors\\actor_8\\verfplantentuin IMG_1237-2.png",
+        "actors\\actor_8\\verfplantentuin IMG_5631.png"
+    ]
+}

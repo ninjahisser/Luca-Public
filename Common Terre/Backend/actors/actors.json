@@ -1,10 +1,50 @@
 [
     {
         "id": 1,
-        "name": "test actor 2"
+        "name": "BRUGBOERBART"
     },
     {
         "id": 2,
-        "name": "zesty"
+        "name": "ARCHITECTUUR"
+    },
+    {
+        "id": 3,
+        "name": "RODE BEUKEN"
+    },
+    {
+        "id": 4,
+        "name": "FLEUR COULEUR"
+    },
+    {
+        "id": 5,
+        "name": "HOUTOVEN"
+    },
+    {
+        "id": 6,
+        "name": "SITUATED PLURIVERSAL"
+    },
+    {
+        "id": 7,
+        "name": "VARKENTJES"
+    },
+    {
+        "id": 8,
+        "name": "VERFPLANTENTUIN"
+    },
+    {
+        "id": 9,
+        "name": "VZW AARDIG AARDS"
+    },
+    {
+        "id": 10,
+        "name": "WATER"
+    },
+    {
+        "id": 11,
+        "name": "WEDER"
+    },
+    {
+        "id": 12,
+        "name": "WILGENLOKAAL"
     }
 ]

@@ -1,13 +1,17 @@
 {
-    "name": "zesty",
     "id": 2,
-    "description": "haha",
-    "order": "EMPTY_SPACE, DESCRIPTION, IMAGE",
+    "name": "ARCHITECTUUR",
+    "description": "Het Kasteel\r\nLuca schoolgebouw\r\n",
+    "order": "DESCRIPTION, EMPTY_SPACE, IMAGE",
     "categories": [
-        "de wroeters",
+        "gelijkwaardigheid",
         "zorg",
-        "vrijwilligerswerking"
+        "gelijkwaardigheid"
     ],
-    "x_position": 38.0,
-    "y_position": 19.0
+    "x_position": 29.0,
+    "y_position": 80.0,
+    "images": [
+        "actors\\actor_2\\1.png"
+    ],
+    "icon": "actors\\actor_2\\2.png"
 }

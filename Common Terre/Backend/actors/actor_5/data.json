@@ -1,0 +1,17 @@
+{
+    "id": 5,
+    "name": "HOUTOVEN",
+    "description": "Via het project Stem en Vork bouwden Annelies Bousard en X (naam aanvullen), studenten van Glas en Keramiek van LUCA, een lemen pizza-oven en enkele buren maakten er vervolgens een overkapping bij. Alles werd gebouwd door gebruik te maken van lokaal omgewaaide bomen die tot planken werden verzaagd. De plek wordt door allerlei mensen gebruikt, om samen te komen, eten te bereiden en te  nuttigen. Kortom een hang-out voor alle passanten van \r\nhet park.",
+    "order": "IMAGE, DESCRIPTION, EMPTY_SPACE",
+    "categories": [
+        "gelijkwaardigheid",
+        "activisme",
+        "solidariteit"
+    ],
+    "x_position": 74.0,
+    "y_position": 59.0,
+    "images": [
+        "actors\\actor_5\\1.png"
+    ],
+    "icon": "actors\\actor_5\\6.png"
+}

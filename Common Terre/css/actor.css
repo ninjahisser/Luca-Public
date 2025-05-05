@@ -1,0 +1,126 @@
+:root {
+    --primary-color: #E63C6F;
+    --secondary-color: #EDE2D6;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Georgia, serif;
+    background-color: var(--secondary-color);
+    color: black;
+  }
+  
+  /* Header with top border and hamburger menu */
+  .top-bar {
+    height: 60px;
+    border-bottom: 2px solid var(--primary-color);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px;
+    background-color: var(--secondary-color);
+  }
+#actor-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.home-button {
+    display: inline-block;
+    cursor: pointer;
+    padding: 10px;
+    text-decoration: none;
+  }
+  
+  .home-button div {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-color);
+    margin: 4px 0;
+    transition: 0.3s;
+  }
+  
+  .actor-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.actor-item {
+  flex: 1 1 calc(33.333% - 40px); /* 3 per row with gap compensation */
+
+  padding: 1rem;
+
+  box-sizing: border-box;
+  min-width: 250px;
+  max-width: 360px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+  .hamburger-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .hamburger-menu div {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-color);
+  }
+  
+  /* Container and layout */
+  .container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+  
+  #actor-name {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+  }
+  
+  #actor-details {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  
+  /* Example image styling if needed */
+  #actor-details img {
+    width: 400px;
+  }
+  
+  /* Example info box */
+  .info-box {
+    border: 1px solid var(--primary-color);
+    padding: 20px;
+    max-width: 500px;
+  }
+  
+  .contact {
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  
+  .contact span {
+    display: block;
+    font-weight: normal;
+  }
+  

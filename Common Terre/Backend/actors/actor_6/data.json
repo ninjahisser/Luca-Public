@@ -1,0 +1,17 @@
+{
+    "id": 6,
+    "name": "SITUATED PLURIVERSAL",
+    "description": "The Situated Pluriversal LAB engages with multi-species co-creation and situated creative practices to address socio ecological problems contributing to the creation of the \u2018Pluriverse\u2019, an inclusive world where human and non-human species work together in a regenerative way. \r\nThe Lab is part of the EU project \u2018Situated Creative Practices for the Pluriverse\u2019 hosted by the LUCA research cluster Fluid Futures.  \r\nFluid Futures engages with (PhD) research aimed at reformulating monolithically constructed histories into pluriform narratives, creating new possibilities of interdependency, reciprocity, belonging and \r\nco-creation/co-existence. \r\n\r\nContact\r\ncontact: anja.veirman@luca-arts.be\r\n\r\nMeer info\r\nhttps://fluidfutures.site/ter-beken-lab\r\n",
+    "order": "IMAGE, EMPTY_SPACE, DESCRIPTION",
+    "categories": [
+        "diversiteit",
+        "de wroeters",
+        "organisch"
+    ],
+    "x_position": 26.0,
+    "y_position": 59.0,
+    "images": [
+        "actors\\actor_6\\1.png"
+    ],
+    "icon": "actors\\actor_6\\7.png"
+}

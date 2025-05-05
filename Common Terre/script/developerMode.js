@@ -4,79 +4,49 @@ import { getLoggedInUser } from './auth.js';
 export let isDeveloperMode = false;
 
 export async function initializeDeveloperMode() {
-    const savedDevMode = localStorage.getItem('isDeveloperMode');
-    if (savedDevMode === 'true') {
-        enableDeveloperMode();
+    const loggedInUser = getLoggedInUser();
+    if (!loggedInUser) {
+        alert('You must be logged in to access Developer Mode.');
+        return;
     }
 
-    // Fetch and update the lock status on page load
-    await updateLockStatus();
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/developers/is-developer`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-User-Email': loggedInUser.email, // Pass the user's email
+            },
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to check developer status. HTTP status: ${response.status}`);
+        }
 
-    document.getElementById('dev-mode-btn').addEventListener('click', toggleDeveloperMode);
-    document.getElementById('lock-calendar-btn').addEventListener('click', toggleCalendarLock);
+        const data = await response.json();
+        if (data.is_developer) {
+            enableDeveloperMode();
+        } else {
+            disableDeveloperMode();
+        }
+    } catch (error) {
+            console.error('Error checking developer status:', error);
+        alert('Failed to check developer status.');
+    }
 }
 
 export function enableDeveloperMode() {
     isDeveloperMode = true;
-    localStorage.setItem('isDeveloperMode', 'true');
-    document.body.classList.add('developer-mode');
-    document.getElementById('dev-mode-btn').textContent = 'Disable Developer Mode';
-    document.getElementById('lock-calendar-btn').style.display = 'block';
+    //localStorage.setItem('isDeveloperMode', 'true');
+    //document.body.classList.add('developer-mode');
+    //document.getElementById('dev-mode-btn').textContent = 'Disable Developer Mode';
+    //document.getElementById('lock-calendar-btn').style.display = 'block';
 }
 
 export function disableDeveloperMode() {
     isDeveloperMode = false;
-    localStorage.removeItem('isDeveloperMode');
-    document.body.classList.remove('developer-mode');
-    document.getElementById('dev-mode-btn').textContent = 'Enable Developer Mode';
-    document.getElementById('lock-calendar-btn').style.display = 'none';
-}
-
-async function toggleDeveloperMode() {
-    const loggedInUser = getLoggedInUser();
-    if (!loggedInUser) {
-        alert('You must be logged in to toggle Developer Mode.');
-        return;
-    }
-
-    if (isDeveloperMode) {
-        disableDeveloperMode();
-    } else {
-        try {
-            await fetchAPI('developers', 'POST', null, { 'X-User-Email': loggedInUser });
-            enableDeveloperMode();
-        } catch (error) {
-            console.error('Error enabling Developer Mode:', error);
-            alert('Failed to enable Developer Mode.');
-        }
-    }
-}
-
-async function toggleCalendarLock() {
-    if (!isDeveloperMode) {
-        alert('You must be in Developer Mode to lock or unlock the calendar.');
-        return;
-    }
-
-    try {
-        const lockStatus = await fetchAPI('calendar/get_lock', 'GET');
-        const newLockState = !lockStatus.locked;
-        const result = await fetchAPI('calendar/lock', 'POST', { lock: newLockState }, { 'X-User-Email': getLoggedInUser() });
-        alert(result.message);
-        document.getElementById('lock-calendar-btn').textContent = newLockState ? 'Unlock Calendar' : 'Lock Calendar';
-    } catch (error) {
-        console.error('Error toggling calendar lock:', error);
-        alert('Failed to toggle calendar lock.');
-    }
-}
-
-async function updateLockStatus() {
-    try {
-        const lockStatus = await fetchAPI('calendar/get_lock', 'GET');
-        const lockButton = document.getElementById('lock-calendar-btn');
-        lockButton.textContent = lockStatus.locked ? 'Unlock Calendar' : 'Lock Calendar';
-    } catch (error) {
-        console.error('Error fetching lock status:', error);
-        alert('Failed to fetch calendar lock status.');
-    }
+    //localStorage.removeItem('isDeveloperMode');
+    //document.body.classList.remove('developer-mode');
+    //document.getElementById('dev-mode-btn').textContent = 'Enable Developer Mode';
+    //document.getElementById('lock-calendar-btn').style.display = 'none';
 }

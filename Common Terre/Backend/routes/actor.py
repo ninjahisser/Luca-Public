@@ -6,6 +6,13 @@ import json
 
 router = APIRouter()
 
+from fastapi.responses import JSONResponse
+
+def json_response(content):
+    response = JSONResponse(content=content)
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
 # Ensure the actors folder exists
 ACTORS_FOLDER = "actors"
 os.makedirs(ACTORS_FOLDER, exist_ok=True)
@@ -26,19 +33,30 @@ class Actor(BaseModel):
     order: str = "IMAGE, DESCRIPTION, EMPTY_SPACE"
     categories: List[str]
     audio: str = None  # Path to the uploaded audio file
+    images: List[str] = []  # List of image paths
+    icon: str = None  # Path to the actor's icon image
     x_position: float = 50.0  # Default to 50% (center)
     y_position: float = 50.0  # Default to 50% (center)
 
+from fastapi.responses import JSONResponse
+
 @router.get("/")
 def get_actors():
+    # Reload actors from the main actors.json file to ensure the latest data
+    if os.path.exists(ACTORS_FILE):
+        with open(ACTORS_FILE, "r") as f:
+            global actors
+            actors = json.load(f)
+
     for actor in actors:
         if actor.get("audio"):
-            # Normalize the audio path to use forward slashes
             actor["audio"] = actor["audio"].replace("\\", "/")
-            # Ensure the path is prefixed with the correct static URL
             if not actor["audio"].startswith("http://127.0.0.1:8000/static/"):
                 actor["audio"] = f"http://127.0.0.1:8000/static/{actor['audio']}"
-    return actors
+
+    response = JSONResponse(content=actors)
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 def save_actors_to_file():
     # Save a summary of all actors to the main actors.json file
@@ -73,7 +91,9 @@ async def update_actor(
     categories: str = Form(...),
     x_position: float = Form(...),
     y_position: float = Form(...),
-    audio: UploadFile = None
+    audio: UploadFile = None,
+    images: List[UploadFile] = None,
+    icon: UploadFile = None
 ):
     for actor in actors:
         if actor["id"] == actor_id:
@@ -94,6 +114,23 @@ async def update_actor(
                 with open(audio_path, "wb") as f:
                     f.write(await audio.read())
                 actor["audio"] = audio_path
+
+            # Save image files in the actor's folder
+            if images:
+                image_paths = []
+                for image in images:
+                    image_path = os.path.join(actor_folder, image.filename)
+                    with open(image_path, "wb") as f:
+                        f.write(await image.read())
+                    image_paths.append(image_path)
+                actor["images"] = image_paths
+
+            # Save icon file in the actor's folder
+            if icon:
+                icon_path = os.path.join(actor_folder, icon.filename)
+                with open(icon_path, "wb") as f:
+                    f.write(await icon.read())
+                actor["icon"] = icon_path
 
             # Save updated actor data to the actor's folder
             actor_file = os.path.join(actor_folder, "data.json")
@@ -142,11 +179,12 @@ def delete_actor(actor_id: int):
 
 @router.get("/names")
 def get_actor_names():
-    """
-    Return only the id and name of each actor.
-    This endpoint is specifically for lightweight requests.
-    """
-    return [{"id": actor["id"], "name": actor["name"]} for actor in actors]
+    if os.path.exists(ACTORS_FILE):
+        with open(ACTORS_FILE, "r") as f:
+            global actors
+            actors = json.load(f)
+
+    return json_response([{"id": actor["id"], "name": actor["name"]} for actor in actors])
 
 @router.get("/{actor_id}")
 def get_actor(actor_id: int):

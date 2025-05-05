@@ -46,38 +46,56 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         sections.forEach(section => {
             console.log('Rendering section:', section);
+        
             const sectionDiv = document.createElement('div');
-            sectionDiv.classList.add('actor-section');
-
+            sectionDiv.classList.add('actor-item'); // Apply grid layout styling
+        
             if (section === 'IMAGE') {
-                sectionDiv.textContent = 'Image placeholder (to be implemented)';
+                if (actor.images && Array.isArray(actor.images)) {
+                    const imagesHtml = actor.images.map(imgPath => {
+                        const fixedPath = imgPath.replace(/\\/g, '/'); // Replace backslashes
+                        const fullUrl = `http://127.0.0.1:8000/static/${fixedPath}`;
+                        return `<img src="${fullUrl}" alt="${actor.name}" class="actor-image">`;
+                    }).join('');
+                    sectionDiv.innerHTML = `<div class="actor-images">${imagesHtml}</div>`;
+                } else {
+                }
             } else if (section === 'DESCRIPTION') {
-                sectionDiv.textContent = actor.description || 'No description available.';
+                sectionDiv.innerHTML = `<p>${actor.description || 'No description available.'}</p>`;
             } else if (section === 'EMPTY_SPACE') {
-                sectionDiv.textContent = 'Empty space';
+                sectionDiv.innerHTML = `<p>&nbsp;</p>`; // Optional: blank space
             }
-
+        
             detailsContainer.appendChild(sectionDiv);
             console.log('Section added to details container:', section);
         });
 
         // Add audio controls if audio exists and is valid
-        if (actor.audio && actor.audio.trim() !== '') {
-            console.log('Actor has a valid audio file:', actor.audio);
+// Add audio controls if audio exists and is valid
+if (actor.audio && actor.audio.trim() !== '') {
+    console.log('Actor has a valid audio file:', actor.audio);
 
-            const audioContainer = document.createElement('div');
-            audioContainer.classList.add('audio-container');
+    const audioContainer = document.createElement('div');
+    audioContainer.classList.add('audio-container');
 
-            const audio = document.createElement('audio');
-            audio.src = actor.audio; // Use the URL directly
-            audio.controls = true;
+    const audio = document.createElement('audio');
 
-            audioContainer.appendChild(audio);
-            detailsContainer.appendChild(audioContainer);
-            console.log('Audio controls added to details container.');
-        } else {
-            console.log(`No valid audio file for actor: ${actor.name}`);
-        }
+    // Ensure the audio URL has the correct base URL
+    if (!actor.audio.startsWith('http://') && !actor.audio.startsWith('https://')) {
+        const baseUrl = 'http://127.0.0.1:8000/static'; // Correct base URL for the FastAPI server
+        audio.src = `${baseUrl}/${actor.audio.replace(/\\/g, '/')}`; // Replace backslashes with forward slashes
+    } else {
+        audio.src = actor.audio; // Use the URL directly if it's already complete
+    }
+
+    audio.controls = true;
+
+    audioContainer.appendChild(audio);
+    detailsContainer.appendChild(audioContainer);
+    console.log('Audio controls added to details container.');
+} else {
+    console.log(`No valid audio file for actor: ${actor.name}`);
+}
     } catch (error) {
         console.error('Error loading actor details:', error);
         alert('Failed to load actor details.');

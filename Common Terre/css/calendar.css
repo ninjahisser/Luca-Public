@@ -64,12 +64,14 @@
     text-wrap: nowrap;
 }
 
-/* Day Labels (Rounded Buttons) */
+/* Ensure consistent height for day labels */
 .day-labels {
     display: grid;
     grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days of the week */
     gap: 0.5rem;
+    margin-bottom: 0.5rem;
 }
+
 
 .day-label {
     font-size: 1.2rem;
@@ -90,65 +92,52 @@
     margin-top: 1rem;
 }
 
+/* Ensure consistent height for calendar cells */
 .calendar-cell {
     display: flex;
     flex-direction: column;
     border: 1px solid var(--primary-color);
     color: var(--primary-color);
-    font-size: 2rem;
+    font-size: 1.2rem;
     font-weight: bold;
-    padding: .2rem;
-    height: 100px; /* Ensure consistent height for all cells */
-
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
     padding: 0.5rem;
-    min-height: 100px; /* Minimum height for consistency */
-    height: auto; /* Allow height to grow dynamically */
-    overflow: visible; /* Allow content to overflow if needed */
+    height: 120px; /* Fixed height for all cells */
+    box-sizing: border-box; /* Include padding in height */
+    overflow: hidden; /* Prevent content overflow */
 }
 
+/* Hover effect for calendar cells */
 .calendar-cell:hover {
     background-color: var(--primary-color);
     color: var(--secondary-color);
     cursor: pointer;
 }
 
-/* Hover effect for calendar cells */
+/* Hover effect for events */
 .calendar-cell:hover .calendar-event {
     background-color: var(--secondary-color);
     color: var(--primary-color);
 }
 
+/* Empty cells */
 .calendar-cell.empty {
     border: none;
     background-color: transparent;
     cursor: default;
-    border: 1px solid var(--primary-color);
-
 }
 
 .calendar-event {
     background-color: var(--primary-color);
     color: var(--secondary-color);
     padding: 0.2rem 0.5rem;
-    padding-top: 0.5rem;
     border-radius: 5px;
     font-size: 0.8rem;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    height: 20px;
-    display: block;
+    text-align: left; /* Align text to the left */
+    white-space: normal; /* Allow text to wrap */
+    overflow: visible; /* Allow content to expand */
     margin-bottom: 0.3rem; /* Add spacing between events */
-    padding: 0.2rem 0.5rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 80%;
+    max-width: 100%; /* Ensure the event does not exceed the cell width */
+    word-wrap: break-word; /* Break long words if necessary */
 }
 
 /* Geplande activiteiten (right content) */
@@ -210,4 +199,30 @@
 .calendar_cell_top{
     display: flex;
     align-items: center;
+}
+
+/* Add spacing between events */
+.calendar-cell .calendar-event + .calendar-event {
+    margin-top: 0.3rem;
+}
+
+/* Scrollable container for events */
+.events-container {
+    max-height: 80px; /* Adjust based on the height of the calendar cell */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding-right: 5px; /* Add padding for scrollbar space */
+}
+
+/* Style the scrollbar for better appearance */
+.events-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.events-container::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 3px;
+}
+
+.events-container::-webkit-scrollbar-track {
+    background-color: var(--secondary-color);
 }

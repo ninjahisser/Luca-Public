@@ -1,0 +1,17 @@
+{
+    "id": 10,
+    "name": "WATER",
+    "description": ".",
+    "order": "IMAGE, DESCRIPTION, EMPTY_SPACE",
+    "categories": [
+        "gelijkwaardigheid",
+        "activisme",
+        "precariteit"
+    ],
+    "x_position": 79.0,
+    "y_position": 62.0,
+    "images": [
+        "actors\\actor_10\\1.png"
+    ],
+    "icon": "actors\\actor_10\\4.png"
+}
