@@ -8,14 +8,6 @@
         "description": "partyyyy"
     },
     {
-        "id": 2,
-        "poster_name": "Seth Van den Bossche",
-        "date": "2025-05-02",
-        "time": "01:00",
-        "title": "voorbeeld",
-        "description": "test"
-    },
-    {
         "id": 3,
         "poster_name": "Seth Van den Bossche",
         "date": "2025-05-03",
@@ -38,5 +30,13 @@
         "time": "10:00",
         "title": "dansen en zingen",
         "description": "waar zijn die handjes"
+    },
+    {
+        "id": 5,
+        "poster_name": "Seth Van den Bossche",
+        "date": "2025-05-09",
+        "time": "12:00",
+        "title": "trakteer",
+        "description": "vanessa"
     }
 ]

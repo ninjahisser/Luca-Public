@@ -135,7 +135,6 @@ async function updateActor(actor) {
         await loadActorList(); // Reload the actor list
     } catch (error) {
         console.error('Error updating actor:', error);
-        alert('Failed to update actor.');
     }
 }
 
@@ -357,7 +356,6 @@ document.getElementById('edit-actor-form').addEventListener('submit', async (eve
         if (error.response) {
             console.error('Error details:', await error.response.text());
         }
-        alert('Failed to update actor.');
     }
 });
 
@@ -637,7 +635,6 @@ document.getElementById('edit-actor-form').addEventListener('submit', async (eve
         loadActors();
     } catch (error) {
         console.error('Error updating actor:', error);
-        alert('Failed to update actor.');
     }
 });
 

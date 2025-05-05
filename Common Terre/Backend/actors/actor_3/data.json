@@ -1,16 +1,18 @@
 {
     "id": 3,
-    "name": "RODE BEUKEN",
-    "description": " ",
-    "order": "IMAGE, DESCRIPTION, EMPTY_SPACE",
+    "name": "Rode Beuken",
+    "description": "Rode beuken in Common Terre vormen een statige rij bomen met donkerrood tot paars blad, die in elk seizoen een bijzondere sfeer geven aan het landschap. Ze bieden schaduw, structuur en een karakteristiek silhouet aan het terrein.",
+    "order": "DESCRIPTION, IMAGE, EMPTY_SPACE",
     "categories": [
         "verbinden",
         "schoonheid",
         "grondgenoten"
     ],
-    "x_position": 50.0,
+    "x_position": 19.0,
     "y_position": 94.0,
+    "audio": "actors\\actor_3\\audio.mp3",
     "images": [
         "actors\\actor_3\\Beuken_ Screenshot 2025-03-17 at 15.43.20.png"
-    ]
+    ],
+    "icon": "actors\\actor_3\\4.png"
 }

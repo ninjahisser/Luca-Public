@@ -1,50 +1,50 @@
 [
     {
         "id": 1,
-        "name": "BRUGBOERBART"
+        "name": "Brugboerbart"
     },
     {
         "id": 2,
-        "name": "ARCHITECTUUR"
+        "name": "Architectuur"
     },
     {
         "id": 3,
-        "name": "RODE BEUKEN"
+        "name": "Rode Beuken"
     },
     {
         "id": 4,
-        "name": "FLEUR COULEUR"
+        "name": "Fleur Couleur"
     },
     {
         "id": 5,
-        "name": "HOUTOVEN"
+        "name": "Houtoven"
     },
     {
         "id": 6,
-        "name": "SITUATED PLURIVERSAL"
+        "name": "Situated Pluriversal"
     },
     {
         "id": 7,
-        "name": "VARKENTJES"
+        "name": "Varkentjes"
     },
     {
         "id": 8,
-        "name": "VERFPLANTENTUIN"
+        "name": "Verfplantentuin"
     },
     {
         "id": 9,
-        "name": "VZW AARDIG AARDS"
+        "name": "VZW Aardig Aards"
     },
     {
         "id": 10,
-        "name": "WATER"
+        "name": "Water"
     },
     {
         "id": 11,
-        "name": "WEDER"
+        "name": "Weder"
     },
     {
         "id": 12,
-        "name": "WILGENLOKAAL"
+        "name": "Wilgenlokaal"
     }
 ]

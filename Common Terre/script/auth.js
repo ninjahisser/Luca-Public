@@ -30,9 +30,11 @@ function handleCredentialResponse(response) {
 
         // Save the user's email and name in localStorage
         localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+        localStorage.setItem('loggedInUserName', data.name); // <-- Add this
 
         // Update the UI to reflect the logged-in state
         updateAuthUI();
+        location.reload(); // Reload the page to reflect the login
     } catch (error) {
         console.error('Error decoding JWT:', error);
         alert('Failed to log in. Please try again.');

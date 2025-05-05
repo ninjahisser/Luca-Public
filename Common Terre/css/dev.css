@@ -126,8 +126,9 @@
     position: absolute;
     top: 0;
     left: 280px !important;
-    width: 100%;
+    width: 400px;
     height: 100%;
+    transform: translateX(-120px);
   }
   
   footer {

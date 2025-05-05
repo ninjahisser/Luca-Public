@@ -6,7 +6,6 @@ export let isDeveloperMode = false;
 export async function initializeDeveloperMode() {
     const loggedInUser = getLoggedInUser();
     if (!loggedInUser) {
-        alert('You must be logged in to access Developer Mode.');
         return;
     }
 

@@ -19,7 +19,7 @@ main {
 }
 
 body {
-  font-family: 'helvetica', sans-serif;
+  font-family: "Times New Roman", Times, serif;
   background: #EEE3D6;
   color: #41464f;
   display: flex;
@@ -323,4 +323,112 @@ header {
   right: 20px;
   display: inline-block;
   width: 150px;
+}
+
+/* ------------------ MOBILE VERSION ------------------ */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+  }
+
+  header {
+    font-size: 2em;
+    letter-spacing: -2px;
+    margin: 1rem;
+    text-align: center;
+  }
+
+  .homesamen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1rem;
+    gap: 1.5rem;
+  }
+
+  .plattegrond {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .plattegrond img {
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .content-right {
+    width: 100%;
+    margin: 0;
+    padding: 0 1rem;
+    display: flex; /* ✅ fixed */
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .kalender,
+  .info {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .kalender h2:first-child {
+    font-size: 2em;
+  }
+
+  .kalender h2:nth-child(2) {
+    font-size: 1.5em;
+  }
+
+  .kalender p strong {
+    font-size: 1.1rem;
+  }
+
+  .info {
+    padding-bottom: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .actor-list {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .actor-list h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .actor-list a {
+    font-size: 1.1rem;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .footer-left h1 {
+    font-size: 1.5rem;
+  }
+
+  .footer-left p {
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
+  }
+
+  .footer-right {
+    margin-top: 1rem;
+    gap: 0.5rem;
+  }
+
+  .footer-icon {
+    height: 24px;
+  }
 }

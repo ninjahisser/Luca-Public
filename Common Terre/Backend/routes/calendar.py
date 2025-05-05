@@ -4,8 +4,9 @@ from utils.calendar_utils import get_calendar_items, add_calendar_item, delete_c
 
 router = APIRouter()
 
-@router.post("/")
+@router.post("/post")
 def add_item(item: CalendarItem):
+    print("adding calendar item");
     # Check if the calendar is locked
     if get_lock_state():
         raise HTTPException(status_code=403, detail="De kalender is vergrendeld!.")

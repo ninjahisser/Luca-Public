@@ -425,7 +425,7 @@ if(document.getElementById('submit-event-btn')){
         });
     
         try {
-            const response = await fetch('http://127.0.0.1:8000/calendar', {
+            const response = await fetch('http://127.0.0.1:8000/calendar/post', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -438,7 +438,9 @@ if(document.getElementById('submit-event-btn')){
                     description: eventDescription,
                 }),
             });
-    
+
+            console.log("Raw response object:", response);
+
             if (response.ok) {
                 const result = await response.json();
                 alert('Evenement succesvol geplaatst: ' + JSON.stringify(result));
@@ -476,3 +478,10 @@ async function setHoplrLink() {
         console.error('Error fetching Hoplr link:', error);
     }
 }
+
+document.getElementById('close-popup')?.addEventListener('click', () => {
+    const inputPanel = document.getElementById('input-panel');
+    if (inputPanel) {
+        inputPanel.style.display = 'none';
+    }
+});

@@ -8,10 +8,11 @@
         "precariteit",
         "diversiteit"
     ],
-    "x_position": 50.0,
-    "y_position": 50.0,
+    "x_position": 53.0,
+    "y_position": 41.0,
     "images": [
         "actors\\actor_8\\verfplantentuin IMG_1237-2.png",
         "actors\\actor_8\\verfplantentuin IMG_5631.png"
-    ]
+    ],
+    "icon": "actors\\actor_8\\1.png"
 }
