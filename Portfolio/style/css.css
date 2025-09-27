@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
+
+@font-face {
+  font-family:"Gallient";
+  src: url("fonts/Gallient.ttf") format("truetype");
+}
+
+:root{
+    --main-color: rgb(30, 0, 255);
+    --important-font: 'Gallient';
+    --default-font: 'Geist Mono';
+}
+
+body{
+    font-family: var(--default-font);
+    background-color: white;
+    color: var(--main-color);
+}
+
+#name {
+    margin: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: calc(100% - 20px); /* Account for left/right margin */
+    height: auto;
+    margin: 0 10px 0 10px;
+    box-sizing: border-box;
+    padding: 1em 0;
+    z-index: 1000;
+}
+
+h1{
+    font-family: var(--important-font);
+    font-weight: 400;
+    font-size: calc(100vw/9.5);
+    padding: 0px;
+    margin: 0px;
+    transform: translateY(50px);
+    pointer-events:none;
+}
+h2{
+    font-size: 2em;
+    padding: 0px;
+    margin: 0px;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+a{
+    color: var(--main-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+a:hover{
+    text-decoration: underline;
+}
+
+.bold{
+    font-weight: 900;
+}
+
+.def_button{
+    font-size: 1.5em;
+    padding: 5px;
+    text-transform: uppercase;
+    border: 2px solid var(--main-color);
+        box-sizing: border-box;
+}
+
+.def_button:hover{
+    background: var(--main-color);
+    color: white;
+}
+
+#name_links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+#name_links h2 {
+    flex: 1;
+    text-align: left;
+}
+
+#name_links > div {
+    display: flex;
+    gap: 1em;
+    justify-content: flex-end;
+}
+
+#assignment_list {
+    position: fixed;
+    top: 20px;
+    left: 5px;
+    padding: 1em 1.5em;
+    max-width: 350px;
+}
+
+#assignment_list li{
+    margin-bottom: 30px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+#assignment_list li:hover{
+    background-color: var(--main-color);
+    color: white;
+}
+
+#assignment_list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.assignment-title {
+    font-weight: 700;
+    font-size: 1.2;
+    display: block;
+    text-transform: uppercase;
+}
+
+.assignment-category {
+    font-size: .9em;
+    margin-bottom: 0.2em;
+    display: block;
+}
+
+.assignment-desc {
+    font-size: .8em;
+    margin-top: 0.2em;
+}
