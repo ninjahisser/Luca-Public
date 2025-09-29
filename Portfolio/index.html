@@ -1,89 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seth Van den Bossche Portfolio</title>
     <link rel="stylesheet" href="style/css.css">
 </head>
+
 <body>
-    <div id="assignment_list">
-        <ul>
-            <p class="favorites">Top picks:</p>
-            <li class="favorites">
-                <span class="assignment-category">3D Animatie - Storytelling</span>
-                <span class="assignment-title">S.I.R.E.N</span>
-                <div class="assignment-desc">Een title sequence voor een zelf bedachte space mysterie serie gebasseerd op griekse mythologie</div>
-            </li>
-            <li class="favorites">
-                <span class="assignment-category">Webdesign - Storytelling</span>
-                <span class="assignment-title">The Hyper Foundation</span>
-                <div class="assignment-desc">Een digitale tentoonstelling via een interpretatie van een text-adventure game.</div>
-            </li>
-            <li class="favorites">
-                <span class="assignment-category">Animatie - Storytelling</span>
-                <span class="assignment-title">The Fool</span>
-                <div class="assignment-desc">Een animatiefilm over tarotkaarten.</div>
-            </li>
-            <li class="favorites">
-                <span class="assignment-category">Webdesign</span>
-                <span class="assignment-title">De Morgen Rush</span>
-                <div class="assignment-desc">De winnaar van een rush opdracht door De Morgen krant!</div>
-            </li>
-            <li class="favorites">
-                <span class="assignment-category">Film - Storytelling</span>
-                <span class="assignment-title">Parallax</span>
-                <div class="assignment-desc">Een kortfilm over mentaal vast zitten in een loop van frustratie.</div>
-            </li>
+    <div id="main_content">
+        <div id="assignment_list">
+            <ul>
+                <p class="favorites">Top picks:</p>
+                <li class="favorites" data-preview="../opdrachten/SIREN/SirenTitleSequence.mp4">
+                    <span class="assignment-category">3D Animatie - Storytelling</span>
+                    <span class="assignment-title">S.I.R.E.N</span>
+                    <div class="assignment-desc">Een title sequence voor een zelf bedachte space mysterie serie
+                        gebasseerd op griekse mythologie</div>
+                </li>
+                <li class="favorites" data-preview="../opdrachten\GameBarrier\IntoxicatedDriverTrailer.mp4">
+                    <span class="assignment-category">Game Development - Team Management</span>
+                    <span class="assignment-title">Game Barrier</span>
+                    <div class="assignment-desc">Een game development team opgericht door mijzelf met leden over heel de wereld.</div>
+                </li>
+                <li class="favorites" data-preview="../opdrachten\TheHyperFoundation\HyperFoundationShowcase.mp4">
+                    <span class="assignment-category">Webdesign - Storytelling</span>
+                    <span class="assignment-title">The Hyper Foundation</span>
+                    <div class="assignment-desc">Een digitale tentoonstelling via een interpretatie van een
+                        text-adventure game.</div>
+                </li>
+                <li class="favorites" data-preview="../opdrachten\TheFool\TheFool.mp4">
+                    <span class="assignment-category">Frame-By-Frame Animatie - Storytelling</span>
+                    <span class="assignment-title">The Fool</span>
+                    <div class="assignment-desc">Een animatiefilm over het leven aan het lot over laten, via tarotkaarten.</div>
+                </li>
+                <li class="favorites" data-preview="../opdrachten\DeMorgenRush\Artikel.png">
+                    <span class="assignment-category">Webdesign</span>
+                    <span class="assignment-title">De Morgen Rush</span>
+                    <div class="assignment-desc">De winnaar van een rush opdracht door De Morgen krant!</div>
+                </li>
+                <li class="favorites" data-preview="../opdrachten\Parallax\Parallax.mp4">
+                    <span class="assignment-category">Film - Storytelling</span>
+                    <span class="assignment-title">Parallax</span>
+                    <div class="assignment-desc">Een kortfilm over mentaal vast zitten in een loop van frustratie.</div>
+                </li>
 
-            <p>My work:</p>
-            <li>
-                <span class="assignment-category">Branding</span>
-                <span class="assignment-title">Siplicity</span>
-                <div class="assignment-desc">De ontwerpen voor blikjes lemonade.</div>
-            </li>
+                <p>My work:</p>
+                <li data-preview="../opdrachten/Siplicity/Siplicity.jpg">
+                    <span class="assignment-category">Branding</span>
+                    <span class="assignment-title">Siplicity</span>
+                    <div class="assignment-desc">De ontwerpen voor blikjes lemonade.</div>
+                </li>
 
-            <li>
-                <span class="assignment-category">Fotografie</span>
-                <span class="assignment-title">Fotografie selectie</span>
-                <div class="assignment-desc">Een selectie van foto's die ik doorheen de tijd gemaakt heb.</div>
-            </li>
-            <li>
-                <span class="assignment-category">3D Ontwerp</span>
-                <span class="assignment-title">De Arc de Triomphe</span>
-                <div class="assignment-desc">Een 3D ontwerp gebasseerd op een reis naar Parijs.</div>
-            </li>
-            <li>
-                <span class="assignment-category">Webdesign - Branding</span>
-                <span class="assignment-title">Denver Art Museum</span>
-                <div class="assignment-desc">Een re-design van de "Denver Art Museum" website</div>
-            </li>
-            <li>
-                <span class="assignment-category">2D Animatie - User Experience</span>
-                <span class="assignment-title">Emotional Block</span>
-                <div class="assignment-desc">Een concept voor een website om met "vast zitten" problemen te helpen.</div>
-            </li>
-            <li>
-                <span class="assignment-category">Branding</span>
-                <span class="assignment-title">Nike After Dark</span>
-                <div class="assignment-desc">Een visuele identeit voor "Nike After Dark" tour.</div>
-            </li>
-            <li>
-                <span class="assignment-category">3D Animatie - Fotografie</span>
-                <span class="assignment-title">Night photography</span>
-                <div class="assignment-desc">Een sfeergevende animatie over persoonlijk werk met mijn camera.</div>
-            </li>
-            <li>
-                <span class="assignment-category">2D Animatie</span>
-                <span class="assignment-title">E-Motion</span>
-                <div class="assignment-desc">Een serie korte animaties met de 12 principles of animation.</div>
-            </li>
-            <li>
-                <span class="assignment-category">Animatie - Code</span>
-                <span class="assignment-title">MTV Logo</span>
-                <div class="assignment-desc">Een automatische toepassing die muziek omzet in een animatie om een videoclip te genereren.</div>
-            </li>
-        </ul>
+                <li data-preview="../opdrachten/Fotografie/Thumbnail.jpg">
+                    <span class="assignment-category">Fotografie</span>
+                    <span class="assignment-title">Fotografie selectie</span>
+                    <div class="assignment-desc">Een selectie van foto's die ik doorheen de tijd gemaakt heb.</div>
+                </li>
+                <li data-preview="../opdrachten/DeArcDeTriomphe/post.png">
+                    <span class="assignment-category">3D Ontwerp</span>
+                    <span class="assignment-title">De Arc de Triomphe</span>
+                    <div class="assignment-desc">Een 3D ontwerp gebasseerd op een reis naar Parijs.</div>
+                </li>
+                <li data-preview="../opdrachten/DenverArtMuseum/Redesign.png">
+                    <span class="assignment-category">Webdesign - Branding</span>
+                    <span class="assignment-title">Denver Art Museum</span>
+                    <div class="assignment-desc">Een re-design van de "Denver Art Museum" website</div>
+                </li>
+                <li data-preview="../opdrachten/HittingYourLimit/HittingYourLimit.mp4">
+                    <span class="assignment-category">2D Animatie - User Experience</span>
+                    <span class="assignment-title">Hitting your limit</span>
+                    <div class="assignment-desc">Een concept voor een website om met "vast zitten" problemen te helpen.
+                    </div>
+                </li>
+                <li data-preview="../opdrachten/NikeAfterDark/MockupFence.png">
+                    <span class="assignment-category">Branding</span>
+                    <span class="assignment-title">Nike After Dark</span>
+                    <div class="assignment-desc">Een visuele identeit voor "Nike After Dark" tour.</div>
+                </li>
+                <li data-preview="../opdrachten/NightPhotography/NightPhotography.mp4">
+                    <span class="assignment-category">3D Animatie - Fotografie</span>
+                    <span class="assignment-title">Night photography</span>
+                    <div class="assignment-desc">Een sfeergevende animatie over persoonlijk werk met mijn camera.</div>
+                </li>
+                <li data-preview="../opdrachten/EMotion/EMotionTotal.mp4">
+                    <span class="assignment-category">2D Animatie</span>
+                    <span class="assignment-title">E-Motion</span>
+                    <div class="assignment-desc">Een serie korte animaties met de 12 principles of animation.</div>
+                </li>
+                <li data-preview="../opdrachten/MTVLogo/green_day.mp4">
+                    <span class="assignment-category">Animatie - Code</span>
+                    <span class="assignment-title">MTV Logo</span>
+                    <div class="assignment-desc">Een automatische toepassing die muziek omzet in een animatie om een
+                        videoclip te genereren.</div>
+                </li>
+            </ul>
+        </div>
+        <div id="assignment_preview">
+            <div id="preview_title"></div>
+        </div>
     </div>
     <div id="name">
         <h1><span class="bold">Seth</span> Van den Bossche</h1>
@@ -95,5 +111,7 @@
             </div>
         </div>
     </div>
+    <script src="js/assignment_preview.js"></script>
 </body>
+
 </html>
