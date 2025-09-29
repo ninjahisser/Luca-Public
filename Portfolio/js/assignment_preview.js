@@ -2,8 +2,7 @@ function previewItem(item) {
     const preview = document.getElementById('assignment_preview');
     const titleDiv = document.getElementById('preview_title');
     const title = item.querySelector('.assignment-title')?.textContent || 'Geen titel';
-    titleDiv.textContent = `Previewing: ${title}`;
-    preview.style.background = "red"
+    titleDiv.textContent = `${title}`;
     const src = item.getAttribute('data-preview');
     if (src) {
         if (src.endsWith('.mp4')) {
