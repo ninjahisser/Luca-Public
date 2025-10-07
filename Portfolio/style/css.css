@@ -16,6 +16,9 @@ body {
     font-family: var(--default-font);
     background-color: white;
     color: var(--main-color);
+    margin: 0;
+    padding: 0;
+    padding-bottom: 200px;
 }
 
 #name {
@@ -31,30 +34,26 @@ body {
     z-index: 2000;
     text-align: left;
     white-space: nowrap;
-    /* No line breaks */
     overflow-x: auto;
-    /* Scroll als te lang */
 }
 
 h1 {
     font-family: var(--important-font);
     font-weight: 400;
     font-size: calc(100vw/9.5);
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
     transform: translateY(50px);
     pointer-events: none;
     white-space: nowrap;
-    /* No line breaks */
     overflow-x: auto;
-    /* Scroll als te lang */
     text-align: left;
 }
 
 h2 {
     font-size: 2em;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
     text-transform: uppercase;
     font-weight: 400;
 }
@@ -103,7 +102,6 @@ a:hover {
     margin-right: 2em;
 }
 
-
 #name_links div {
     display: flex;
     gap: 1em;
@@ -118,8 +116,8 @@ a:hover {
     min-width: 320px;
     padding: 1em;
     background: white;
-    overflow: visible;
-    height: auto;
+    height: auto;          /* laat de lijst meegroeien */
+    overflow: visible;     /* geen interne scroll */
     display: block;
 }
 
@@ -138,12 +136,15 @@ a:hover {
     align-items: flex-start;
     justify-content: flex-start;
     display: block;
-    /* GEEN flex/grid! */
 }
 
 #assignment_list li:hover {
     background-color: var(--main-color);
     color: white;
+}
+
+#assignment_list a{
+    text-decoration: none;
 }
 
 #main_content {
@@ -157,12 +158,9 @@ a:hover {
     padding: 0;
     margin: 0;
     column-count: 2;
-    /* Altijd 2 kolommen */
     column-gap: 30px;
-    max-height: none;
-    height: auto;
+    /* max-height weggehaald zodat alles mee scrolt */
 }
-
 
 @media (max-width: 900px) {
     #assignment_list {
@@ -219,13 +217,13 @@ a:hover {
     flex: 0 0 50vw;
     max-width: calc(50vw - 50px);
     min-width: 320px;
-    height: auto;
+    height: auto;  /* geen vaste hoogte */
     background: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    overflow: hidden;
+    overflow: visible; /* laat content meescrollen */
     z-index: 1200;
     pointer-events: none;
     padding: 2em 1em 1em 1em;
@@ -281,4 +279,65 @@ a:hover {
 #assignment_preview img.loaded,
 #assignment_preview video.loaded {
     opacity: 1;
+}
+
+img {
+    width: 100%;
+}
+
+#seth_photo {
+    max-width: calc(100vh - 400px);
+}
+
+#left_side {
+    margin-top: 60px;
+    margin-left: 20px;
+}
+
+#bio figure {
+    margin: 0 10px 0 0;
+}
+
+#bio {
+    display: inline-flex;
+    margin-top: 20px;
+}
+
+#bio h2 {
+    font-family: var(--important-font);
+    font-weight: bolder;
+}
+
+#bio div {
+    width: 600px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+#showcase_large, #assignment_desc{
+    width: 50vw;
+    padding-top: 20px;
+    margin: 0 auto;
+}
+
+#showcase_large h2{
+    text-align: center;
+    font-size: 3em;
+    font-weight: bolder;
+} 
+
+#back_button {
+    position: fixed;   /* zwevend */
+    top: 20px;         /* afstand van boven */
+    left: 20px;        /* afstand van links */
+    z-index: 3000;     /* boven alles */
+}
+
+#assignment_desc h3{
+    font-size: 1.2em;
+    margin-top: 30px;
+    text-transform: uppercase;
+    font-weight: bolder;
 }
