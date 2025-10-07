@@ -3,54 +3,57 @@ function previewItem(item) {
     const title = item.querySelector('.assignment-title')?.textContent || 'Geen titel';
     const src = item.getAttribute('data-preview');
 
-    // Toon eerst loader
+    // Toon loader + titel
     preview.innerHTML = `
         <div id="preview_title">${title}</div>
         <div class="loader"></div>
     `;
 
-    if (src) {
-        if (src.endsWith('.mp4')) {
-            const video = document.createElement('video');
-            video.src = src;
-            video.autoplay = true;
-            video.loop = true;
-            video.muted = true;
-            video.controls = false;
+    let element;
 
-            video.addEventListener('loadeddata', () => {
-                preview.innerHTML = `<div id="preview_title">${title}</div>`;
-                video.classList.add("loaded");
-                preview.appendChild(video);
-            });
+    if (src.endsWith('.mp4')) {
+        element = document.createElement('video');
+        element.src = src;
+        element.autoplay = true;
+        element.loop = true;
+        element.muted = false;
+        element.controls = false;
 
-        } else if (src.includes("vimeo.com") || src.includes("youtube.com") || src.includes("youtu.be")) {
-            const iframe = document.createElement('iframe');
-            iframe.src = src;
-            iframe.width = "560";
-            iframe.height = "315";
-            iframe.frameBorder = "0";
-            iframe.allow = "autoplay; fullscreen; picture-in-picture";
-            iframe.allowFullscreen = true;
+        element.addEventListener('loadeddata', () => {
+            element.classList.add('loaded');
+            preview.querySelector('.loader')?.remove();
+        });
 
-            iframe.addEventListener('load', () => {
-                preview.innerHTML = `<div id="preview_title">${title}</div>`;
-                iframe.classList.add("loaded");
-                preview.appendChild(iframe);
-            });
+    } else if (src.includes("vimeo.com") || src.includes("youtube.com") || src.includes("youtu.be")) {
+        element = document.createElement('iframe');
+        element.src = src;
+        element.width = "100%";
+        element.height = "100%";
+        element.frameBorder = "0";
+        element.allow = "autoplay; fullscreen; picture-in-picture";
+        element.allowFullscreen = true;
 
-        } else {
-            const img = new Image();
-            img.src = src;
-
-            img.onload = () => {
-                preview.innerHTML = `<div id="preview_title">${title}</div>`;
-                img.classList.add("loaded");
-                preview.appendChild(img);
-            };
-        }
+        // direct toevoegen, fade-in met CSS
+        setTimeout(() => {
+            element.classList.add('loaded');
+            preview.querySelector('.loader')?.remove();
+        }, 500); // halve seconde delay
+    } else {
+        element = new Image();
+        element.src = src;
+        element.onload = () => {
+            element.classList.add('loaded');
+            preview.querySelector('.loader')?.remove();
+        };
     }
+
+    element.style.display = "block";
+    element.style.width = "100%";
+    element.style.maxHeight = "60vh";
+    element.style.objectFit = "contain";
+    preview.appendChild(element);
 }
+
 
 
 document.querySelectorAll('#assignment_list li').forEach(item => {
