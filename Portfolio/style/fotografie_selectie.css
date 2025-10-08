@@ -1,0 +1,9 @@
+
+:root {
+    --main-color: rgb(59, 59, 59);
+    --background-color: rgb(227, 227, 227);
+}
+
+#showcase_large, #assignment_desc{
+    width: 60vw;
+}

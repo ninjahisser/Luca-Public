@@ -19,7 +19,7 @@ body {
     color: var(--main-color);
     margin: 0;
     padding: 0;
-    padding-bottom: 200px;
+    padding-bottom: 250px;
 }
 
 #name {
@@ -350,4 +350,13 @@ img {
 
 h3{
     margin: 20px 0 20px 0;
+}
+
+#multibox{
+    padding: 0px;
+    margin: 0px;
+}
+
+#multibox div{
+    display: flex;
 }
