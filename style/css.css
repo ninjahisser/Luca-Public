@@ -360,3 +360,8 @@ h3{
 #multibox div{
     display: flex;
 }
+
+#foto_title{
+    text-align: center;
+    font-size: 1.5em !important;
+}
