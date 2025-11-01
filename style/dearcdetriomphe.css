@@ -1,0 +1,108 @@
+:root {
+    --main-color: rgb(60, 0, 255);
+    --background-color: rgb(255, 255, 255);
+}
+
+/* Main layout */
+#showcase_large {
+    margin-bottom: 2em;
+}
+
+#showcase_large figure {
+    margin: 0;
+    width: 100%;
+    max-height: 70vh;
+    overflow: hidden;
+}
+
+#showcase_large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Project intro */
+.project-intro {
+    font-size: 1.2em;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 2em auto;
+}
+
+/* Showcase grid */
+.showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2em;
+    margin: 2em 0;
+}
+
+.showcase-grid figure {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.showcase-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Process section */
+.process-section {
+    margin: 3em 0;
+}
+
+.process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2em;
+    margin-top: 1em;
+}
+
+.step {
+    padding: 1em;
+    background: #f8f8f8;
+}
+
+.step h4 {
+    margin: 0 0 0.5em 0;
+    font-size: 1.1em;
+}
+
+/* Technical details */
+.technical-details {
+    margin: 3em 0;
+}
+
+.technical-details ul {
+    list-style: none;
+    padding: 0;
+    margin: 1em 0;
+}
+
+.technical-details li {
+    padding: 0.5em 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.technical-details li:last-child {
+    border-bottom: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .process-steps {
+        grid-template-columns: 1fr;
+    }
+    
+    .showcase-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .project-intro {
+        padding: 0 1rem;
+    }
+}
