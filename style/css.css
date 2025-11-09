@@ -7,7 +7,7 @@
 
 :root {
     --main-color: rgb(30, 0, 255);
-    --favorite-color: #ff31ba;
+    --favorite-color: #ff9100;
     --important-font: 'Gallient';
     --default-font: 'Geist Mono';
     --background-color: white;
@@ -210,7 +210,7 @@ a:hover {
 }
 
 .favorites {
-    color: var(--favorite-color);
+        color: var(--favorite-color);
 }
 
 #assignment_list ul li.favorites:hover {
