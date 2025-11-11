@@ -91,7 +91,7 @@ a:hover {
 }
 
 .def_button_small {
-    font-size: .75em;
+    font-size: 1.2em;
 }
 
 #name_links {
@@ -547,6 +547,10 @@ h3 {
     border: 0;
 }
 
+.mobile_only {
+    display: none;
+}
+
 @media (max-width: 900px) {
     .lb-close {
         top: 10px;
@@ -607,8 +611,10 @@ h3 {
     }
 
     .def_button_small {
+        display: block;
         width: 100%;
-        font-size: 1%;
+        margin: 20px auto;
+        text-align: center;
     }
 
     #name_links h2 {
@@ -630,6 +636,10 @@ h3 {
 
     h3 {
         text-align: center;
+    }
+
+    #showcase_large h2 {
+        font-size: 1.5em !important;
     }
 
     #back_button {
@@ -654,5 +664,9 @@ h3 {
 
     #bio div {
         width: 100%;
+    }
+
+    .mobile_only {
+        display: block;
     }
 }
