@@ -562,18 +562,18 @@ h3 {
         column-count: 1 !important;
     }
 
-    #assignment_list{
+    #assignment_list {
         max-width: 100%;
         min-width: 0px;
         padding: 5px;
     }
 
-    #assignment_list a{
+    #assignment_list a {
         max-width: 100%;
         display: block;
     }
 
-    #assignment_list li{
+    #assignment_list li {
         max-width: 100%;
         min-width: 1px;
     }
@@ -582,22 +582,23 @@ h3 {
         display: none;
     }
 
-    #name{
+    #name {
         padding: 5px;
         background: linear-gradient(0deg, var(--background-color) 70%, rgba(255, 255, 255, 0) 100%);
     }
 
-    #name h1{
+    #name h1 {
         transform: translateY(4vw);
         font-size: 8vw;
         padding: 10px;
     }
 
-    #name_links{
+    #name_links {
         display: block;
     }
 
-    .def_button, .def_button_small{
+    .def_button,
+    .def_button_small {
         border: 0px;
         width: 100%;
         text-align: center;
@@ -605,45 +606,53 @@ h3 {
         text-decoration: underline;
     }
 
-    .def_button_small{
+    .def_button_small {
         width: 100%;
         font-size: 1%;
     }
 
-    #name_links h2{
+    #name_links h2 {
         font-size: 5vw;
         padding: 10px;
     }
 
-    #assignment_desc{
+    #assignment_desc {
         width: 100%;
     }
 
-    #showcase_large{
+    #showcase_large {
         width: 100%;
     }
 
-    #left_side{
+    #left_side {
         margin: 5px;
     }
 
-    h3{
+    h3 {
         text-align: center;
     }
 
-    #back_button{
+    #back_button {
         display: none;
     }
 
-    #assignment_desc{
+    #assignment_desc {
         width: 100% !important;
     }
 
-    .fotos_grid{
+    .fotos_grid {
         display: block;
     }
 
-    .fotos_grid figure{
+    .fotos_grid figure {
         padding: 10px;
+    }
+
+    #bio {
+        display: block !important;
+    }
+
+    #bio div {
+        width: 100%;
     }
 }
