@@ -1,7 +1,7 @@
 
 :root {
-    --main-color: rgb(59, 59, 59);
-    --background-color: rgb(227, 227, 227);
+    --main-color: rgb(59, 59, 59) !important;
+    --background-color: rgb(227, 227, 227) !important;
 }
 
 #showcase_large, #assignment_desc{

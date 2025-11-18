@@ -1,6 +1,6 @@
 
 :root {
-    --main-color: rgb(255, 88, 17);
-    --background-color: rgb(255, 255, 255);
+    --main-color: rgb(255, 88, 17) !important;
+    --background-color: rgb(255, 255, 255) !important;
 }
 

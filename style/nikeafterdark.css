@@ -1,5 +1,5 @@
 
 :root {
-    --main-color: rgb(255, 0, 242);
-    --background-color: rgb(0, 0, 0);
+    --main-color: rgb(255, 0, 242) !important;
+    --background-color: rgb(0, 0, 0) !important;
 }
