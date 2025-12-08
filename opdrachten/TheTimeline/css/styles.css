@@ -1,0 +1,155 @@
+body{
+    background-color: black;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+#clock {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.anim{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Force dotlottie-wc to fill container and cover */
+dotlottie-wc {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+dotlottie-wc canvas,
+dotlottie-wc svg {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+/* Clock transition animations */
+.clock-slide-out-left {
+    animation: slideOutLeft 0.5s ease-in-out forwards;
+}
+
+.clock-slide-out-right {
+    animation: slideOutRight 0.5s ease-in-out forwards;
+}
+
+.clock-slide-in-left {
+    animation: slideInLeft 0.5s ease-in-out forwards;
+}
+
+.clock-slide-in-right {
+    animation: slideInRight 0.5s ease-in-out forwards;
+}
+
+@keyframes slideOutLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Time override panel */
+.time-override{
+    /* hidden by default; toggle with Space */
+    position: fixed;
+    right: 12px;
+    top: 12px;
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 10px;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    border-radius: 6px;
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+}
+
+/* Hidden by default: debug UI (time override) and clock selector are part of debug UI */
+#time-override, #clock-controls { display: none; }
+
+/* When body has .debug-shown, reveal the debug UI */
+body.debug-shown #time-override { display: block; }
+body.debug-shown #clock-controls { display: flex; }
+.time-override .inputs{ display:flex; gap:8px; align-items:center; margin-top:6px; }
+.time-override input[type="number"]{ width:56px; }
+.time-override .buttons{ margin-top:8px; display:flex; gap:8px; }
+.time-override button{ padding:4px 8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:4px; cursor:pointer }
+.time-override label{ display:flex; gap:6px; align-items:center }
+
+.time-override .speed-control{ margin-top:8px; display:flex; gap:8px; align-items:center }
+.time-override .speed-control input[type="range"]{ width:140px }
+.time-override .speed-control #speed-value{ min-width:36px; display:inline-block }
+
+/* Clock controls (prev/next) */
+.clock-controls{ position: fixed; left: 12px; top: 12px; display:flex; gap:8px; align-items:center; z-index:9999 }
+.clock-controls button{ background: rgba(255,255,255,0.06); color:#fff; border:1px solid rgba(255,255,255,0.08); padding:6px 10px; border-radius:6px; cursor:pointer }
+.clock-controls .current-clock{ color:#fff; font-size:14px; padding:4px 8px; background: rgba(0,0,0,0.3); border-radius:6px }
+
+/* Hand tracking debug panel - hidden by default */
+.hands-debug {
+    display: none;
+}
+
+/* Show when debug mode is active */
+body.debug-shown .hands-debug {
+    display: flex !important;
+}
+
+/* Camera select styling */
+#camera-select option {
+    background: #222;
+    color: #fff;
+}
+
+#camera-select:hover {
+    background: rgba(255,255,255,0.15);
+}

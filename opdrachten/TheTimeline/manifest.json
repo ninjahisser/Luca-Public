@@ -1,0 +1,94 @@
+{
+    "Clocks": {
+        "BeadsClock": {
+            "files": [
+                "0-24H-Beadklok.json",
+                "1-1H-Beadklok.json"
+            ]
+        },
+        "digitaleklok": {
+            "files": [
+                "0-24H-digiklok.json",
+                "1-1H-digiklok.json",
+                "2-1S-digiklok.json"
+            ]
+        },
+        "stationklok": {
+            "files": [
+                "0-24H-stationklok.json",
+                "1-1H-stationklok.json",
+                "2-1S-stationklok.json"
+            ]
+        },
+        "AstronomischeKlok": {
+            "files": [
+                "0-1M-astronomischeklok.json",
+                "1-1S-astronomischeklok.json",
+                "2-24H-astronomischeklok.json"
+            ]
+        },
+        "ChineseKlok": {
+            "files": [
+                "0-24H-chineseklok.json",
+                "1-1H-chineseklok.json",
+                "2-1M-chineseklok.json"
+            ]
+        },
+        "GravitatieKlok": {
+            "files": [
+                "0-24H-gravitatieklok.json",
+                "1-1H-gravitatieklok.json",
+                "2-1M-gravitatieklok.json"
+            ]
+        },
+        "KaarsKlok": {
+            "files": [
+                "0-24H-Kaarsklok.json",
+                "1-1H-Kaarsklok.json",
+                "2-1M-Kaarsklok.json"
+            ]
+        },
+        "MetronoomKlok": {
+            "files": [
+                "0-1M-metronoomklok.json",
+                "1-24H-metronoomklok.json",
+                "2-1M-metronoomklok.json"
+            ]
+        },
+        "OlielampKlok": {
+            "files": [
+                "0-24H-olieklok.json",
+                "1-1H-olieklok.json",
+                "2-1M-olieklok.json"
+            ]
+        },
+        "BalletjesKlokken": {
+            "files": [
+                "0-24H-bolletjes_klok.json",
+                "1-1M-bolletjes_klok.json",
+                "2-1S-bolletjes_klok.json"
+            ]
+        },
+        "TijdsgolfKlok": {
+            "files": [
+                "0-24H-tijdsgolfklok.json",
+                "1-1H-tijdsgolfklok.json",
+                "2-1S-tijdsgolfklok.json"
+            ]
+        },
+        "ZakhorlogeKlok": {
+            "files": [
+                "0-24H-zakhorlogeklok.json",
+                "1-1H-zakhorlogeklok.json",
+                "2-1M-zakhorlogeklok.json"
+            ]
+        },
+        "Zonneklok": {
+            "files": [
+                "0-24H-zonneklok.json",
+                "1-1H-zonneklok.json",
+                "2-1M-zonneklok.json"
+            ]
+        }
+    }
+}
