@@ -685,3 +685,7 @@ h3 {
         margin: 0 auto;
     }
 }
+
+.centered{
+    text-align: center;
+}
