@@ -52,8 +52,8 @@ let rectWeight = 50;
 let triangleWeight = 30;
 let starWeight = 20;
 
-// Vormcontrole toggle (standaard aan = sliders gebruiken)
-let shapeControlLocked = true;
+// Vormcontrole toggle (standaard uit = random mode)
+let shapeControlLocked = false;
 
 // Vorm parameters
 let maxShapes = 80;
