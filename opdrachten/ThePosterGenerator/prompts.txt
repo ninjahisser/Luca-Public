@@ -1,0 +1,1027 @@
+1.
+Page
+Page number
+of 12
+WORKSHOPQUICK
+TOOL
+AI
+P5.JS
+p5.js is a friendly tool
+for learning to code and
+make art.
+It is a free and open-
+source JavaScript library
+built by an inclusive,
+nurturing community.
+P5.JS
+Vertel eerst de context (wie / wat / voor wie)
+• “Ik ben grafisch ontwerpstudent en maak een creatieve tool
+met p5.js.”
+• “De tool moet draaien in een apart bestand
+sketch.js in een HTML-pagina.”
+Zeg heel duidelijk wat je WIL en wat je NIET wil
+• “Gebruik p5.js en schrijf alleen JavaScript voor sketch.js.”
+• “Geen HTML, geen CSS, geen CDN-links in je antwoord.”
+• “Leg alles uit met duidelijke comments, op beginnerniveau.”
+Beschrijf de tool als regels, niet als ‘maak iets
+cools’
+(Denk in input + regels + variatie)
+• Canvas: formaat, sfeer (“800×800, donker, poster-achtig”).
+• Input: “reageer op muis / toetsen / random / webcam / tekst”.
+• Regels: “maximaal 20 cirkels, geen overlap, 1 kleurpalet”.
+• Variatie: “bij elke spatiebalk een volledig nieuwe
+compositie.”
+Vraag altijd om begrijpbare structuur
+• “Gebruik setup() en draw().”
+• “Zet bovenaan parameters (aantal vormen, kleuren, marges) als
+variabelen.”
+• “Commentaar bij elke belangrijke regel zodat ik het kan
+aanpassen.”
+Itereren & debuggen met AI
+Bij fouten: plak je code + foutmelding en vraag:
+• “Hier is mijn volledige sketch.js en de foutmelding. Leg stap
+voor stap uit wat er mis is en verbeter de code.”
+Bij uitbreiding:
+• “Pas deze code aan zodat … (extra parameter, andere input,
+andere regel).”
+(AI)
+Poster als systeem
+Lijn als gedragTypografie als
+mood-machine
+1.
+2. 3.
+TOOL
+Denk aan een poster niet als één eindbeeld,
+maar als een machine die eindeloos varianten
+kan maken.
+Je kiest een paar simpele ingrediënten: vormen,
+kleuren, hiërarchie en beslist welke regels ze
+volgen.
+• Wat gebeurt er als elke refresh een nieuwe compositie maakt
+binnen dezelfde “taal”?
+• Hoe ver kan je gaan in variatie zonder je identiteit te
+verliezen?
+• Kunnen posters gemaakt worden met sliders?
+• Kan de webcam geconnecteerd worden om posters te genereren?
+Je bouwt geen affiche, je bouwt een systeem dat
+affiches uitspuugt.
+Poster als systeem
+1.
+TOOL
+Tekst wordt geen neutrale drager van informatie,
+maar een stem met emoties. Je tool “leest” een
+woord of zin en vertaalt dat naar typografische
+keuzes: volume, afstand, spanning, kleur.
+• Hoe ziet “angst” eruit als letterspatiëring?
+• Hoe klinkt “feest” in corpsgrootte?
+• Kan tekst geanimeerd worden met de webcam?
+• Kunnen sliders ingezet worden om teksten te veranderen?
+Je ontwerpt een kleine machine die stemming
+omzet in typografie, alsof je een emotionele filter
+over taal schuift.
+Typografie als
+mood-machine2.
+TOOL
+Lijn als gedrag
+3.
+TOOLStel je voor dat een lijn een eigen wil heeft: ze
+dwaalt, botst, twijfelt, versnelt, herhaalt zichzelf.
+In plaats van een lijn te tekenen, schrijf je regels
+voor hoe ze zich gedraagt in de tijd.
+• Wat gebeurt er als ze elke rand als een beslissing ervaart?
+• Of reageert op je muis als een magneet of een obstakel?
+• Wat zegt een lijn en hoe kan die getoond worden?
+• Kan een lijn bewegen op basis van geluid?
+Je tool wordt een speelveld waar gedrag en
+trajecten belangrijker zijn dan het perfecte
+eindbeeld.
+START
+[Naam van de tool]
+[Korte uitleg]
+<!DOCTYPE html>
+<html lang=”nl”>
+<head>
+<meta charset=”utf-8” />
+<title>[Naam van de tool]</title>
+<link rel=”stylesheet” href=”style.css” />
+</head>
+<body>
+<main>
+<h1>[Naam van de tool]</h1>
+<p>
+Korte uitleg wat de tool doet, welke input
+hij gebruikt, en hoe je nieuwe varianten maakt.
+</p>
+<section>
+<script src=”https://cdn.jsdelivr.net/npm/
+p5@1.11.1/lib/p5.min.js”></script>
+<script src=”sketch.js”></script>
+</section>
+</main>
+</body>
+</html>
+NOSTROKE();
+CIRCLE(X, Y, SIZE);
+} ELSE {
+NOSTROKE();
+RECTMODE(CENTER);
+RECT(X, Y, SIZE, SIZE * RANDOM(0.3, 1.2));
+}
+}
+// 4. KLEINE TEKST ONDERAAN (CREDITS, DATUM, WHATEVER)
+FILL(255);
+TEXTALIGN(LEFT, BOTTOM);
+TEXTSIZE(14);
+TEXT(“VARIANT GENERATED: “ + NF(MILLIS(), 1, 0), MARGIN, HEIGHT - MARGIN / 2);
+}
+// SPATIE = NIEUWE POSTER
+FUNCTION KEYPRESSED() {
+IF (KEY === “ “) {
+MAKENEWPOSTER();
+REDRAW();
+}
+}
+SKETCH.JS// POSTER ALS SYSTEEM
+// DIT IS EEN EENVOUDIGE STARTER.
+// BIJ ELKE DRUK OP DE SPATIEBALK KRIJG JE EEN NIEUWE POSTER.
+LET POSTERWIDTH = 800;
+LET POSTERHEIGHT = 1000;
+FUNCTION SETUP() {
+CREATECANVAS(POSTERWIDTH, POSTERHEIGHT);
+NOLOOP(); // WE TEKENEN ENKEL WANNEER WE REDRAW() ZEGGEN
+MAKENEWPOSTER();
+}
+FUNCTION DRAW() {
+// DRAW BLIJFT LEEG, OMDAT WE ALLES IN MAKENEWPOSTER() DOEN
+}
+// DEZE FUNCTIE TEKENT ÉÉN “POSTER”
+FUNCTION MAKENEWPOSTER() {
+// NIEUWE RANDOM BASIS VOOR DEZE POSTER
+RANDOMSEED(MILLIS());
+// 1. ACHTERGROND
+BACKGROUND(15); // DONKER GRIJS/ZWART
+// 2. TITELBALK BOVENAAN (PLACEHOLDER TYPOGRAFIE)
+FILL(255);
+NOSTROKE();
+RECT(0, 0, WIDTH, 120);
+FILL(0);
+TEXTALIGN(LEFT, CENTER);
+TEXTSIZE(32);
+TEXT(“POSTER SYSTEM”, 40, 60);
+// 3. VORMENSYSTEEM IN HET MIDDEN
+// HIER KAN JE REGELS TOEVOEGEN, AANTALLEN, KLEURPALETTEN, GRIDS...
+LET MARGIN = 80;
+LET NUMSHAPES = 20; // AANTAL VORMEN
+FOR (LET I = 0; I < NUMSHAPES; I++) {
+// WILLEKEURIGE POSITIE BINNEN DE MARGES
+LET X = RANDOM(MARGIN, WIDTH - MARGIN);
+LET Y = RANDOM(160, HEIGHT - MARGIN);
+// WILLEKEURIGE GROOTTE
+LET SIZE = RANDOM(40, 180);
+// SIMPELE KLEUREN (KAN LATER VERVANGEN WORDEN DOOR PALET)
+LET R = RANDOM(255);
+LET G = RANDOM(255);
+LET B = RANDOM(255);
+FILL(R, G, B, 220);
+// WILLEKEURIGE KEUZE: CIRKEL OF RECHTHOEK
+LET SHAPETYPE = RANDOM([“CIRCLE”, “RECT”]);
+IF (SHAPETYPE === “CIRCLE”) {
+POSTER
+Idee:
+Een canvas dat bij elke druk op de spatiebalk een
+nieuwe “poster” maakt met een paar eenvoudige
+vormen.
+Makkelijk aanpassen:
+• numShapes: meer of minder elementen.
+• margin: meer witruimte of minder.
+• De kleuren (nu puur random).
+• Vormenset: alleen cirkels, alleen rechthoeken, eigen vormen.
+• Typo bovenaan en onderaan.
+
+maak alle files voor deze opdracht
+
+2.
+voeg een animatie toe wanneer ik op spatie duw waarbij alle vormen weg vliegen en dan terug
+
+3.
+dat werkt niet ga terug naar de vorige versie
+
+4.
+voeg typografie toe die op een leuke manier reageert op de tekst
+
+5.
+laat het reageren op de muis en de vormen ook, zorg dat de poster bestaat uit een kleurenpalet van een random hoeveelheid kleuren 1-10 kleuren, random elke keer, inclusief de achtergrond en laat de tekst op een andere manier staan gebasseerd op randomness met elke spatie druk enzo
+
+6.
+voeg sliders vanboven toe die je laten aanduiden welke vormen allemaal mogen bestaan, driehoeken, bollen, vierkanten, rechthoeken, sterren, de sliders gaan van 0-100 en hoe meer ze aanstaan hoe meer ze voorkomen, en ook de standaard tekst van de input box voor trekst in te geven moet "SETH VAN DEN BOSSCHE" zijn
+
+7.
+voeg een fullscreen knop toe en de vormen veranderen niet meer van plek bij elke spatie druk
+
+8.
+first of all, alle sliders moeten van 0-100 gaan, en voeg ook een randomize button toe dat alle slidesr randomized, de vormen veranderen niet van postiei en groote enzo bij elke spatie, ze mogen geen vaste postiie hebben, de fullscreen knop moet de poster fullscreen zetten en PALET 3 blabal teskt vanonder verstoppen
+
+9.
+het kleurenpalet moet minstens 2 kleuren hebben, de tekst moet altijd in het frame zitten, randomize de fontsize, de de font
+
+10.
+er moeten verschillende vromen tergelijk zijn, de sliders bepalen de kans dat een vorm die vorm heeft, en doe random tussen 1 en 100 vormen
+
+11.
+de vormen veranderen niet van positie of hoeveelheid, ook is de tekst random kleuren elke frame dat mag niet, het moet statisch 1 kleur zijn dat gekozen wordt bij elke nieuwe generatie poster
+
+12.
+de achergrond van de tekst blijft veranderen van kleur elke frame ne de hoeveelheid vormen en postiie moet bij elke spatie druk veranderen, elke nieuwe generatie is bij elke spatiedruk van alles dat moet updaten dan
+
+13.
+zorg dat de teksts atlijd een random kleur heeft, voeg een slider toe voor het maximaal aantal vormen en een slider voor de maximale vormgroote, maak die standaard redelijk hoog
+
+14.
+geef de tekst ook geen achtergrond kleur dat is te veel, randomize ook elke keer bij spatie drukken wat het effect is van de muis input
+
+15.
+maak de max grootte van de vormen 5000
+
+16.
+de PALET: 4 KLEUREN tekst vandonder flikkert nu van kleuir elke frame dat is stom
+
+17.
+kies randomly of er een constant effect is zoals, niks, vormen ademen, alles draait, enzovoort... maak ook het effect van de muis vollledig random elke keer maar altijd iets
+
+18.
+maak het max vormen limiet 10x zo hoog, en het minimale max grootte van de vormen 10x zo weinig
+
+19.
+de vormen vullen niet altijd aan de rand, en maak het max grootte 2500 en voeg een "sla op" knop toe waarbij je posters kan opsaal en in fullscreen terug bekijken en verwijderen van opgeslagen posters
+
+20.
+in de plaats van uit galllerij op fullscreen bekijken moet de gallerij altijd vanonder, elke opgeslagen werk toont met een laad en verwijder knop erbij
+
+21.
+kies randomly of het niet direct alles cleared maar zo lichtjes cleared zodat de vormen een trail achterlaten bij elke poster, en soms dat de kleuren veranderen traagjes van alles als random effect, toon de gallerij vanonder aan de pagina en de settings van de poster rechts van de poster zodat het scherm gesplit is ook
+
+22.
+de vormcontrole en typ je tekst ding moet bij elkaar staan, tekst vanboven vormcontrole eornder, dat staat links van het scherm, rechts staat de poster preview
+
+daaronder de gallerij
+
+23.
+de poster staat nog steeds vanonder
+
+24.
+dit is gewoon fout
+
+25.
+ik wil de pagina zoals in de tweede scnreeshot, de eerste is nu
+
+26.
+de poster staat nog steeds vanonder, zie je dat niet
+
+27.
+het staat nog steeds allemaal onder elkaar, de right panel staat niet rechts
+
+28.
+fout kijk de foto
+
+29.
+GOEDZOP nu is het juist! zorg gewoon dat de poster past binnen de hoogte van het scherm zodat je alles kan zien
+
+30.
+plaats de volledig scherm en sla op knoppen boven de poster ne lijn ze links uit
+
+31.
+elke keer dat ik op spatie druk scroll ik naar beneden dat is niet leuk, voeg ook een knop toe naast de fullscreen knop om een nieuwe poster te genereren
+
+32.
+de tekst hier is seth van den bossche, maar het is niet volledig op frame, dat moet wel
+
+33.
+nog steeds niet altijd maar wel beter
+
+34.
+ik kan geen spaties zetten in mijn tekstkader, dan refreshed de poster en despatie komt niet
+
+35.
+maak de website er mooier uitziem en consistenter en betere layout, maak het dynamisch en mobile friendly en maak het cleaner, geen onnodige css
+
+36.
+zorg dat de tekst in de poster zelf soms aligned staat met 90°, randomly 50% van de tijd en doe dat het soms 50% van de tijd ook gradients gebruikt in de background 
+
+37.
+zorg ervoor dat het effect random is, bv nu duwt het alles weg, soms laat het dingen draaien ofzo en maak wat verchillende mogelijkheden, zorg ook dat op F duwen, gelijk spatie refreshed maar in de plaats van refreshen is F duwen fullscreen van de poster aan en uitzetten, verwijder ook alle dropshadows en rounding van de pagina
+
+38.
+bouw de stijl rond:
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
+
+@font-face {
+    font-family: "Gallient";
+    src: url("fonts/Gallient.ttf") format("truetype");
+}
+
+:root {
+    --main-color: rgb(30, 0, 255);
+    --favorite-color: #ff9100;
+    --important-font: 'Gallient';
+    --default-font: 'Geist Mono';
+    --background-color: white;
+}
+
+body {
+    font-family: var(--default-font);
+    background-color: var(--background-color);
+    color: var(--main-color);
+    margin: 0;
+    padding: 0;
+    padding-bottom: 250px;
+}
+
+#name {
+    margin: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: auto;
+    box-sizing: border-box;
+    padding: 1em 0 0.5em 2em;
+    pointer-events: none;
+    z-index: 2000;
+    text-align: left;
+    white-space: nowrap;
+    overflow-x: auto;
+    background: linear-gradient(0deg, var(--background-color) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+h1 {
+    font-family: var(--important-font);
+    font-weight: 400;
+    font-size: calc(100vw/9.5);
+    padding: 0;
+    margin: 0;
+    transform: translateY(50px);
+    pointer-events: none;
+    white-space: nowrap;
+    overflow-x: auto;
+    text-align: left;
+}
+
+h2 {
+    font-size: 2em;
+    padding: 0;
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+a {
+    color: var(--main-color);
+    text-decoration: none;
+    font-weight: 600;
+    pointer-events: all;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.bold {
+    font-weight: 900;
+}
+
+.def_button,
+.def_button_small {
+    font-size: 1.5em;
+    padding: 5px;
+    text-transform: uppercase;
+    border: 2px solid var(--main-color);
+    box-sizing: border-box;
+}
+
+.def_button:hover,
+.def_button_small:hover {
+    background: var(--main-color);
+    color: white;
+}
+
+.def_button_small {
+    font-size: 1.2em;
+}
+
+#name_links {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    gap: 2em;
+    text-align: left;
+    white-space: nowrap;
+}
+
+#name_links h2 {
+    flex: none;
+    text-align: left;
+    margin-right: 2em;
+}
+
+#name_links div {
+    display: flex;
+    gap: 1em;
+    justify-content: flex-start;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+#assignment_list {
+    flex: 0 0 50vw;
+    max-width: 50vw;
+    min-width: 320px;
+    padding: 1em;
+    background: white;
+    height: auto;
+    /* laat de lijst meegroeien */
+    overflow: visible;
+    /* geen interne scroll */
+    display: block;
+}
+
+#assignment_list li {
+    break-inside: avoid;
+    margin-bottom: 0px;
+    cursor: pointer;
+    padding: 5px;
+    max-width: 340px;
+    min-width: 180px;
+    box-sizing: border-box;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    align-items: flex-start;
+    justify-content: flex-start;
+    display: block;
+}
+
+#assignment_list li:hover {
+    background-color: var(--main-color);
+    color: white;
+}
+
+#assignment_list a {
+    text-decoration: none;
+}
+
+#main_content {
+    display: flex;
+    flex-direction: row;
+    overflow: visible;
+}
+
+#assignment_list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    column-count: 2;
+    column-gap: 30px;
+    /* max-height weggehaald zodat alles mee scrolt */
+}
+
+.assignment-title {
+    font-weight: 700;
+    font-size: 1em;
+    display: block;
+    text-transform: uppercase;
+}
+
+.assignment-category {
+    font-size: .7em;
+    display: block;
+    padding-top: 2px;
+}
+
+.assignment-desc {
+    font-size: .8em;
+    margin-top: 0.2em;
+}
+
+.favorites {
+    color: var(--favorite-color);
+}
+
+#assignment_list ul li.favorites:hover {
+    background-color: var(--favorite-color) !important;
+    color: white;
+}
+
+/* --- PREVIEW RECHTS --- */
+#assignment_preview {
+    flex: 0 0 50vw;
+    max-width: calc(50vw - 50px);
+    min-width: 320px;
+    height: auto;
+    /* geen vaste hoogte */
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: visible;
+    /* laat content meescrollen */
+    z-index: 1200;
+    pointer-events: none;
+    padding: 2em 1em 1em 1em;
+    box-sizing: border-box;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+#assignment_preview img,
+#assignment_preview video {
+    width: 100%;
+    height: auto;
+    max-height: 60vh;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+#preview_title {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--main-color);
+    margin-bottom: 1em;
+    text-align: center;
+    width: 100%;
+}
+
+/* Loader styling */
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--main-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 0.8s linear infinite;
+    margin: 2em auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Zacht fade-in effect voor nieuwe content */
+#assignment_preview iframe,
+#assignment_preview img,
+#assignment_preview video {
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+#assignment_preview iframe.loaded,
+#assignment_preview img.loaded,
+#assignment_preview video.loaded {
+    opacity: 1;
+}
+
+img {
+    width: 100%;
+}
+
+#seth_photo {
+    max-width: calc(100vh - 400px);
+}
+
+#left_side {
+    margin-top: 60px;
+    margin-left: 20px;
+}
+
+#bio figure {
+    margin: 0 10px 0 0;
+}
+
+#bio {
+    display: inline-flex;
+    margin-top: 20px;
+}
+
+#bio h2 {
+    font-family: var(--important-font);
+    font-weight: bolder;
+}
+
+#bio div {
+    width: 600px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+#showcase_large,
+#assignment_desc {
+    width: 50vw;
+    padding-top: 20px;
+    margin: 0 auto;
+}
+
+#showcase_large h2 {
+    text-align: center;
+    font-size: 3em;
+    font-weight: bolder;
+}
+
+#back_button {
+    position: fixed;
+    /* zwevend */
+    top: 20px;
+    /* afstand van boven */
+    left: 20px;
+    /* afstand van links */
+    z-index: 3000;
+    /* boven alles */
+}
+
+#assignment_desc h3 {
+    font-size: 1.2em;
+    margin-top: 30px;
+    text-transform: uppercase;
+    font-weight: bolder;
+}
+
+h3 {
+    margin: 20px 0 20px 0;
+}
+
+#multibox {
+    padding: 0px;
+    margin: 0px;
+}
+
+#multibox div {
+    display: flex;
+    margin: 0 auto;
+}
+
+#foto_title {
+    text-align: center;
+    font-size: 1.5em !important;
+}
+
+.fotos_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    align-items: start;
+    margin: 0 auto;
+}
+
+.fotos_grid figure {
+    margin: 0;
+    overflow: hidden;
+    background: #f8f8f8;
+    aspect-ratio: 4 / 3;
+}
+
+.fotos_grid figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.fotos_grid figure:hover img {
+    transform: scale(1.03);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Slightly larger gaps on bigger screens */
+@media (min-width: 1200px) {
+    .fotos_grid {
+        gap: 22px;
+    }
+}
+
+/* Lightbox / large image preview styles */
+#lightbox {
+    position: fixed;
+    inset: 0;
+    display: none;
+    /* toggled via .open */
+    align-items: center;
+    justify-content: center;
+    z-index: 4000;
+    /* above the fixed name bar */
+}
+
+#lightbox.open {
+    display: flex;
+}
+
+#lb-backdrop {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3vh 3vw;
+    box-sizing: border-box;
+}
+
+#lb-image {
+    max-width: 92vw;
+    max-height: 86vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.lb-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: var(--background-color);
+    color: var(--main-color);
+    padding: 6px 10px;
+    font-size: 1.6rem;
+    line-height: 1;
+    border: 0;
+    cursor: pointer;
+}
+
+/* Make backdrop clickable to close but avoid pointer on image */
+#lb-backdrop img {
+    pointer-events: none;
+}
+
+/* Gallery stage layout */
+.lb-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.lb-media {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.lb-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--background-color);
+    color: var(--main-color);
+    border: none;
+    padding: 8px 12px;
+    font-size: 2rem;
+    font-family: var(--default-font);
+    cursor: pointer;
+    z-index: 3;
+}
+
+.lb-prev {
+    left: 40px;
+}
+
+.lb-next {
+    right: 40px;
+}
+
+.lb-thumbs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 6px 10px;
+    width: 100%;
+}
+
+.lb-thumbs .thumb {
+    flex: 0 0 auto;
+    width: 84px;
+    height: 64px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.lb-thumbs .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.lb-thumbs .thumb.selected {
+    border-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Make nav buttons smaller on small screens */
+@media (max-width: 700px) {
+    .lb-nav {
+        font-size: 1.4rem;
+        padding: 6px 8px;
+    }
+
+    .lb-thumbs .thumb {
+        width: 64px;
+        height: 48px;
+    }
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    /* 16:9 aspect ratio */
+    overflow: hidden;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.mobile_only {
+    display: none;
+}
+
+.showcase_smaller {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.showcase_smaller>div {
+    margin-bottom: 20px;
+    border: 2px solid var(--main-color);
+}
+
+@media (max-width: 900px) {
+    .lb-close {
+        top: 10px;
+        right: 10px;
+        font-size: 1.3rem;
+    }
+
+    #main_content {
+        display: block;
+    }
+
+    #assignment_list ul {
+        column-count: 1 !important;
+    }
+
+    #assignment_list {
+        max-width: 100%;
+        min-width: 0px;
+        padding: 5px;
+    }
+
+    #assignment_list a {
+        max-width: 100%;
+        display: block;
+    }
+
+    #assignment_list li {
+        max-width: 100%;
+        min-width: 1px;
+    }
+
+    #assignment_preview {
+        display: none;
+    }
+
+    #name {
+        padding: 5px;
+        background: linear-gradient(0deg, var(--background-color) 70%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    #name h1 {
+        transform: translateY(4vw);
+        font-size: 8vw;
+        padding: 10px;
+    }
+
+    #name_links {
+        display: block;
+    }
+
+    .def_button,
+    .def_button_small {
+        border: 0px;
+        width: 100%;
+        text-align: center;
+        padding: 0px;
+        text-decoration: underline;
+    }
+
+    .def_button_small {
+        display: block;
+        width: 100%;
+        margin: 20px auto;
+        text-align: center;
+    }
+
+    #name_links h2 {
+        font-size: 5vw;
+        padding: 10px;
+    }
+
+    #assignment_desc {
+        width: 100%;
+    }
+
+    #showcase_large {
+        width: 100%;
+    }
+
+    #left_side {
+        margin: 5px;
+    }
+
+    h3 {
+        text-align: center;
+    }
+
+    #showcase_large h2 {
+        font-size: 1.5em !important;
+    }
+
+    #back_button {
+        display: none;
+    }
+
+    #assignment_desc {
+        width: 100% !important;
+    }
+
+    .fotos_grid {
+        display: block;
+    }
+
+    .fotos_grid figure {
+        padding: 10px;
+    }
+
+    #bio {
+        display: block !important;
+    }
+
+    #bio div {
+        width: 100%;
+    }
+
+    .mobile_only {
+        display: block;
+    }
+
+    .showcase_smaller {
+        width: 100%;
+        margin: 0 auto;
+    }
+}
+
+.centered{
+    text-align: center;
+}
+
+die css is van mijn website, ik voeg ook een foto toe
+
+zorg dat het in die stijl is 
+
+39.
+de sliders en knoppen moeten het main kleur hebben
+
+40.
+maak het limiet van max grootte 1000
+
+41.
+verwijder de emojis van de site
+
+42.
+noem het project de "Dynamic poster generator"
+
+43.
+voeg een slider toe voor max kleuren (2-10)
+
+44.
+laat het van 1 - 20 gaan

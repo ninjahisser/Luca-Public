@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8" />
+    <title>The Poster Generator</title>
+    <link rel="stylesheet" href="opdrachten/ThePosterGenerator/style.css" />
+</head>
+<body>
+    <main>
+        <a class="def_button" id="back_button" href="index.html"><- Terug</a>
+
+        <h1>The Poster Generator</h1>
+        <p>
+            Een generatieve poster tool die bij elke druk op de spatiebalk een nieuwe compositie maakt.
+            De tool gebruikt willekeurige vormen, kleuren en posities binnen een vast systeem van regels.
+            <strong>Druk op de spatiebalk</strong> om een nieuwe variant te genereren.
+        </p>
+        
+        <div class="split-container">
+            <div class="left-panel">
+                <div class="input-container">
+                    <label for="posterText">Typ je tekst:</label>
+                    <input type="text" id="posterText" placeholder="Typ hier je boodschap..." value="sethdesign.be">
+                    <p class="hint">De typografie reageert op je tekst: lengte, hoofdletters en speciale karakters beïnvloeden de stijl.</p>
+                </div>
+                
+                <div class="controls-header">
+                    <h3>Vormcontrole</h3>
+                    <button id="randomizeBtn" class="randomize-btn">Randomize</button>
+                </div>
+                
+                <div class="toggle-container">
+                    <input type="checkbox" id="shapeControlToggle" checked>
+                    <label for="shapeControlToggle">Handmatig</label>
+                </div>
+                                
+                <div class="slider-group">
+                    <label for="circleSlider">● Cirkels</label>
+                    <input type="range" id="circleSlider" min="0" max="100" value="50">
+                    <span class="slider-value" id="circleValue">50</span>
+                </div>
+                
+                <div class="slider-group">
+                    <label for="squareSlider">■ Vierkanten</label>
+                    <input type="range" id="squareSlider" min="0" max="100" value="50">
+                    <span class="slider-value" id="squareValue">50</span>
+                </div>
+                
+                <div class="slider-group">
+                    <label for="rectSlider">▬ Rechthoeken</label>
+                    <input type="range" id="rectSlider" min="0" max="100" value="50">
+                    <span class="slider-value" id="rectValue">50</span>
+                </div>
+                
+                <div class="slider-group">
+                    <label for="triangleSlider">▲ Driehoeken</label>
+                    <input type="range" id="triangleSlider" min="0" max="100" value="30">
+                    <span class="slider-value" id="triangleValue">30</span>
+                </div>
+                
+                <div class="slider-group">
+                    <label for="starSlider">★ Sterren</label>
+                    <input type="range" id="starSlider" min="0" max="100" value="20">
+                    <span class="slider-value" id="starValue">20</span>
+                </div>
+                
+                <div class="slider-group">
+                    <label for="maxShapesSlider">Max Vormen</label>
+                    <input type="range" id="maxShapesSlider" min="1" max="2000" value="80">
+                    <span class="slider-value" id="maxShapesValue">80</span>
+                </div>
+                
+                <div class="slider-group">
+                    <label for="maxSizeSlider">Max Grootte</label>
+                    <input type="range" id="maxSizeSlider" min="2" max="1000" value="180">
+                    <span class="slider-value" id="maxSizeValue">180</span>
+                </div>
+                
+                <div class="slider-group">
+                    <label for="maxColorsSlider">Max Kleuren</label>
+                    <input type="range" id="maxColorsSlider" min="1" max="20" value="10">
+                    <span class="slider-value" id="maxColorsValue">10</span>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="action-buttons">
+                    <button id="newPosterBtn" class="new-poster-btn">Nieuwe Poster</button>
+                    <button id="fullscreenBtn" class="fullscreen-btn">Volledig scherm</button>
+                    <button id="saveBtn" class="save-btn">Sla Op</button>
+                    <button id="shareBtn" class="share-btn">Deel</button>
+                </div>
+                <section id="defaultCanvas">
+                    
+                </section>
+            </div>
+        </div>
+        
+        <div class="saved-posters-section">
+            <h2>Opgeslagen Posters (<span id="posterCount">0</span>)</h2>
+            <div class="saved-controls">
+                <button id="slideshowBtn" class="slideshow-btn">▶ Start Slideshow</button>
+            </div>
+            <div id="savedGrid" class="saved-grid"></div>
+        </div>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
+    <script src="opdrachten/ThePosterGenerator/sketch.js"></script>
+</body>
+</html>
