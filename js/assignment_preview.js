@@ -1,11 +1,13 @@
 function previewItem(item) {
     const preview = document.getElementById('assignment_preview');
     const title = item.querySelector('.assignment-title')?.textContent || 'Geen titel';
+    const description = item.querySelector('.assignment-desc')?.textContent || '';
     const src = item.getAttribute('data-preview');
 
-    // Toon loader + titel
+    // Toon loader + titel + beschrijving
     preview.innerHTML = `
         <div id="preview_title">${title}</div>
+        ${description ? `<div id="preview_description">${description}</div>` : ''}
         <div class="loader"></div>
     `;
 

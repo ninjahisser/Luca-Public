@@ -188,6 +188,11 @@ a:hover {
 .assignment-desc {
     font-size: .8em;
     margin-top: 0.2em;
+    display: none;
+}
+
+#assignment_list ul li:hover .assignment-desc {
+    display: block;
 }
 
 .favorites {
@@ -235,9 +240,18 @@ a:hover {
     font-size: 1.2em;
     font-weight: 700;
     color: var(--main-color);
+    margin-bottom: 0.5em;
+    text-align: center;
+    width: 100%;
+}
+
+#preview_description {
+    font-size: 0.9em;
+    color: var(--text-secondary);
     margin-bottom: 1em;
     text-align: center;
     width: 100%;
+    line-height: 1.4;
 }
 
 /* Loader styling */
