@@ -3,11 +3,12 @@ function previewItem(item) {
     const title = item.querySelector('.assignment-title')?.textContent || 'Geen titel';
     const description = item.querySelector('.assignment-desc')?.textContent || '';
     const src = item.getAttribute('data-preview');
+    const isFavorite = item.classList.contains('favorites');
 
     // Toon loader + titel + beschrijving
     preview.innerHTML = `
-        <div id="preview_title">${title}</div>
-        ${description ? `<div id="preview_description">${description}</div>` : ''}
+        <div id="preview_title" class="${isFavorite ? 'favorite' : ''}">${title}</div>
+        ${description ? `<div id="preview_description" class="${isFavorite ? 'favorite' : ''}">${description}</div>` : ''}
         <div class="loader"></div>
     `;
 

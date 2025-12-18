@@ -245,6 +245,10 @@ a:hover {
     width: 100%;
 }
 
+#preview_title.favorite {
+    color: var(--favorite-color);
+}
+
 #preview_description {
     font-size: 0.9em;
     color: var(--text-secondary);
@@ -252,6 +256,10 @@ a:hover {
     text-align: center;
     width: 100%;
     line-height: 1.4;
+}
+
+#preview_description.favorite {
+    color: var(--favorite-color);
 }
 
 /* Loader styling */
