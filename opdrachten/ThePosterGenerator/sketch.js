@@ -717,7 +717,11 @@ function savePoster() {
     verticalText: verticalText,
     gradientBg: gradientBg,
     gradientColor1: gradientBg ? [red(gradientColor1), green(gradientColor1), blue(gradientColor1)] : null,
-    gradientColor2: gradientBg ? [red(gradientColor2), green(gradientColor2), blue(gradientColor2)] : null
+    gradientColor2: gradientBg ? [red(gradientColor2), green(gradientColor2), blue(gradientColor2)] : null,
+    trailEffect: trailEffect,
+    trailAlpha: trailAlpha,
+    colorShiftEffect: colorShiftEffect,
+    colorShiftSpeed: colorShiftSpeed
   };
   
   // Voeg toe aan savedPosters array
@@ -745,7 +749,7 @@ function updateSavedPostersDisplay() {
   grid.html(''); // Clear existing
   
   if (savedPosters.length === 0) {
-    grid.html('<p style="text-align: center; color: #888; padding: 40px;">Nog geen opgeslagen posters.<br>Druk op "💾 Sla Op" om je eerste poster op te slaan!</p>');
+    grid.html('<p style="text-align: center; color: #888; padding: 40px;">Nog geen opgeslagen posters.</p>');
     return;
   }
   
@@ -807,6 +811,10 @@ function loadPoster(index) {
     gradientColor1 = color(poster.gradientColor1[0], poster.gradientColor1[1], poster.gradientColor1[2]);
     gradientColor2 = color(poster.gradientColor2[0], poster.gradientColor2[1], poster.gradientColor2[2]);
   }
+  trailEffect = poster.trailEffect || false;
+  trailAlpha = poster.trailAlpha || 255;
+  colorShiftEffect = poster.colorShiftEffect || false;
+  colorShiftSpeed = poster.colorShiftSpeed || 0;
   
   // Update text input veld
   textInput.value(inputText);
