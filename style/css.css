@@ -125,10 +125,21 @@ a:hover {
     padding: 1em;
     background: white;
     height: auto;
-    /* laat de lijst meegroeien */
     overflow: visible;
-    /* geen interne scroll */
-    display: block;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.list-column {
+    flex: 1 1 0;
+    min-width: 240px;
+}
+
+.assignment-group {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 #assignment_list li {
@@ -167,9 +178,6 @@ a:hover {
     list-style: none;
     padding: 0;
     margin: 0;
-    column-count: 2;
-    column-gap: 30px;
-    /* max-height weggehaald zodat alles mee scrolt */
 }
 
 .assignment-title {
@@ -188,11 +196,19 @@ a:hover {
 .assignment-desc {
     font-size: .8em;
     margin-top: 0.2em;
-    display: none;
+    display: block;
+    opacity: 0;
+    transform: translateY(6px) scaleY(0.5);
+    height: 0px;
+    transform-origin: top;
+    transition: 0.18s ease;
+    pointer-events: none;
 }
 
 #assignment_list ul li:hover .assignment-desc {
-    display: block;
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    height: 40px;
 }
 
 .favorites {
@@ -594,14 +610,15 @@ h3 {
         display: block;
     }
 
-    #assignment_list ul {
-        column-count: 1 !important;
-    }
-
     #assignment_list {
+        display: block;
         max-width: 100%;
         min-width: 0px;
         padding: 5px;
+    }
+
+    #assignment_list ul {
+        column-count: 1 !important;
     }
 
     #assignment_list a {
