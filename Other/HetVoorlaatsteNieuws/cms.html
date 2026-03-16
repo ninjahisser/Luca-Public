@@ -71,6 +71,11 @@
         </section>
     </div>
     <script src="/js/config.js"></script>
+    <script>
+        if (!USE_LOCAL_API) {
+            window.location.replace(PRODUCTION_BACKEND_URL + '/cms');
+        }
+    </script>
     <script src="/js/cms.js"></script>
 </body>
 </html>

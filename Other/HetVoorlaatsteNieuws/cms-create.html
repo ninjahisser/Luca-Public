@@ -64,6 +64,11 @@
     </div>
 
     <script src="/js/config.js"></script>
+    <script>
+        if (!USE_LOCAL_API) {
+            window.location.replace(PRODUCTION_BACKEND_URL + '/cms-create');
+        }
+    </script>
     <script src="/js/cms-create.js"></script>
 </body>
 </html>

@@ -223,7 +223,7 @@ class ArticleLoader {
                 </div>
             `
             : `
-                <img src="${imageUrl || 'https://via.placeholder.com/800x450'}" 
+                <img src="${resolveMediaUrl(imageUrl) || 'https://via.placeholder.com/800x450'}" 
                      alt="${article.title}" 
                      class="article-image"
                      loading="lazy"
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (heroArticle) {
             const heroSrc = loader.getFirstImage(heroArticle);
             if (heroSrc && heroImage) {
-                heroImage.style.backgroundImage = `url('${heroSrc}')`;
+                heroImage.style.backgroundImage = `url('${resolveMediaUrl(heroSrc)}')`;
             }
             if (heroTitle) {
                 heroTitle.textContent = heroArticle.title || '';

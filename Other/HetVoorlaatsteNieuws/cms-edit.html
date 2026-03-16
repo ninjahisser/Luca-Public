@@ -65,6 +65,11 @@
     </div>
 
     <script src="/js/config.js"></script>
+    <script>
+        if (!USE_LOCAL_API) {
+            window.location.replace(PRODUCTION_BACKEND_URL + '/cms-edit' + window.location.search);
+        }
+    </script>
     <script src="/js/cms-edit.js"></script>
 </body>
 </html>

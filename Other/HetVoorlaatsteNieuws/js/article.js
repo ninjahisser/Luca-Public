@@ -19,7 +19,7 @@ function renderComponents(components) {
             return `<p class="article-text">${component.content || ''}</p>`;
         }
         if (component.type === 'image') {
-            return `<img class="article-media" src="${component.src}" alt="${component.alt || 'Artikel afbeelding'}">`;
+            return `<img class="article-media" src="${resolveMediaUrl(component.src)}" alt="${component.alt || 'Artikel afbeelding'}">`;  
         }
         if (component.type === 'video') {
             const src = component.src || '';
@@ -52,13 +52,13 @@ function renderComponents(components) {
                 // Direct video file
                 const autoplayAttr = component.autoplay ? 'autoplay' : '';
                 const muteAttr = component.mute ? 'muted' : '';
-                videoHtml = `<video class="article-media" controls ${autoplayAttr} ${muteAttr}><source src="${src}"></video>`;
+                videoHtml = `<video class="article-media" controls ${autoplayAttr} ${muteAttr}><source src="${resolveMediaUrl(src)}"></video>`;
             }
             
             return videoHtml;
         }
         if (component.type === 'audio') {
-            return `<audio class="article-audio" controls><source src="${component.src}"></audio>`;
+            return `<audio class="article-audio" controls><source src="${resolveMediaUrl(component.src)}"></audio>`;
         }
         return '';
     }).join('');
