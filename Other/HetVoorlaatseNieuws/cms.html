@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS - Artikelbeheer</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="cms-page">
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="nav-top-bar">
+                <a href="/" class="logo" style="text-decoration: none; color: inherit;">HVLN CMS</a>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Terug naar site</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="content-wrapper">
+        <h1 class="cms-title">Artikelbeheer & Statistieken</h1>
+        <section id="cms-stats" class="cms-section">
+            <h2>Statistieken</h2>
+            <div id="stats-container"></div>
+        </section>
+        <section id="cms-articles" class="cms-section">
+            <h2>Artikels</h2>
+            <button id="add-article-btn">Nieuw artikel toevoegen</button>
+            <div id="articles-container"></div>
+        </section>
+        <section id="cms-homepage" class="cms-section">
+            <h2>Homepage sidebar</h2>
+            <div class="cms-field-grid">
+                <div class="cms-form-row">
+                    <label for="newsletterTitleInput">Nieuwsbrief titel</label>
+                    <input id="newsletterTitleInput" type="text" class="cms-input">
+                </div>
+                <div class="cms-form-row">
+                    <label for="newsletterTextInput">Nieuwsbrief tekst</label>
+                    <input id="newsletterTextInput" type="text" class="cms-input">
+                </div>
+                <div class="cms-form-row">
+                    <label for="newsletterButtonTextInput">Nieuwsbrief knop tekst</label>
+                    <input id="newsletterButtonTextInput" type="text" class="cms-input">
+                </div>
+                <div class="cms-form-row">
+                    <label for="newsletterButtonLinkInput">Nieuwsbrief knop link</label>
+                    <input id="newsletterButtonLinkInput" type="text" class="cms-input">
+                </div>
+                <div class="cms-form-row">
+                    <label for="workshopTitleInput">Workshop titel</label>
+                    <input id="workshopTitleInput" type="text" class="cms-input">
+                </div>
+                <div class="cms-form-row">
+                    <label for="workshopTextInput">Workshop tekst</label>
+                    <input id="workshopTextInput" type="text" class="cms-input">
+                </div>
+                <div class="cms-form-row">
+                    <label for="workshopButtonTextInput">Workshop knop tekst</label>
+                    <input id="workshopButtonTextInput" type="text" class="cms-input">
+                </div>
+                <div class="cms-form-row">
+                    <label for="workshopButtonLinkInput">Workshop knop link</label>
+                    <input id="workshopButtonLinkInput" type="text" class="cms-input">
+                </div>
+            </div>
+            <div class="cms-actions">
+                <button id="save-homepage-btn" class="cms-button">Opslaan</button>
+                <span id="homepage-status" class="cms-status"></span>
+            </div>
+        </section>
+    </div>
+    <script src="/js/config.js"></script>
+    <script src="/js/cms.js"></script>
+</body>
+</html>
