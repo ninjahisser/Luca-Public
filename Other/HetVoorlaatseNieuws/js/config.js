@@ -1,6 +1,6 @@
 // API Configuration
 // Toggle between local development and production
-const USE_LOCAL_API = true; // Set to false to use production PythonAnywhere API
+const USE_LOCAL_API = false; // Set to false to use production PythonAnywhere API
 
 const LOCAL_API_URL = 'http://127.0.0.1:5000/api';
 const PRODUCTION_API_URL = 'https://SethVdB.pythonanywhere.com/api';
