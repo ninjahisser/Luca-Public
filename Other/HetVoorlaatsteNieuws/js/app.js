@@ -350,8 +350,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const [groupsData, siteSettings, articlesData] = await Promise.all([
             loader.loadGroups(),
-            fetch('http://127.0.0.1:5000/api/site').then(res => res.ok ? res.json() : null),
-            fetch('http://127.0.0.1:5000/api/articles').then(res => res.ok ? res.json() : [])
+            fetch(`${API_BASE_URL}/site`).then(res => res.ok ? res.json() : null),
+            fetch(`${API_BASE_URL}/articles`).then(res => res.ok ? res.json() : [])
         ]);
         loadingEl.style.display = 'none';
 
