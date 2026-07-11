@@ -116,15 +116,7 @@ function warmPreviewSource(src) {
     }
 
     if (src.includes('vimeo.com') || src.includes('youtube.com') || src.includes('youtu.be')) {
-        const iframe = document.createElement('iframe');
-        iframe.src = src;
-        iframe.width = '1';
-        iframe.height = '1';
-        iframe.frameBorder = '0';
-        iframe.allow = 'autoplay; fullscreen; picture-in-picture';
-        iframe.loading = 'eager';
-        getPreloadHost().appendChild(iframe);
-        previewElementCache.set(src, iframe.cloneNode(true));
+        preconnectDomains();
         return;
     }
 
@@ -136,10 +128,11 @@ function warmPreviewSource(src) {
 
 function warmPreviewCache() {
     const previewItems = Array.from(document.querySelectorAll('#assignment_list li[data-preview]'));
+    const maxWarmCount = 3;
     let queueIndex = 0;
 
     function warmNext() {
-        if (queueIndex >= previewItems.length) {
+        if (queueIndex >= previewItems.length || queueIndex >= maxWarmCount) {
             return;
         }
 

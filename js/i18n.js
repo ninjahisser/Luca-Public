@@ -78,6 +78,7 @@
     ];
 
     var SUPPORTED_CODES = LANGUAGES.map(function (item) {
+        return item.code;
     });
 
     function getSavedLanguage() {
@@ -108,7 +109,9 @@
         }
 
         var languageData = findLanguage(language) || findLanguage(DEFAULT_LANGUAGE);
-        trigger.innerHTML = '<span class="flag">' + languageData.flag + '</span><span class="code">' + languageData.code.toUpperCase() + '</span>';
+        trigger.classList.add("notranslate");
+        trigger.setAttribute("translate", "no");
+        trigger.innerHTML = '<span class="flag notranslate" translate="no">' + languageData.flag + '</span><span class="code notranslate" translate="no">' + languageData.code.toUpperCase() + '</span>';
     }
 
     function findLanguage(language) {
@@ -575,6 +578,8 @@
         var trigger = document.createElement("button");
         trigger.type = "button";
         trigger.id = "lang-current";
+        trigger.className = "notranslate";
+        trigger.setAttribute("translate", "no");
         trigger.setAttribute("aria-label", "Open language picker");
         trigger.addEventListener("click", function () {
             togglePanel();

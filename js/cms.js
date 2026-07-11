@@ -35,6 +35,7 @@
         articleCategory: document.getElementById("articleCategory"),
         articleDesc: document.getElementById("articleDesc"),
         articlePreview: document.getElementById("articlePreview"),
+        articlePreviewPicker: document.getElementById("articlePreviewPicker"),
         articleMainColor: document.getElementById("articleMainColor"),
         articleMainColorText: document.getElementById("articleMainColorText"),
         articleSecondaryColor: document.getElementById("articleSecondaryColor"),
@@ -325,6 +326,56 @@
     function getInlinePaletteCss(doc) {
         var style = doc ? doc.getElementById("cms-palette-inline") : null;
         return style ? style.textContent || "" : "";
+    }
+
+    function extractComputedPalette(doc) {
+        if (!doc || !doc.documentElement) {
+            return null;
+        }
+
+        var rootStyle = window.getComputedStyle(doc.documentElement);
+        var bodyStyle = doc.body ? window.getComputedStyle(doc.body) : null;
+        var mainColor = normalizeColorValue(rootStyle.getPropertyValue("--main-color"));
+        var secondaryColor = normalizeColorValue(rootStyle.getPropertyValue("--secondary-color"));
+        var backgroundColor = normalizeColorValue(rootStyle.getPropertyValue("--background-color")) || (bodyStyle ? normalizeColorValue(bodyStyle.backgroundColor) : "");
+
+        if (!mainColor && !secondaryColor && !backgroundColor) {
+            return null;
+        }
+
+        return {
+            mainColor: mainColor,
+            secondaryColor: secondaryColor,
+            backgroundColor: backgroundColor
+        };
+    }
+
+    function syncSelectedWorkPaletteFromPreview() {
+        var work = state.selectedWork;
+        var doc = el.workPreview.contentDocument;
+        if (!work || !doc) {
+            return;
+        }
+
+        var computed = extractComputedPalette(doc);
+        if (!computed) {
+            return;
+        }
+
+        var nextPalette = work.palette || { mainColor: "", secondaryColor: "", backgroundColor: "" };
+        var changed = false;
+
+        ["mainColor", "secondaryColor", "backgroundColor"].forEach(function (key) {
+            if (computed[key] && nextPalette[key] !== computed[key]) {
+                nextPalette[key] = computed[key];
+                changed = true;
+            }
+        });
+
+        if (changed) {
+            work.palette = nextPalette;
+            renderArticleProps();
+        }
     }
 
     function patchPreviewPalette() {
@@ -717,6 +768,7 @@
         var parser = new DOMParser();
         work.doc = parser.parseFromString(html, "text/html");
         work.styleHref = getWorkStyleHref(work.doc, work.href);
+        var inlinePaletteCss = getInlinePaletteCss(work.doc);
 
         if (work.styleHref) {
             if (state.mode === "fs" && state.dirHandle) {
@@ -725,9 +777,10 @@
             } else {
                 work.styleText = await tryFetchSiteFile("/" + normalizePath(work.styleHref));
             }
+        }
 
-            var inlinePaletteCss = getInlinePaletteCss(work.doc);
-            var paletteSource = inlinePaletteCss || work.styleText;
+        var paletteSource = inlinePaletteCss || work.styleText || "";
+        if (paletteSource) {
             work.palette = {
                 mainColor: normalizeColorValue(parseCssVar(paletteSource, "main-color")) || "#000000",
                 secondaryColor: normalizeColorValue(parseCssVar(paletteSource, "secondary-color")) || normalizeColorValue(parseCssVar(paletteSource, "main-color")) || "#6f5cff",
@@ -892,6 +945,18 @@
         el.articleBackgroundColorText.value = work.palette && work.palette.backgroundColor ? work.palette.backgroundColor : "#ffffff";
         el.articleFavorite.checked = !!work.favorite;
         el.previewPath.textContent = work.href;
+    }
+
+    function applyPreviewMediaSelection(serverPath) {
+        if (!state.selectedWork || !serverPath) {
+            return;
+        }
+
+        state.selectedWork.preview = serverPath;
+        el.articlePreview.value = serverPath;
+        state.dirty = true;
+        renderWorkList();
+        renderArticleProps();
     }
 
     function renderComponentList() {
@@ -1818,6 +1883,8 @@
                 el.workPreview.classList.remove("is-mobile-preview");
             }
 
+            syncSelectedWorkPaletteFromPreview();
+
             applyPreviewSelectionState();
         }, { once: true });
 
@@ -1903,6 +1970,21 @@
             state.selectedWork.preview = el.articlePreview.value;
             state.dirty = true;
         });
+
+        if (el.articlePreviewPicker) {
+            el.articlePreviewPicker.addEventListener("click", function () {
+                if (!state.selectedWork) {
+                    return;
+                }
+
+                openImagePicker(function (serverPath) {
+                    state.selectedWork.preview = serverPath;
+                    el.articlePreview.value = serverPath;
+                    renderWorkList();
+                    state.dirty = true;
+                });
+            });
+        }
 
         el.articleMainColor.addEventListener("input", function () {
             applyPaletteInput("mainColor", el.articleMainColor.value);
