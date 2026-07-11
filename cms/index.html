@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="nl" class="notranslate">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS - Works</title>
+    <link rel="stylesheet" href="../style/css.css">
+    <link rel="stylesheet" href="../style/cms.css">
+</head>
+<body class="cms-page notranslate">
+    <header class="cms-topbar">
+        <div class="cms-top-actions">
+            <a class="def_button_small" id="back_button" href="../index.html">⟵ Back</a>
+            <button id="showWorksBtn" class="def_button_small is-hidden" type="button">Works</button>
+            <button id="connectFolderBtn" class="def_button_small" type="button">Connect Folder</button>
+            <button id="saveAllBtn" class="def_button_small" type="button">Save Files</button>
+            <button id="newWorkBtn" class="def_button_small" type="button">Nieuw Work</button>
+        </div>
+        <div id="cmsTarget" class="cms-target">No local write target</div>
+    </header>
+
+    <main class="cms-layout">
+        <aside class="cms-articles-panel">
+            <section id="worksPanel" class="side-panel collapsible-panel">
+                <div class="panel-header">
+                    <h2>Works</h2>
+                    <button class="collapse-toggle" data-target="worksPanelBody" type="button" aria-expanded="true">−</button>
+                </div>
+                <div id="worksPanelBody" class="panel-body">
+                    <input id="workSearch" type="text" placeholder="Search works">
+                    <ul id="workList" class="work-list"></ul>
+                </div>
+            </section>
+
+            <section id="componentsPanel" class="side-panel collapsible-panel is-hidden">
+                <div class="panel-header">
+                    <h2>Components</h2>
+                    <button class="collapse-toggle" data-target="componentsPanelBody" type="button" aria-expanded="true">−</button>
+                </div>
+                <div id="componentsPanelBody" class="panel-body">
+                    <div class="component-buttons component-buttons-inline">
+                        <button class="def_button_small" data-add="heading" type="button">+ Title</button>
+                        <button class="def_button_small" data-add="paragraph" type="button">+ Paragraph</button>
+                        <button class="def_button_small" data-add="image" type="button">+ Image</button>
+                        <button class="def_button_small" data-add="iframe" type="button">+ Video</button>
+                        <button class="def_button_small" data-add="video" type="button">+ Video Tag</button>
+                        <button class="def_button_small" data-add="palette" type="button">+ Palette</button>
+                        <button class="def_button_small" data-add="list" type="button">+ List</button>
+                    </div>
+                    <ul id="componentList" class="component-list"></ul>
+                </div>
+            </section>
+        </aside>
+
+        <section id="cmsEmptyState" class="cms-empty-state">
+            <h2>Select a work to open editor</h2>
+            <p>Choose a work from the list on the left. Preview, components and properties will load here.</p>
+        </section>
+
+        <section id="cmsEditorPanel" class="cms-editor-panel is-hidden">
+            <div class="preview-wrap collapsible-panel">
+                <div class="panel-header">
+                    <h2>Preview</h2>
+                    <div class="panel-tools">
+                        <span id="previewPath" class="muted"></span>
+                        <button id="previewMobileBtn" class="def_button_small" type="button">Mobile</button>
+                        <button id="previewFullscreenBtn" class="def_button_small" type="button">Fullscreen</button>
+                        <button class="collapse-toggle" data-target="previewBody" type="button" aria-expanded="true">−</button>
+                    </div>
+                </div>
+                <div id="previewBody" class="panel-body">
+                    <iframe id="workPreview" title="Work preview"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <aside id="cmsPropsPanel" class="cms-props-panel is-hidden">
+            <section class="props-card collapsible-panel">
+                <div class="panel-header">
+                    <h2>Article Properties</h2>
+                    <button class="collapse-toggle" data-target="articlePropsBody" type="button" aria-expanded="true">−</button>
+                </div>
+                <div id="articlePropsBody" class="panel-body">
+                    <label>Name
+                        <input id="articleTitle" type="text">
+                    </label>
+                    <label>Categories
+                        <input id="articleCategory" type="text">
+                    </label>
+                    <label>Description (index)
+                        <textarea id="articleDesc" rows="3"></textarea>
+                    </label>
+                    <label>Preview media URL
+                        <input id="articlePreview" type="text" placeholder="https://...">
+                    </label>
+                    <label>Main color
+                        <div class="color-row">
+                            <input id="articleMainColor" type="color">
+                            <input id="articleMainColorText" type="text" placeholder="#000000">
+                        </div>
+                    </label>
+                    <label>Secondary color
+                        <div class="color-row">
+                            <input id="articleSecondaryColor" type="color">
+                            <input id="articleSecondaryColorText" type="text" placeholder="#6f5cff">
+                        </div>
+                    </label>
+                    <label>Background color
+                        <div class="color-row">
+                            <input id="articleBackgroundColor" type="color">
+                            <input id="articleBackgroundColorText" type="text" placeholder="#ffffff">
+                        </div>
+                    </label>
+                    <label class="checkline">
+                        <input id="articleFavorite" type="checkbox">
+                        Favorite (star on homepage)
+                    </label>
+                </div>
+            </section>
+
+            <section class="props-card collapsible-panel">
+                <div class="panel-header">
+                    <h2>Component Properties</h2>
+                    <button class="collapse-toggle" data-target="componentPropsBody" type="button" aria-expanded="true">−</button>
+                </div>
+                <div id="componentPropsBody" class="panel-body">
+                    <div id="componentPropsEmpty" class="muted">Select a component on the left.</div>
+                    <div id="componentProps"></div>
+                    <div class="component-actions">
+                        <button id="moveUpBtn" class="def_button_small" type="button">Upwards</button>
+                        <button id="moveDownBtn" class="def_button_small" type="button">Down</button>
+                        <button id="deleteComponentBtn" class="def_button_small danger" type="button">Remove</button>
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </main>
+
+    <div id="serverImagePicker" class="picker-overlay is-hidden" role="dialog" aria-modal="true" aria-label="Server image picker">
+        <div class="picker-card">
+            <div class="panel-header">
+                <h2>Choose image from server</h2>
+                <button id="pickerCloseBtn" class="def_button_small" type="button">Close</button>
+            </div>
+            <input id="pickerSearch" type="text" placeholder="Search images">
+            <div id="pickerGrid" class="picker-grid"></div>
+        </div>
+    </div>
+
+    <div id="cmsStatus" class="cms-status">Nog niet verbonden met map.</div>
+
+    <script src="../js/cms.js"></script>
+</body>
+</html>

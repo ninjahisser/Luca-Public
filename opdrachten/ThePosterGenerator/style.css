@@ -8,17 +8,27 @@
 
 .def_button,
 .def_button_small {
-    font-size: 1.5em;
-    padding: 5px;
+    font-size: 1.05rem;
+    padding: 10px 14px;
     text-transform: uppercase;
     border: 2px solid var(--main-color);
+    letter-spacing: .08em;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .45em;
+    text-decoration: none;
+    transition: background-color .14s ease, color .14s ease, transform .14s ease, box-shadow .14s ease;
     box-sizing: border-box;
 }
 
 .def_button:hover,
 .def_button_small:hover {
     background: var(--main-color);
-    color: white;
+    color: var(--background-color);
+    transform: translate(-3px, -3px);
+    box-shadow: 3px 3px 0 color-mix(in srgb, var(--main-color) 45%, transparent);
 }
 
 .def_button_small {
@@ -40,15 +50,23 @@ body {
     font-family: 'Geist Mono', monospace;
     background: var(--background-color);
     color: var(--text-primary);
-    padding: 20px;
+    padding: 24px;
     min-height: 100vh;
 }
 
 main {
-    max-width: 1600px;
+    max-width: 1400px;
     margin: 0 auto;
     background: var(--background-color);
-    padding: clamp(20px, 4vw, 40px);
+    padding: clamp(24px, 4vw, 42px);
+}
+
+#back_button {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 3000;
+    background: var(--background-color);
 }
 
 h1 {
@@ -562,6 +580,101 @@ canvas:fullscreen {
     .saved-posters-section {
         display: none;
     }
+}
+
+/* FINAL lock: unify all buttons to portfolio base behavior */
+.def_button,
+.def_button_small,
+.randomize-btn,
+.new-poster-btn,
+.fullscreen-btn,
+.save-btn,
+.share-btn,
+.slideshow-btn,
+.load-btn,
+.delete-btn-small {
+    font-family: 'Geist Mono', monospace !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .08em !important;
+    border: 2px solid var(--main-color) !important;
+    background: var(--background-color) !important;
+    color: var(--main-color) !important;
+    padding: 10px 14px !important;
+    text-decoration: none !important;
+    line-height: 1.2 !important;
+    transition: background-color .14s ease, color .14s ease, transform .14s ease, box-shadow .14s ease !important;
+}
+
+.def_button:hover,
+.def_button_small:hover,
+.randomize-btn:hover,
+.new-poster-btn:hover,
+.fullscreen-btn:hover,
+.save-btn:hover,
+.share-btn:hover,
+.slideshow-btn:hover,
+.load-btn:hover,
+.delete-btn-small:hover {
+    background: var(--main-color) !important;
+    color: var(--background-color) !important;
+    transform: translate(-3px, -3px) !important;
+    box-shadow: 3px 3px 0 color-mix(in srgb, var(--main-color) 45%, transparent) !important;
+}
+
+#back_button {
+    position: fixed !important;
+    top: 16px !important;
+    left: 16px !important;
+    z-index: 3000 !important;
+}
+
+/* Final consistency overrides: keep all generator buttons in one system */
+.def_button,
+.def_button_small,
+.randomize-btn,
+.new-poster-btn,
+.fullscreen-btn,
+.save-btn,
+.share-btn,
+.slideshow-btn,
+.load-btn,
+.delete-btn-small {
+    font-family: 'Geist Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    border: 2px solid var(--main-color);
+    background: var(--background-color);
+    color: var(--main-color);
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background-color .14s ease, color .14s ease, transform .14s ease, box-shadow .14s ease;
+}
+
+.def_button:hover,
+.def_button_small:hover,
+.randomize-btn:hover,
+.new-poster-btn:hover,
+.fullscreen-btn:hover,
+.save-btn:hover,
+.share-btn:hover,
+.slideshow-btn:hover,
+.load-btn:hover,
+.delete-btn-small:hover {
+    background: var(--main-color);
+    color: var(--background-color);
+    transform: translate(-3px, -3px);
+    box-shadow: 3px 3px 0 color-mix(in srgb, var(--main-color) 45%, transparent);
+}
+
+#back_button {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 3000;
 }
 
 

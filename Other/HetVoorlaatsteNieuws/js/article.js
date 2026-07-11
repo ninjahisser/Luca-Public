@@ -14,9 +14,14 @@ function getArticleId() {
 }
 
 function renderComponents(components) {
+    let textIndex = 0;
     return (components || []).map(component => {
         if (component.type === 'text') {
-            return `<p class="article-text">${component.content || ''}</p>`;
+            const variants = ['offset-left', 'offset-right', 'block-note', ''];
+            const variant = variants[textIndex % variants.length];
+            textIndex += 1;
+            const classes = variant ? `article-text ${variant}` : 'article-text';
+            return `<p class="${classes}">${component.content || ''}</p>`;
         }
         if (component.type === 'image') {
             return `<img class="article-media" src="${resolveMediaUrl(component.src)}" alt="${component.alt || 'Artikel afbeelding'}">`;  

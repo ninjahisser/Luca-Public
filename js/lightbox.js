@@ -8,6 +8,27 @@
 */
 
 document.addEventListener('DOMContentLoaded', function () {
+    if (!document.getElementById('lightbox')) {
+        const lightbox = document.createElement('div');
+        lightbox.id = 'lightbox';
+        lightbox.setAttribute('aria-hidden', 'true');
+        lightbox.innerHTML = `
+            <div class="lb-backdrop" id="lb-backdrop">
+                <div class="lb-stage" role="dialog" aria-modal="true" aria-label="Image gallery preview">
+                    <button class="lb-close" id="lb-close" aria-label="Close preview">×</button>
+                    <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous image">‹</button>
+                    <div class="lb-media">
+                        <img src="" alt="" id="lb-image">
+                        <div class="lb-caption" id="lb-caption"></div>
+                    </div>
+                    <button class="lb-nav lb-next" id="lb-next" aria-label="Next image">›</button>
+                    <div class="lb-thumbs" id="lb-thumbs" aria-hidden="false"></div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(lightbox);
+    }
+
     const lb = document.getElementById('lightbox');
     const lbBackdrop = document.getElementById('lb-backdrop');
     const lbImage = document.getElementById('lb-image');
@@ -17,11 +38,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const lbNext = document.getElementById('lb-next');
     const lbThumbs = document.getElementById('lb-thumbs');
 
-    // gather images from the page
-    const galleryImgs = Array.from(document.querySelectorAll('.fotos_grid img'));
+    // gather images from the work content automatically
+    const galleryImgs = Array.from(
+        document.querySelectorAll('#assignment_desc img:not(#lb-image):not(#lb-thumbs img)')
+    ).filter(img => img.closest('#lightbox') === null);
     if (!galleryImgs.length) return; // nothing to do
-    // Ensure page images are lazy-loaded for performance
-    galleryImgs.forEach(img => { img.loading = 'lazy'; });
+    // Prioritize first visible images and lazy-load the rest.
+    galleryImgs.forEach((img, idx) => {
+        img.decoding = 'async';
+        img.fetchPriority = idx < 10 ? 'high' : 'auto';
+        img.loading = idx < 14 ? 'eager' : 'lazy';
+    });
 
     const items = galleryImgs.map(img => ({
         thumb: img.src,
@@ -63,14 +90,31 @@ document.addEventListener('DOMContentLoaded', function () {
         currentIndex = idx;
         const it = items[idx];
         lbImage.src = it.full;
+        lbImage.decoding = 'async';
         lbImage.alt = it.alt;
         lbCaption.textContent = it.alt || '';
         lb.classList.add('open');
         lb.setAttribute('aria-hidden', 'false');
         setActiveThumb(idx);
+        preloadNearby(idx);
         // focus the close button so keyboard users can easily close
         lbClose.focus();
         document.addEventListener('keydown', onKeydown);
+    }
+
+    function preloadNearby(idx) {
+        const nearby = [
+            (idx + 1) % items.length,
+            (idx + 2) % items.length,
+            (idx - 1 + items.length) % items.length
+        ];
+
+        nearby.forEach((itemIndex) => {
+            const img = new Image();
+            img.decoding = 'async';
+            img.loading = 'eager';
+            img.src = items[itemIndex].full;
+        });
     }
 
     function closeLightbox(){
@@ -99,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
         else if (e.key === 'ArrowRight') next();
     }
 
-    // Attach click handlers to page images to open the gallery
+    // Attach click handlers to all detected images to open the gallery
     galleryImgs.forEach((img, idx) => {
         // make thumbnails focusable for accessibility
         img.tabIndex = 0;
