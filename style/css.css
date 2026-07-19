@@ -162,6 +162,156 @@ a:hover {
     margin-right: 10px;
 }
 
+#bio {
+    display: grid;
+    grid-template-columns: minmax(240px, 330px) minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: start;
+    max-width: 1180px;
+}
+
+#bio > div {
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+}
+
+#bio > div > p {
+    margin: 0;
+    max-width: 68ch;
+}
+
+#bio > div > h2 {
+    margin-top: 1.15rem;
+}
+
+#bio > div > h2:first-child {
+    margin-top: 0;
+}
+
+#seth_photo {
+    margin: 0;
+    position: sticky;
+    top: 24px;
+    align-self: start;
+}
+
+#seth_photo img {
+    display: block;
+    width: 100%;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+.skill_categories {
+    display: grid;
+    grid-template-columns: minmax(0, 760px);
+    gap: .9rem;
+    margin-top: .5rem;
+}
+
+.skill_category {
+    display: grid;
+    gap: .35rem;
+    padding: .85rem 0 .65rem;
+    border-top: 1px solid color-mix(in srgb, var(--main-color) 18%, transparent);
+}
+
+.skill_category h3 {
+    margin: 0;
+    font-size: .8rem;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.skill_row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem .85rem;
+    align-items: center;
+}
+
+.skill_item {
+    display: inline-flex;
+    align-items: center;
+    gap: .4em;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--main-color);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    width: fit-content;
+    box-sizing: border-box;
+    text-decoration: none;
+    transition: color .14s ease, opacity .14s ease;
+}
+
+.skill_item:hover {
+    background: transparent;
+    color: var(--secondary-color);
+    text-decoration: none;
+    transform: none;
+    box-shadow: none;
+}
+
+.skill_logo {
+    width: .95em;
+    height: .95em;
+    object-fit: contain;
+    flex: none;
+    display: block;
+}
+
+@media (max-width: 900px) {
+    #bio {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    #seth_photo {
+        position: static;
+        max-width: 320px;
+    }
+
+    .skill_categories {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    #bio {
+        gap: 1.25rem;
+    }
+
+    #bio > div > p {
+        max-width: none;
+    }
+
+    .skill_sublist {
+        padding-left: 0;
+    }
+
+    .skill_item {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+body.about-page #name {
+    transition: transform .28s ease, opacity .28s ease;
+}
+
+body.about-page.name-hidden #name {
+    opacity: 0;
+    pointer-events: none;
+}
+
 #assignment_list {
     flex: 0 0 50vw;
     max-width: 50vw;
@@ -534,6 +684,52 @@ body.work-page #assignment_desc h3 {
     margin-top: 30px;
     padding-top: 10px;
     border-top: none;
+}
+
+.work-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem .7rem;
+    margin: .6rem 0 1.15rem;
+    max-width: 74ch;
+}
+
+.work-tool {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .28rem .62rem;
+    border: 1px solid color-mix(in srgb, var(--main-color) 18%, transparent);
+    background: color-mix(in srgb, var(--background-color) 92%, var(--main-color) 8%);
+    color: var(--main-color);
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color .14s ease, border-color .14s ease, background-color .14s ease, transform .14s ease;
+}
+
+.work-tool::before {
+    content: "";
+    width: .95em;
+    height: .95em;
+    flex: none;
+    display: inline-block;
+    background: var(--tool-icon, none) center center / contain no-repeat;
+}
+
+.work-tool:hover {
+    color: var(--secondary-color);
+    border-color: color-mix(in srgb, var(--secondary-color) 40%, transparent);
+    background: color-mix(in srgb, var(--background-color) 88%, var(--secondary-color) 12%);
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+body.work-page .work-tools {
+    margin: .35rem 0 1rem;
 }
 
 #bio figure {

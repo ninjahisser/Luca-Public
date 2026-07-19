@@ -34,6 +34,7 @@
         articleTitle: document.getElementById("articleTitle"),
         articleCategory: document.getElementById("articleCategory"),
         articleDesc: document.getElementById("articleDesc"),
+        articleTools: document.getElementById("articleTools"),
         articlePreview: document.getElementById("articlePreview"),
         articlePreviewPicker: document.getElementById("articlePreviewPicker"),
         articleMainColor: document.getElementById("articleMainColor"),
@@ -272,6 +273,110 @@
             return hex.length === 1 ? "0" + hex : hex;
         };
         return "#" + toHex(rgbMatch[1]) + toHex(rgbMatch[2]) + toHex(rgbMatch[3]);
+    }
+
+    function splitToolsList(value) {
+        return (value || "")
+            .split(/[\n,]+/)
+            .map(function (item) {
+                return item.trim();
+            })
+            .filter(Boolean);
+    }
+
+    function toolUrlForName(name) {
+        var catalog = {
+            "Adobe Creative Cloud": "https://www.adobe.com/creativecloud.html",
+            "Creative Cloud": "https://www.adobe.com/creativecloud.html",
+            Photoshop: "https://www.adobe.com/products/photoshop.html",
+            Illustrator: "https://www.adobe.com/products/illustrator.html",
+            XD: "https://www.adobe.com/products/xd.html",
+            "After Effects": "https://www.adobe.com/products/aftereffects.html",
+            "Premiere Pro": "https://www.adobe.com/products/premiere.html",
+            Lightroom: "https://www.adobe.com/products/photoshop-lightroom.html",
+            Audition: "https://www.adobe.com/products/audition.html",
+            Animate: "https://www.adobe.com/products/animate.html",
+            Blender: "https://www.blender.org/",
+            "Unreal Engine": "https://www.unrealengine.com/",
+            Cascadeur: "https://cascadeur.com/",
+            Aseprite: "https://www.aseprite.org/",
+            ComfyUI: "https://github.com/comfyanonymous/ComfyUI",
+            GitHub: "https://github.com/",
+            "VS Code": "https://code.visualstudio.com/",
+            "Visual Studio": "https://visualstudio.microsoft.com/",
+            "C++": "https://isocpp.org/",
+            Python: "https://www.python.org/",
+            Steamworks: "https://partner.steamgames.com/doc/home",
+            Figma: "https://www.figma.com/",
+            HTML: "https://developer.mozilla.org/en-US/docs/Web/HTML",
+            CSS: "https://developer.mozilla.org/en-US/docs/Web/CSS",
+            JavaScript: "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+            "3D print slicers": "https://www.prusa3d.com/page/prusaslicer_424/",
+            "Bambu Lab": "https://bambulab.com/",
+            "p5.js": "https://p5js.org/",
+            "Lottie Files": "https://lottiefiles.com/"
+        };
+
+        return catalog[name] || "";
+    }
+
+    function parseToolsFromDoc(doc) {
+        var toolsNode = doc ? doc.getElementById("work_tools") : null;
+        if (!toolsNode) {
+            return [];
+        }
+
+        var items = Array.from(toolsNode.querySelectorAll("a, li, span, .work-tool")).map(function (node) {
+            return (node.textContent || "").trim();
+        }).filter(Boolean);
+
+        if (!items.length) {
+            items = splitToolsList(toolsNode.textContent || "");
+        }
+
+        return items;
+    }
+
+    function renderToolsBlock(doc, work) {
+        var showcase = doc.querySelector("#showcase_large");
+        if (!showcase) {
+            return null;
+        }
+
+        var existing = doc.getElementById("work_tools");
+        if (!work.tools || !work.tools.length) {
+            if (existing) {
+                existing.remove();
+            }
+            return null;
+        }
+
+        var node = existing || doc.createElement("div");
+        node.id = "work_tools";
+        node.className = "work-tools";
+        node.innerHTML = "";
+
+        work.tools.forEach(function (toolName) {
+            var link = doc.createElement("a");
+            var url = toolUrlForName(toolName);
+            link.className = "work-tool";
+            link.textContent = toolName;
+            if (url) {
+                link.href = url;
+                link.target = "_blank";
+                link.rel = "noreferrer noopener";
+            }
+            node.appendChild(link);
+        });
+
+        var title = showcase.querySelector("h2");
+        if (title) {
+            showcase.insertBefore(node, title.nextSibling);
+        } else {
+            showcase.insertBefore(node, showcase.firstChild);
+        }
+
+        return node;
     }
 
     function applyPaletteToCss(cssText, palette) {
@@ -689,6 +794,7 @@
                 description: desc,
                 preview: preview,
                 favorite: favorite,
+                tools: [],
                 htmlText: "",
                 styleHref: "",
                 styleText: "",
@@ -768,6 +874,7 @@
         var parser = new DOMParser();
         work.doc = parser.parseFromString(html, "text/html");
         work.styleHref = getWorkStyleHref(work.doc, work.href);
+        work.tools = parseToolsFromDoc(work.doc);
         var inlinePaletteCss = getInlinePaletteCss(work.doc);
 
         if (work.styleHref) {
@@ -936,6 +1043,7 @@
         el.articleTitle.value = work.title;
         el.articleCategory.value = work.category;
         el.articleDesc.value = work.description;
+        el.articleTools.value = (work.tools || []).join("\n");
         el.articlePreview.value = work.preview;
         el.articleMainColor.value = work.palette && work.palette.mainColor ? work.palette.mainColor : "#000000";
         el.articleMainColorText.value = work.palette && work.palette.mainColor ? work.palette.mainColor : "#000000";
@@ -1837,6 +1945,8 @@
             title.textContent = work.title;
         }
 
+        renderToolsBlock(doc, work);
+
         var previewBackButton = doc.querySelector("#back_button");
         if (previewBackButton) {
             previewBackButton.remove();
@@ -1962,6 +2072,13 @@
         el.articleDesc.addEventListener("input", function () {
             if (!state.selectedWork) return;
             state.selectedWork.description = el.articleDesc.value;
+            state.dirty = true;
+        });
+
+        el.articleTools.addEventListener("input", function () {
+            if (!state.selectedWork) return;
+            state.selectedWork.tools = splitToolsList(el.articleTools.value);
+            patchPreviewStructure();
             state.dirty = true;
         });
 
@@ -2126,6 +2243,8 @@
             h2.textContent = work.title || h2.textContent;
         }
 
+        renderToolsBlock(doc, work);
+
         var desc = doc.querySelector("#assignment_desc");
         if (desc) {
             desc.innerHTML = "";
@@ -2133,6 +2252,8 @@
                 desc.appendChild(componentToNode(doc, cmp, idx, false));
             });
         }
+
+        renderToolsBlock(doc, work);
 
         var paletteCss = buildPaletteOverrideCss(work);
         var paletteStyle = doc.getElementById("cms-palette-inline");
@@ -2274,7 +2395,7 @@
             "<body>\n" +
             "  <div id=\"left_side\">\n" +
             "    <div><a class=\"def_button\" id=\"back_button\" href=\"index.html\">⟵ Terug</a></div>\n" +
-            "    <div id=\"showcase_large\"><h2>" + escapeHtml(name) + "</h2></div>\n" +
+            "    <div id=\"showcase_large\"><h2>" + escapeHtml(name) + "</h2><div id=\"work_tools\" class=\"work-tools\"></div></div>\n" +
             "    <div id=\"assignment_desc\">\n" +
             "      <h3>Intro</h3>\n" +
             "      <p>Nieuw werk.</p>\n" +

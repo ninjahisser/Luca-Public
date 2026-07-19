@@ -309,8 +309,8 @@
         scrollTicking = true;
         window.requestAnimationFrame(function () {
             var currentY = window.scrollY || window.pageYOffset;
-            var isWorkPage = document.body.classList.contains("work-page");
-            if (isWorkPage) {
+            var shouldHideNameBar = document.body.classList.contains("work-page") || document.body.classList.contains("about-page");
+            if (shouldHideNameBar) {
                 if (currentY > scrollLastY + 8 && currentY > 80) {
                     document.body.classList.add("name-hidden");
                 } else if (currentY < scrollLastY - 8 || currentY <= 40) {
@@ -340,6 +340,48 @@
             return "cms/";
         }
         return src.replace(/js\/i18n\.js(?:\?.*)?$/, "cms/");
+    }
+
+    function getSiteHref(filename) {
+        var i18nScript = document.querySelector('script[src*="i18n.js"]');
+        var src = i18nScript ? i18nScript.getAttribute("src") : "js/i18n.js";
+        if (!src) {
+            return filename;
+        }
+
+        var match = src.match(/^(.*)js\/i18n\.js(?:\?.*)?$/);
+        var prefix = match ? match[1] : "";
+        return prefix + filename;
+    }
+
+    function normalizeNameLinks() {
+        var linksContainer = document.querySelector("#name_links div");
+        if (!linksContainer) {
+            return;
+        }
+
+        var links = [
+            { href: getSiteHref("about_me.html"), label: "About Me" },
+            { href: "https://github.com/ninjahisser", label: "GitHub", external: true },
+            { href: "https://www.instagram.com/sethvdb.design", label: "Instagram", external: true },
+            { href: "https://www.behance.net/sethvdb", label: "Behance", external: true }
+        ];
+
+        linksContainer.innerHTML = "";
+
+        links.forEach(function (item) {
+            var anchor = document.createElement("a");
+            anchor.className = "def_button";
+            anchor.href = item.href;
+            anchor.textContent = item.label;
+
+            if (item.external) {
+                anchor.target = "_blank";
+                anchor.rel = "noreferrer noopener";
+            }
+
+            linksContainer.appendChild(anchor);
+        });
     }
 
     function initCmsButton() {
@@ -418,6 +460,92 @@
         }
     }
 
+    function normalizeToolName(value) {
+        return (value || "").toLowerCase().replace(/[^a-z0-9+]+/g, "").trim();
+    }
+
+    function getToolIconUrl(toolName) {
+        var catalog = {
+            adobecreativecloud: "https://api.iconify.design/simple-icons:adobecreativecloud.svg",
+            creativecloud: "https://api.iconify.design/simple-icons:adobecreativecloud.svg",
+            adobeaftereffects: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/aftereffects/aftereffects-original.svg",
+            photoshop: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-original.svg",
+            illustrator: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/illustrator/illustrator-original.svg",
+            adobexd: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/xd/xd-original.svg",
+            xd: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/xd/xd-original.svg",
+            aftereffects: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/aftereffects/aftereffects-original.svg",
+            premierepro: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/premierepro/premierepro-original.svg",
+            lightroom: "https://www.adobe.com/content/dam/shared/images/product-icons/svg/lightroom.svg",
+            audition: "https://www.adobe.com/content/dam/shared/images/product-icons/svg/audition.svg",
+            animate: "https://www.adobe.com/content/dam/shared/images/product-icons/svg/animate.svg",
+            unrealengine5: "https://api.iconify.design/simple-icons:unrealengine.svg",
+            blender: "https://cdn.simpleicons.org/blender/F5792A",
+            unrealengine: "https://api.iconify.design/simple-icons:unrealengine.svg",
+            cascadeur: "https://api.iconify.design/mdi:human-handsup.svg?color=%23007ACC",
+            aseprite: "https://api.iconify.design/simple-icons:aseprite.svg",
+            comfyui: "https://comfy.org/icons/logo.svg",
+            github: "https://cdn.simpleicons.org/github/181717",
+            vscode: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg",
+            visualstudio: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/visualstudio/visualstudio-plain.svg",
+            c: "https://cdn.simpleicons.org/cplusplus/00599C",
+            "c++": "https://cdn.simpleicons.org/cplusplus/00599C",
+            cpp: "https://cdn.simpleicons.org/cplusplus/00599C",
+            python: "https://cdn.simpleicons.org/python/3776AB",
+            steamworks: "https://cdn.simpleicons.org/steam/000000",
+            figma: "https://cdn.simpleicons.org/figma/F24E1E",
+            html: "https://cdn.simpleicons.org/html5/E34F26",
+            css: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+            javascript: "https://cdn.simpleicons.org/javascript/F7DF1E",
+            p5js: "https://api.iconify.design/simple-icons:p5dotjs.svg",
+            lottiefiles: "https://api.iconify.design/simple-icons:lottiefiles.svg",
+            browserextension: "https://api.iconify.design/mdi:extension.svg",
+            ai: "https://api.iconify.design/mdi:robot.svg",
+            motiongraphics: "https://api.iconify.design/mdi:animation-play.svg",
+            vectoranimation: "https://api.iconify.design/mdi:draw.svg",
+            audioreactiveanimation: "https://api.iconify.design/mdi:waveform.svg",
+            animation: "https://api.iconify.design/mdi:animation.svg",
+            wireframe: "https://api.iconify.design/mdi:vector-polyline.svg",
+            redesign: "https://api.iconify.design/mdi:auto-fix.svg",
+            webaudioapi: "https://api.iconify.design/mdi:waveform.svg",
+            programming: "https://api.iconify.design/mdi:code-braces.svg",
+            gameplay: "https://api.iconify.design/mdi:gamepad-variant-outline.svg",
+            multiplayer: "https://api.iconify.design/mdi:account-group-outline.svg",
+            anticheat: "https://api.iconify.design/mdi:shield-account-outline.svg",
+            steam: "https://cdn.simpleicons.org/steam/000000",
+            "3dmodeling": "https://api.iconify.design/mdi:cube-outline.svg",
+            "3danimation": "https://api.iconify.design/mdi:cube-scan.svg",
+            sounddesign: "https://api.iconify.design/mdi:music-note.svg",
+            audiocomposition: "https://api.iconify.design/mdi:music-note.svg",
+            handtracking: "https://api.iconify.design/mdi:hand-back-left.svg",
+            customwebapp: "https://api.iconify.design/mdi:web.svg",
+            photography: "https://api.iconify.design/mdi:camera-outline.svg",
+            graphicdesign: "https://api.iconify.design/mdi:palette-outline.svg",
+            printdesign: "https://api.iconify.design/mdi:printer-3d.svg",
+            metahuman: "https://api.iconify.design/mdi:account-outline.svg",
+            filmmaking: "https://api.iconify.design/mdi:filmstrip.svg",
+            videoediting: "https://api.iconify.design/mdi:movie-edit-outline.svg",
+            acescolorspace: "https://api.iconify.design/mdi:palette-swatch-outline.svg"
+        };
+
+        return catalog[normalizeToolName(toolName)] || "https://api.iconify.design/mdi:tag-outline.svg";
+    }
+
+    function decorateWorkTools(container) {
+        var root = container || document;
+        var toolNodes = root.querySelectorAll(".work-tools .work-tool");
+
+        Array.from(toolNodes).forEach(function (node) {
+            if (!node || node.getAttribute("data-tool-decorated") === "1") {
+                return;
+            }
+
+            var label = (node.textContent || "").trim();
+            var iconUrl = getToolIconUrl(label);
+            node.style.setProperty("--tool-icon", 'url("' + iconUrl + '")');
+            node.setAttribute("data-tool-decorated", "1");
+        });
+    }
+
     function loadCompanionScript(filename, flagName) {
         if (window[flagName]) {
             return;
@@ -480,9 +608,24 @@
             }
         }
 
+        decorateWorkTools(document);
+
         scrollLastY = window.scrollY || 0;
         window.addEventListener("scroll", onScrollForNameBar, { passive: true });
     }
+
+    function initAboutPageEnhancements() {
+        if (!document.getElementById("bio")) {
+            return;
+        }
+
+        document.body.classList.add("about-page");
+        scrollLastY = window.scrollY || 0;
+        window.addEventListener("scroll", onScrollForNameBar, { passive: true });
+    }
+
+    window.decorateWorkTools = decorateWorkTools;
+    window.getToolIconUrl = getToolIconUrl;
 
     function buildLanguageItem(languageData) {
         var button = document.createElement("button");
@@ -680,9 +823,12 @@
         injectStyle();
         createOverlay();
         createLanguageSwitcher();
+        normalizeNameLinks();
         initCmsButton();
         normalizeBackButton();
         initWorkPageEnhancements();
+        initAboutPageEnhancements();
+        decorateWorkTools(document);
         ensureGoogleElement();
         applyRetries = 0;
 

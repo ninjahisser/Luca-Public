@@ -210,6 +210,17 @@ body.cms-page {
     color: var(--main-color);
 }
 
+.work-tools-editor {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid color-mix(in srgb, var(--main-color) 20%, transparent);
+    padding: 8px;
+    font: inherit;
+    color: var(--main-color);
+    background: var(--background-color);
+    resize: vertical;
+}
+
 .work-item .muted,
 .component-item .muted {
     opacity: .85;
