@@ -46,6 +46,7 @@
                         <button class="def_button_small" data-add="video" type="button">+ Video Tag</button>
                         <button class="def_button_small" data-add="palette" type="button">+ Palette</button>
                         <button class="def_button_small" data-add="list" type="button">+ List</button>
+                        <button class="def_button_small" data-add="button" type="button">+ Button</button>
                     </div>
                     <ul id="componentList" class="component-list"></ul>
                 </div>
@@ -64,6 +65,7 @@
                     <div class="panel-tools">
                         <span id="previewPath" class="muted"></span>
                         <button id="previewMobileBtn" class="def_button_small" type="button">Mobile</button>
+                        <button id="previewMuteBtn" class="def_button_small" type="button">Mute</button>
                         <button id="previewFullscreenBtn" class="def_button_small" type="button">Fullscreen</button>
                         <button class="collapse-toggle" data-target="previewBody" type="button" aria-expanded="true">−</button>
                     </div>
@@ -90,8 +92,8 @@
                     <label>Description (index)
                         <textarea id="articleDesc" rows="3"></textarea>
                     </label>
-                    <label>Tools / technologies (one per line)
-                        <textarea id="articleTools" rows="6" placeholder="Blender\nAfter Effects\nHTML"></textarea>
+                    <label>Tools / technologies
+                        <div id="articleTools" class="work-tools-selector work-tools-checklist"></div>
                     </label>
                     <label>Preview media URL
                         <div class="src-row">

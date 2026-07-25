@@ -4,6 +4,68 @@ const workToolsCache = new Map();
 let currentPreviewSrc = "";
 let currentPreviewKey = "";
 
+function convertToYouTubeEmbed(urlStr, isPreview) {
+    if (!urlStr) return urlStr;
+    const trimmed = urlStr.trim();
+    if (trimmed.includes("youtube.com") || trimmed.includes("youtu.be") || trimmed.includes("youtube-nocookie.com")) {
+        try {
+            const shortsMatch = trimmed.match(/(?:\/shorts\/|vi\/)([a-zA-Z0-9_-]{11})/);
+            let videoId = "";
+            let isShort = false;
+            if (shortsMatch && shortsMatch[1]) {
+                videoId = shortsMatch[1];
+                isShort = true;
+            } else if (trimmed.includes("youtu.be/")) {
+                const parts = trimmed.split("youtu.be/");
+                if (parts[1]) {
+                    videoId = parts[1].split(/[?#]/)[0];
+                }
+            } else {
+                const urlObj = new URL(trimmed);
+                if (urlObj.searchParams.has("v")) {
+                    videoId = urlObj.searchParams.get("v");
+                } else {
+                    const embedParts = urlObj.pathname.split("/embed/");
+                    if (embedParts[1]) {
+                        videoId = embedParts[1].split(/[?#]/)[0];
+                    }
+                }
+            }
+
+            if (videoId) {
+                if (trimmed.includes("short=1") || trimmed.includes("/shorts/")) {
+                    isShort = true;
+                }
+
+                const params = new URLSearchParams();
+
+                const qIdx = trimmed.indexOf("?");
+                if (qIdx !== -1) {
+                    const origParams = new URLSearchParams(trimmed.substring(qIdx));
+                    origParams.delete("v");
+                    origParams.forEach((val, key) => {
+                        params.set(key, val);
+                    });
+                }
+
+                if (isPreview) {
+                    params.set("autoplay", "1");
+                    params.set("mute", "1");
+                    params.set("loop", "1");
+                    params.set("playlist", videoId);
+                }
+
+                const queryStr = params.toString();
+                const embedHost = isShort ? 'www.youtube.com' : 'www.youtube-nocookie.com';
+                return `https://${embedHost}/embed/${videoId}${queryStr ? "?" + queryStr : ""}`;
+            }
+        } catch (e) {
+            console.error("Error converting YouTube URL:", e);
+        }
+    }
+    return trimmed;
+}
+
 function normalizeToolName(value) {
     return (value || "").toLowerCase().replace(/[^a-z0-9+]+/g, "").trim();
 }
@@ -167,28 +229,54 @@ function getPreloadHost() {
     return host;
 }
 
+function isKnownImageExt(src) {
+    return /\.(png|jpg|jpeg|webp|gif|svg|avif|bmp|tif|tiff)$/i.test(src);
+}
+
+function isKnownVideoExt(src) {
+    return /\.(mp4|webm|ogg|mov|avi)$/i.test(src);
+}
+
+function isLikelyVideoSrc(src) {
+    if (isKnownVideoExt(src)) return true;
+    if (src.indexOf('images/uploads/') !== -1 && !isKnownImageExt(src)) return true;
+    return false;
+}
+
 function buildPreviewElement(src, onReady) {
     let mediaElement;
 
-    if (src.endsWith('.mp4')) {
+    if (isLikelyVideoSrc(src)) {
         mediaElement = document.createElement('video');
         mediaElement.src = src;
         mediaElement.autoplay = true;
         mediaElement.loop = true;
         mediaElement.muted = true;
+        mediaElement.setAttribute('muted', '');
         mediaElement.playsInline = true;
         mediaElement.controls = false;
         mediaElement.preload = 'auto';
         mediaElement.addEventListener('loadeddata', onReady, { once: true });
-    } else if (src.includes('vimeo.com') || src.includes('youtube.com') || src.includes('youtu.be')) {
+    } else if (src.includes('vimeo.com') || src.includes('youtube.com') || src.includes('youtu.be') || src.includes('youtube-nocookie.com')) {
         mediaElement = document.createElement('iframe');
-        mediaElement.src = src;
+        const isShortUrl = src.includes('/shorts/') || src.includes('short=1');
+        const cleanSrc = convertToYouTubeEmbed(src, true);
+        mediaElement.src = cleanSrc;
         mediaElement.width = '100%';
         mediaElement.height = '100%';
         mediaElement.frameBorder = '0';
-        mediaElement.allow = 'autoplay; fullscreen; picture-in-picture';
+        mediaElement.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
         mediaElement.allowFullscreen = true;
         mediaElement.loading = 'eager';
+        
+        if (isShortUrl) {
+            mediaElement.style.aspectRatio = '9/16';
+            mediaElement.style.maxWidth = '320px';
+            mediaElement.style.margin = '0 auto';
+        } else {
+            mediaElement.style.aspectRatio = '16/9';
+        }
+        
         // Iframes do not expose reliable ready state for all providers; remove loader quickly.
         window.setTimeout(onReady, 120);
     } else {
@@ -249,7 +337,7 @@ function warmPreviewSource(src) {
 
     warmedPreviewSources.add(src);
 
-    if (src.endsWith('.mp4')) {
+    if (isLikelyVideoSrc(src)) {
         const video = document.createElement('video');
         video.preload = 'auto';
         video.muted = true;
@@ -259,7 +347,7 @@ function warmPreviewSource(src) {
         return;
     }
 
-    if (src.includes('vimeo.com') || src.includes('youtube.com') || src.includes('youtu.be')) {
+    if (src.includes('vimeo.com') || src.includes('youtube.com') || src.includes('youtu.be') || src.includes('youtube-nocookie.com')) {
         preconnectDomains();
         return;
     }
@@ -310,6 +398,7 @@ function previewItem(item) {
     currentPreviewSrc = src;
     currentPreviewKey = previewKey;
 
+    preview.querySelectorAll('video').forEach(function (v) { v.pause(); });
     preview.innerHTML = `
         <div id="preview_title" class="${isFavorite ? 'favorite' : ''}">${title}</div>
         ${description ? `<div id="preview_description" class="${isFavorite ? 'favorite' : ''}">${description}</div>` : ''}

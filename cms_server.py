@@ -12,7 +12,7 @@ import time
 
 
 ROOT = Path(__file__).resolve().parent
-IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".avif"}
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".avif", ".mp4", ".webm", ".ogg", ".mov", ".avi"}
 SKIP_DIRS = {".git", "node_modules", "venv", ".venv", "__pycache__"}
 
 
