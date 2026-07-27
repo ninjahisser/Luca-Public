@@ -3068,6 +3068,11 @@
         }
     }
 
+    function findComponentNodeByIndex(doc, idx) {
+        if (!doc) return null;
+        return doc.querySelector('[data-cms-component-index="' + idx + '"]');
+    }
+
     function patchPreviewComponent(index) {
         try {
             var doc = el.workPreview.contentDocument;
@@ -3077,14 +3082,14 @@
             }
 
             var cmp = work.components[index];
-            var liveNode = findComponentNode(work, index, doc);
-            var sourceNode = findComponentNode(work, index, work.doc);
-            if (!liveNode || !sourceNode) {
+            var liveNode = findComponentNode(work, index, doc) || findComponentNodeByIndex(doc, index);
+            var sourceNode = findComponentNode(work, index, work.doc) || findComponentNodeByIndex(work.doc, index);
+
+            if (liveNode) setComponentAttributes(liveNode, cmp);
+            if (sourceNode) setComponentAttributes(sourceNode, cmp);
+            if (!liveNode && !sourceNode) {
                 return;
             }
-
-            setComponentAttributes(liveNode, cmp);
-            setComponentAttributes(sourceNode, cmp);
 
             applyPreviewSelectionState();
             refreshComponentListItem(index);
@@ -3446,13 +3451,60 @@
                 }
 
                 var type = addType;
+
+                if (type === "image") {
+                    var pickEl = document.getElementById("imageUploadPick");
+                    if (!pickEl) return;
+                    pickEl.value = "";
+                    pickEl.onchange = async function (event) {
+                        var file = event.target.files && event.target.files[0];
+                        if (!file) return;
+                        var cmp = { type: "image", src: "", alt: "" };
+                        state.selectedWork.components.push(cmp);
+                        state.selectedComponentIndex = state.selectedWork.components.length - 1;
+                        state.dirty = true;
+                        try {
+                            setStatus("Uploading image...", "info");
+                            if (state.mode === "fs") {
+                                var imagesDir = await state.dirHandle.getDirectoryHandle("images", { create: true });
+                                var uploadsDir = await imagesDir.getDirectoryHandle("uploads", { create: true });
+                                var ext = file.name.indexOf(".") !== -1 ? file.name.split(".").pop() : "png";
+                                var safeName = Date.now() + "-" + slugify(file.name.replace(/\.[^/.]+$/, "")) + "." + ext;
+                                var targetHandle = await uploadsDir.getFileHandle(safeName, { create: true });
+                                var writable = await targetHandle.createWritable();
+                                await writable.write(await file.arrayBuffer());
+                                await writable.close();
+                                cmp.src = "images/uploads/" + safeName;
+                            } else if (state.mode === "api") {
+                                var formData = new FormData();
+                                formData.append("file", file, file.name);
+                                var response = await fetch(buildApiUrl("/cms-api/upload"), { method: "POST", body: formData });
+                                if (!response.ok) throw new Error("Upload failed: " + response.status);
+                                var result = await response.json();
+                                if (!result || !result.path) throw new Error("No file path returned.");
+                                cmp.src = result.path;
+                            } else {
+                                setStatus("Upload werkt alleen met een lokale write target.", "error");
+                                return;
+                            }
+                            setStatus("Afbeelding geupload: " + cmp.src);
+                        } catch (err) {
+                            setStatus("Upload mislukt: " + err.message);
+                        }
+                        renderComponentList();
+                        renderComponentProps();
+                        patchPreviewStructure();
+                    };
+                    pickEl.click();
+                    return;
+                }
+
                 var cmp = { type: type };
                 if (type === "heading") { cmp.text = "Nieuwe titel"; cmp.level = 3; }
                 if (type === "paragraph") cmp.text = "Nieuwe paragraaf";
-                if (type === "image") { cmp.src = "images/placeholder.jpg"; cmp.alt = ""; }
                 if (type === "iframe") cmp.src = "https://player.vimeo.com/video/000000000";
                 if (type === "video") { cmp.src = ""; cmp.controls = true; }
-                if (type === "palette") cmp.colors = ["#111111", "#f5f5f5", "#d97706"]; 
+                if (type === "palette") cmp.colors = ["#111111", "#f5f5f5", "#d97706"];
                 if (type === "list") cmp.items = ["Nieuw item"];
                 if (type === "button") { cmp.text = "Button"; cmp.href = "#"; cmp.target = "_blank"; cmp.className = "def_button"; }
 

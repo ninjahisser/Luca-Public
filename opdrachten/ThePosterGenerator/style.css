@@ -543,12 +543,14 @@ canvas:fullscreen {
 }
 
 @media (max-width: 600px) {
-    .slider-group {
+    .slider-group,
+    .control-group {
         grid-template-columns: 1fr;
         gap: 8px;
     }
     
-    .slider-group label {
+    .slider-group label,
+    .control-group label {
         margin-bottom: 4px;
     }
     
@@ -582,12 +584,133 @@ canvas:fullscreen {
     }
 }
 
+/* Control group (select dropdowns) */
+.control-group {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.control-group label {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+.control-group select {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: 'Geist Mono', monospace;
+    color: var(--text-primary);
+    background: var(--background-color);
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: var(--transition);
+    text-transform: uppercase;
+    appearance: auto;
+}
+
+.control-group select:focus {
+    outline: none;
+    border-color: var(--favorite-color);
+}
+
+.control-group select:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Work tools badges */
+.work-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem .7rem;
+    margin: .6rem 0 1.15rem;
+    max-width: 74ch;
+}
+
+.work-tool {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .28rem .62rem;
+    border: 1px solid color-mix(in srgb, var(--main-color) 18%, transparent);
+    background: color-mix(in srgb, var(--background-color) 92%, var(--main-color) 8%);
+    color: var(--main-color);
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color .14s ease, border-color .14s ease, background-color .14s ease, transform .14s ease;
+}
+
+.work-tool::before {
+    content: "";
+    width: .95em;
+    height: .95em;
+    flex: none;
+    display: inline-block;
+    background: var(--tool-icon, none) center center / contain no-repeat;
+}
+
+.work-tool:hover {
+    color: var(--secondary-color);
+    border-color: color-mix(in srgb, var(--secondary-color) 40%, transparent);
+    background: color-mix(in srgb, var(--background-color) 88%, var(--secondary-color) 12%);
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+/* Palette preview */
+.palette-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.palette-label {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: .82rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    white-space: nowrap;
+}
+
+.palette-swatches {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.palette-swatch {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+/* Download button */
+.download-btn {
+    background: var(--main-color);
+    border-color: var(--main-color);
+}
+
 /* FINAL lock: unify all buttons to portfolio base behavior */
 .def_button,
 .def_button_small,
 .randomize-btn,
 .new-poster-btn,
 .fullscreen-btn,
+.download-btn,
 .save-btn,
 .share-btn,
 .slideshow-btn,
@@ -612,6 +735,7 @@ canvas:fullscreen {
 .randomize-btn:hover,
 .new-poster-btn:hover,
 .fullscreen-btn:hover,
+.download-btn:hover,
 .save-btn:hover,
 .share-btn:hover,
 .slideshow-btn:hover,
@@ -636,6 +760,7 @@ canvas:fullscreen {
 .randomize-btn,
 .new-poster-btn,
 .fullscreen-btn,
+.download-btn,
 .save-btn,
 .share-btn,
 .slideshow-btn,
@@ -659,6 +784,7 @@ canvas:fullscreen {
 .randomize-btn:hover,
 .new-poster-btn:hover,
 .fullscreen-btn:hover,
+.download-btn:hover,
 .save-btn:hover,
 .share-btn:hover,
 .slideshow-btn:hover,
@@ -1077,12 +1203,14 @@ canvas:fullscreen {
 }
 
 @media (max-width: 600px) {
-    .slider-group {
+    .slider-group,
+    .control-group {
         grid-template-columns: 1fr;
         gap: 8px;
     }
     
-    .slider-group label {
+    .slider-group label,
+    .control-group label {
         margin-bottom: 4px;
     }
     

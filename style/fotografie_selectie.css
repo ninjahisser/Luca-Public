@@ -54,8 +54,21 @@ body {
     margin-left: 200px;
 }
 
-#showcase_large, #assignment_desc{
+body.work-page #showcase_large,
+body.work-page #assignment_desc {
     width: 60vw;
+}
+
+/* Override work-page flex layout — fotografie uses fotos_grid instead */
+body.work-page #assignment_desc {
+    display: block;
+}
+
+body.work-page #left_side {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
 }
 
 /* Responsive design for smaller screens */
