@@ -359,7 +359,7 @@ function warmPreviewSource(src) {
 }
 
 function warmPreviewCache() {
-    const previewItems = Array.from(document.querySelectorAll('#assignment_list li[data-preview]'));
+    const previewItems = Array.from(document.querySelectorAll('#assignment_list li[data-preview]:not(.hidden-work)'));
     const maxWarmCount = 3;
     let queueIndex = 0;
 
@@ -421,7 +421,7 @@ function previewItem(item) {
     preview.appendChild(element);
 }
 
-document.querySelectorAll('#assignment_list li[data-preview]').forEach(function (item) {
+document.querySelectorAll('#assignment_list li[data-preview]:not(.hidden-work)').forEach(function (item) {
     item.addEventListener('mouseenter', function () {
         warmPreviewSource(this.getAttribute('data-preview'));
         previewItem(this);
@@ -435,7 +435,7 @@ if ('requestIdleCallback' in window) {
     window.setTimeout(warmPreviewCache, 500);
 }
 
-const firstItem = document.querySelector('#assignment_list li[data-preview]');
+const firstItem = document.querySelector('#assignment_list li[data-preview]:not(.hidden-work)');
 if (firstItem) {
     previewItem(firstItem);
 }

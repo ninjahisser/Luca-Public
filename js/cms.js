@@ -182,6 +182,7 @@
         articleBackgroundColor: document.getElementById("articleBackgroundColor"),
         articleBackgroundColorText: document.getElementById("articleBackgroundColorText"),
         articleFavorite: document.getElementById("articleFavorite"),
+        articleVisible: document.getElementById("articleVisible"),
         moveUpBtn: document.getElementById("moveUpBtn"),
         moveDownBtn: document.getElementById("moveDownBtn"),
         deleteComponentBtn: document.getElementById("deleteComponentBtn"),
@@ -1119,6 +1120,7 @@
             var desc = ((li.querySelector(".assignment-desc") || {}).textContent || "").trim();
             var preview = li.getAttribute("data-preview") || "";
             var favorite = li.classList.contains("favorites") || /^★/.test(title.trim());
+            var visible = li.getAttribute("data-visible") !== "false";
 
             return {
                 href: a.getAttribute("href"),
@@ -1127,6 +1129,7 @@
                 description: desc,
                 preview: preview,
                 favorite: favorite,
+                visible: visible,
                 tools: [],
                 htmlText: "",
                 styleHref: "",
@@ -1454,6 +1457,7 @@
         el.articleBackgroundColor.value = work.palette && work.palette.backgroundColor ? work.palette.backgroundColor : "#ffffff";
         el.articleBackgroundColorText.value = work.palette && work.palette.backgroundColor ? work.palette.backgroundColor : "#ffffff";
         el.articleFavorite.checked = !!work.favorite;
+        el.articleVisible.checked = work.visible !== false;
         el.previewPath.textContent = work.href;
     }
 
@@ -1551,6 +1555,7 @@
                 renderComponentList();
                 renderComponentProps();
                 applyPreviewSelectionState();
+                patchPreviewComponent(idx);
             });
             el.componentList.appendChild(li);
         });
@@ -3143,6 +3148,7 @@
         capturePreviewScroll();
 
         var doc = work.doc.cloneNode(true);
+        doc.body.classList.add("work-page");
         var previewBaseHref = buildPreviewBaseHref(work.href);
         var head = doc.querySelector("head");
         if (head) {
@@ -3425,6 +3431,12 @@
             renderWorkList();
             state.dirty = true;
         });
+
+        el.articleVisible.addEventListener("change", function () {
+            if (!state.selectedWork) return;
+            state.selectedWork.visible = el.articleVisible.checked;
+            state.dirty = true;
+        });
     }
 
     function bindComponentActions() {
@@ -3601,6 +3613,8 @@
             if (desc) desc.textContent = work.description || "";
 
             li.classList.toggle("favorites", !!work.favorite);
+            li.setAttribute("data-visible", work.visible !== false ? "true" : "false");
+            li.classList.toggle("hidden-work", work.visible === false);
         });
     }
 
@@ -3746,6 +3760,7 @@
         anchor.setAttribute("href", filename);
         var li = state.indexDoc.createElement("li");
         li.setAttribute("data-preview", "");
+        li.setAttribute("data-visible", "true");
         li.innerHTML =
             "<span class='assignment-category'>Nieuwe categorie</span>" +
             "<span class='assignment-title'>" + escapeHtml(name) + "</span>" +
@@ -3944,6 +3959,7 @@
                 renderComponentList();
                 renderComponentProps();
                 applyPreviewSelectionState();
+                patchPreviewComponent(selectedIdx);
                 return;
             }
 

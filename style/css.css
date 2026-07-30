@@ -395,7 +395,8 @@ body.about-page.name-hidden #name {
     display: block;
     opacity: 0;
     transform: translateY(6px) scaleY(0.5);
-    height: 0px;
+    max-height: 0;
+    overflow: hidden;
     transform-origin: top;
     transition: 0.18s ease;
     pointer-events: none;
@@ -404,7 +405,7 @@ body.about-page.name-hidden #name {
 #assignment_list ul li:hover .assignment-desc {
     opacity: 1;
     transform: translateY(0) scaleY(1);
-    height: 40px;
+    max-height: 400px;
 }
 
 .favorites {
@@ -540,8 +541,7 @@ body.work-page {
     overflow-x: hidden;
 }
 
-body.work-page #left_side,
-body.work-page #name {
+body.work-page #left_side {
     position: relative;
     z-index: 1;
 }
@@ -1243,4 +1243,8 @@ h3 {
 
 .centered{
     text-align: center;
+}
+
+#assignment_list li.hidden-work {
+    display: none;
 }

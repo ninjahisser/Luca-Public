@@ -363,8 +363,7 @@
         var links = [
             { href: getSiteHref("about_me.html"), label: "About Me" },
             { href: "https://github.com/ninjahisser", label: "GitHub", external: true },
-            { href: "https://www.instagram.com/sethvdb.design", label: "Instagram", external: true },
-            { href: "https://www.behance.net/sethvdb", label: "Behance", external: true }
+            { href: "https://www.instagram.com/sethvdb.design", label: "Instagram", external: true }
         ];
 
         linksContainer.innerHTML = "";
@@ -426,10 +425,6 @@
                 .replace(/["'`]/g, "")
                 .trim();
         }
-
-        Array.from(candidates).forEach(function (element) {
-            element.classList.remove("impact-highlight");
-        });
 
         var picked = null;
 
