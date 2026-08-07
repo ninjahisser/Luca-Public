@@ -87,6 +87,18 @@ def _job_id() -> str:
     return f"job_{int(time.time() * 1000)}"
 
 
+def _prune_old_jobs(jobs: dict, max_age_seconds: float = 3600) -> None:
+    """Job dicts only ever grow - each upload/download/thumb/preview run
+    adds one entry keyed by a millisecond timestamp, and nothing ever
+    removes it. Harmless for a short CMS session but an unbounded leak on
+    a server left running a long time. Call with the dict's lock already
+    held. Opportunistically drops anything old enough that any real client
+    would have already finished polling it to a terminal state."""
+    cutoff_ms = (time.time() - max_age_seconds) * 1000
+    for job_id in [jid for jid in jobs if jid.startswith("job_") and int(jid[4:]) < cutoff_ms]:
+        del jobs[job_id]
+
+
 def _run_download_job(job: dict, url: str, work_name: str, chunk_size: int) -> None:
     def progress(message: str) -> None:
         job["progress"].append(message)
@@ -577,6 +589,7 @@ class CMSHandler(SimpleHTTPRequestHandler):
             job_id = _job_id()
             job = {"state": "running", "progress": [], "metadata": None, "error": None}
             with DOWNLOAD_JOBS_LOCK:
+                _prune_old_jobs(DOWNLOAD_JOBS)
                 DOWNLOAD_JOBS[job_id] = job
 
             thread = threading.Thread(
@@ -591,6 +604,7 @@ class CMSHandler(SimpleHTTPRequestHandler):
             job_id = _job_id()
             job = {"state": "running", "progress": [], "result": None, "error": None}
             with THUMB_JOBS_LOCK:
+                _prune_old_jobs(THUMB_JOBS)
                 THUMB_JOBS[job_id] = job
 
             thread = threading.Thread(target=_run_thumb_job, args=(job,), daemon=True)
@@ -603,6 +617,7 @@ class CMSHandler(SimpleHTTPRequestHandler):
             job_id = _job_id()
             job = {"state": "running", "progress": [], "result": None, "error": None}
             with PREVIEW_JOBS_LOCK:
+                _prune_old_jobs(PREVIEW_JOBS)
                 PREVIEW_JOBS[job_id] = job
 
             thread = threading.Thread(target=_run_preview_job, args=(job,), daemon=True)
@@ -690,6 +705,7 @@ class CMSHandler(SimpleHTTPRequestHandler):
                 job_id = _job_id()
                 job = {"state": "running", "progress": [], "metadata": None, "error": None}
                 with VIDEO_UPLOAD_JOBS_LOCK:
+                    _prune_old_jobs(VIDEO_UPLOAD_JOBS)
                     VIDEO_UPLOAD_JOBS[job_id] = job
 
                 thread = threading.Thread(
