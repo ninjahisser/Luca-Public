@@ -194,6 +194,7 @@ def _looks_like_html_document(html: str) -> bool:
 
 
 THUMB_CACHE_DIR = ROOT / ".cms-thumb-cache"
+UPLOAD_TEMP_DIR = ROOT / ".cms-upload-temp"
 THUMB_MAX_DIM = 320
 VIDEO_EXTENSIONS = {".mp4", ".webm", ".ogg", ".mov", ".avi"}
 
@@ -772,7 +773,7 @@ class CMSHandler(SimpleHTTPRequestHandler):
                     return
 
                 # Stream directly to disk — never loads the whole video into RAM
-                upload_dir = ROOT / ".cms-upload-temp"
+                upload_dir = UPLOAD_TEMP_DIR
                 upload_dir.mkdir(parents=True, exist_ok=True)
                 suffix = Path(file_name).suffix.lower() or ".mp4"
                 slug = re.sub(r"[^a-zA-Z0-9_-]+", "-", Path(file_name).stem).strip("-") or "video"
@@ -878,11 +879,33 @@ class QuietThreadingHTTPServer(ThreadingHTTPServer):
         traceback.print_exception(exc_type, exc, tb)
 
 
+def _clear_upload_temp_dir() -> None:
+    """Uploaded videos are streamed to UPLOAD_TEMP_DIR and only removed by
+    _run_video_upload_job's own `finally` block once processing finishes -
+    which never runs if the server process is killed outright (taskkill,
+    a crash, the machine losing power) while an upload is mid-flight,
+    leaving a - potentially very large, these are raw uploaded videos -
+    file behind with nothing left anywhere that will ever clean it up.
+    No job state survives a restart anyway (every *_JOBS dict is a plain
+    in-memory dict, reset to empty on process start), so nothing here
+    could belong to a job this new process might still resume - anything
+    found is unconditionally orphaned and safe to remove."""
+    if not UPLOAD_TEMP_DIR.is_dir():
+        return
+    for f in UPLOAD_TEMP_DIR.iterdir():
+        try:
+            if f.is_file():
+                f.unlink()
+        except OSError:
+            pass
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Local CMS API + static server for portfolio")
     parser.add_argument("--port", type=int, default=8000, help="Port to listen on")
     args = parser.parse_args()
 
+    _clear_upload_temp_dir()
     server = QuietThreadingHTTPServer(("127.0.0.1", args.port), CMSHandler)
     print(f"Serving {ROOT} at http://127.0.0.1:{args.port}")
     print("Open /cms/ in your browser to use the CMS with automatic file detection.")
