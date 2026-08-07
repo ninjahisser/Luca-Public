@@ -3615,7 +3615,7 @@
             }
             var bgUrl = previewBgUrl(work.preview);
             if (bgUrl) {
-                card.setAttribute("style", '--preview-bg: url("' + bgUrl.replace(/"/g, '\\"') + '");');
+                card.setAttribute("style", "--preview-bg: " + cssUrlString(bgUrl) + ";");
             } else {
                 card.removeAttribute("style");
             }
@@ -4128,6 +4128,17 @@
         });
     }
 
+    function cssUrlString(url) {
+        // Backslashes must be escaped BEFORE quotes - escaping quotes first
+        // and leaving existing backslashes untouched lets a url containing
+        // \" combine with the newly-added escape into \\" , which CSS
+        // parses as an escaped literal backslash followed by an
+        // unescaped, string-terminating quote. That would let a crafted
+        // preview url break out of the url("...") value and inject
+        // arbitrary CSS (or worse) into the style attribute.
+        return 'url("' + url.replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '")';
+    }
+
     function previewBgUrl(url) {
         if (!url) return "";
         var vimeoMatch = url.match(/(?:player\.)?vimeo\.com\/(?:video\/)?(\d+)/);
@@ -4173,7 +4184,7 @@
 
             var bgUrl = previewBgUrl(work.preview);
             if (bgUrl) {
-                card.setAttribute("style", '--preview-bg: url("' + bgUrl.replace(/"/g, '\\"') + '");');
+                card.setAttribute("style", "--preview-bg: " + cssUrlString(bgUrl) + ";");
             }
 
             var cat = state.indexDoc.createElement("span");
