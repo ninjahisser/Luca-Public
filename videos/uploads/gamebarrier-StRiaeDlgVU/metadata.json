@@ -1,0 +1,40 @@
+{
+  "source_url": "https://www.youtube.com/embed/StRiaeDlgVU",
+  "work_name": "gamebarrier-StRiaeDlgVU",
+  "total_size": 513042249,
+  "chunk_size": 104857600,
+  "num_chunks": 5,
+  "chunks": [
+    {
+      "path": "source.webm.part000",
+      "size": 104857600,
+      "index": 0
+    },
+    {
+      "path": "source.webm.part001",
+      "size": 104857600,
+      "index": 1
+    },
+    {
+      "path": "source.webm.part002",
+      "size": 104857600,
+      "index": 2
+    },
+    {
+      "path": "source.webm.part003",
+      "size": 104857600,
+      "index": 3
+    },
+    {
+      "path": "source.webm.part004",
+      "size": 93611849,
+      "index": 4
+    }
+<<<<<<< Updated upstream
+  ]
+}
+=======
+  ],
+  "index_preview": "preview_360p.mp4"
+}
+>>>>>>> Stashed changes
