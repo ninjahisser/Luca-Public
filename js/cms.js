@@ -352,6 +352,45 @@
             .replace(/'/g, "&#39;");
     }
 
+    var RICHTEXT_BLOCKED_TAGS = ["script", "style", "iframe", "object", "embed", "link", "meta", "form", "base"];
+
+    // The rich text editor field (addRichTextEditor) is a plain
+    // contenteditable with no paste handler, so whatever HTML the browser's
+    // default paste inserts flows straight into cmp.html and, from there,
+    // straight into the saved page's innerHTML unescaped. Strip the
+    // dangerous constructs (script/style/event handlers/javascript: URLs)
+    // via the browser's own HTML parser rather than regex, which is the
+    // only reliable way to walk arbitrary HTML.
+    function sanitizeRichHtml(html) {
+        var container = document.createElement("div");
+        container.innerHTML = html || "";
+
+        var toRemove = [];
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_ELEMENT, null);
+        var node = walker.nextNode();
+        while (node) {
+            var tag = node.tagName ? node.tagName.toLowerCase() : "";
+            if (RICHTEXT_BLOCKED_TAGS.indexOf(tag) !== -1) {
+                toRemove.push(node);
+            } else {
+                Array.prototype.slice.call(node.attributes || []).forEach(function (attr) {
+                    var name = attr.name.toLowerCase();
+                    if (name.indexOf("on") === 0) {
+                        node.removeAttribute(attr.name);
+                    } else if ((name === "href" || name === "src") && /^\s*javascript:/i.test(attr.value)) {
+                        node.removeAttribute(attr.name);
+                    }
+                });
+            }
+            node = walker.nextNode();
+        }
+        toRemove.forEach(function (n) {
+            if (n.parentNode) n.parentNode.removeChild(n);
+        });
+
+        return container.innerHTML;
+    }
+
     function basename(path) {
         return (path || "").replace(/\\/g, "/").split("/").pop();
     }
@@ -1827,7 +1866,7 @@
         var lastRange = null;
 
         function commit() {
-            onChange(editor.innerHTML);
+            onChange(sanitizeRichHtml(editor.innerHTML));
             state.dirty = true;
         }
 
