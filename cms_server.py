@@ -308,7 +308,16 @@ def parse_multipart_file(raw_body: bytes, content_type: str) -> tuple[str, bytes
 
     delimiter = b"--" + boundary
     for part in raw_body.split(delimiter):
-        part = part.strip(b"\r\n")
+        # Each part starts with exactly one CRLF before its headers and ends
+        # with exactly one CRLF before the next delimiter - strip precisely
+        # those two framing bytes. bytes.strip(b"\r\n") strips a whole run of
+        # \r/\n bytes in either order, which can eat real trailing bytes from
+        # a binary payload (e.g. a WEBP/BMP file whose last byte happens to
+        # be 0x0D or 0x0A) instead of just the multipart framing.
+        if part.startswith(b"\r\n"):
+            part = part[2:]
+        if part.endswith(b"\r\n"):
+            part = part[:-2]
         if not part or part == b"--":
             continue
 
@@ -329,7 +338,7 @@ def parse_multipart_file(raw_body: bytes, content_type: str) -> tuple[str, bytes
 
         filename_match = re.search(r'filename=(?:"([^"]+)"|([^;]+))', disposition)
         filename = (filename_match.group(1) or filename_match.group(2) or "image.png") if filename_match else "image.png"
-        return filename, payload.rstrip(b"\r\n")
+        return filename, payload
 
     raise ValueError("Missing file field")
 
