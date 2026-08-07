@@ -160,12 +160,25 @@ function handleStream(basePath, request) {
     return loadMeta(basePath)
         .then(function (info) {
             var total = info.total;
-            var range = parseRange(request.headers.get('Range'), total);
+            var rangeHeader = request.headers.get('Range');
+            var range = parseRange(rangeHeader, total);
 
             // No Range header: hand back the whole file with a 200 (only a
             // Range request may be answered 206). The body still streams part
             // by part, so nothing is assembled in memory.
             if (!range) {
+                if (rangeHeader) {
+                    // A Range header was sent but couldn't be satisfied (e.g. its
+                    // start lies beyond the file). Reject it instead of silently
+                    // falling back to serving the whole file.
+                    return new Response(null, {
+                        status: 416,
+                        headers: {
+                            'Content-Range': 'bytes */' + total,
+                            'Accept-Ranges': 'bytes'
+                        }
+                    });
+                }
                 return new Response(sliceStream(basePath, info.parts, 0, total - 1), {
                     status: 200,
                     headers: {
