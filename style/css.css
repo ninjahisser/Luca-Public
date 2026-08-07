@@ -576,7 +576,7 @@ body.about-page.name-hidden #name {
 
 #assignment_list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     grid-auto-flow: dense;
     margin: 0;
     padding: 0;
@@ -586,7 +586,7 @@ body.about-page.name-hidden #name {
 
 @media (max-width: 1200px) {
     #assignment_list {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .work-card.work-card--highlight {
@@ -598,7 +598,7 @@ body.about-page.name-hidden #name {
 
 @media (max-width: 700px) {
     #assignment_list {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .work-card.work-card--highlight {
@@ -889,6 +889,7 @@ body.work-page #assignment_desc .editorial-offset-left,
 body.work-page #assignment_desc .editorial-offset-right,
 body.work-page #assignment_desc .editorial-note {
     max-width: 64ch;
+    box-sizing: border-box;
 }
 
 body.work-page #assignment_desc .editorial-offset-left {

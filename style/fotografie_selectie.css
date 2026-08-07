@@ -126,4 +126,13 @@ body.work-page #assignment_desc > figure.image-full img {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 8px;
     }
+
+    /* The 60vw above ignores both the sidebar's margin-left and #left_side's
+       own padding, so on narrow screens it claims more width than is
+       actually left over and overflows the viewport. 100% correctly fills
+       whatever #left_side has available instead. */
+    body.work-page #showcase_large,
+    body.work-page #assignment_desc {
+        width: 100%;
+    }
 }
