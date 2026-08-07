@@ -2885,6 +2885,12 @@
                     isNowLinked ? videoLinkedStatusText(value) : DEFAULT_VIDEO_UPLOAD_MSG,
                     isNowLinked ? "success" : ""
                 );
+                // componentLabel()/mediaLabel() derive the sidebar list
+                // entry's text from cmp.src too - same staleness class,
+                // different element. Refresh just that one list item
+                // rather than the whole list (cheaper, and avoids
+                // disturbing scroll/drag state elsewhere in it).
+                refreshComponentListItem(idx);
             });
 
             var uploadWrap = document.createElement("div");
