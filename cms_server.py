@@ -848,12 +848,15 @@ class CMSHandler(SimpleHTTPRequestHandler):
             (ROOT / "index.html").write_text(index_html, encoding="utf-8")
 
             saved_count = 0
+            skipped_works = []
             for item in works:
                 path_value = item.get("path")
                 html_value = item.get("html")
                 if not isinstance(path_value, str) or not isinstance(html_value, str):
+                    skipped_works.append({"path": path_value if isinstance(path_value, str) else "(unknown)", "reason": "Malformed save payload (missing path or html)"})
                     continue
                 if not _looks_like_html_document(html_value):
+                    skipped_works.append({"path": path_value, "reason": "Content does not look like a complete HTML document - not saved"})
                     continue
 
                 target = safe_html_path(path_value)
@@ -862,10 +865,12 @@ class CMSHandler(SimpleHTTPRequestHandler):
                 saved_count += 1
 
             saved_files = 0
+            skipped_files = []
             for item in files:
                 path_value = item.get("path")
                 content_value = item.get("content")
                 if not isinstance(path_value, str) or not isinstance(content_value, str):
+                    skipped_files.append({"path": path_value if isinstance(path_value, str) else "(unknown)", "reason": "Malformed save payload (missing path or content)"})
                     continue
 
                 target = safe_text_path(path_value)
@@ -873,7 +878,13 @@ class CMSHandler(SimpleHTTPRequestHandler):
                 target.write_text(content_value, encoding="utf-8")
                 saved_files += 1
 
-            self._send_json({"ok": True, "savedWorks": saved_count, "savedFiles": saved_files})
+            self._send_json({
+                "ok": True,
+                "savedWorks": saved_count,
+                "savedFiles": saved_files,
+                "skippedWorks": skipped_works,
+                "skippedFiles": skipped_files,
+            })
         except Exception as exc:
             self._send_json({"error": f"Save failed: {exc}"}, status=500)
 

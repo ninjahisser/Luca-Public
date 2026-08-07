@@ -4379,7 +4379,11 @@
                 var verification = await verifyApiSave(state.selectedWork);
 
                 setLocalTarget(getLocalWriteDescription());
-                if (verification.ok) {
+                var skipped = (apiResult.skippedWorks || []).concat(apiResult.skippedFiles || []);
+                if (skipped.length > 0) {
+                    var skippedList = skipped.map(function (s) { return s.path + " (" + s.reason + ")"; }).join(", ");
+                    setStatus("Save onvolledig - " + skipped.length + " bestand(en) NIET opgeslagen: " + skippedList, "error");
+                } else if (verification.ok) {
                     setStatus((isAuto ? "Auto-save: " : "") + "Lokale files opgeslagen in " + state.apiRoot + " - index.html + " + String(apiResult.savedWorks || 0) + " work files. " + verification.details, "success");
                 } else {
                     setStatus("Save completed, maar verificatie faalde. " + verification.details, "error");
