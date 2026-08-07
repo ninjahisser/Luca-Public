@@ -218,6 +218,22 @@
         var original = el;
         return Promise.resolve(preferred.url).then(function (sourceUrl) {
             var video = document.createElement('video');
+
+            // Attach the error listener before src is ever set. A failing
+            // fetch (e.g. a missing chunk) can resolve fast enough that the
+            // 'error' event fires before a listener added after src/DOM
+            // insertion/upgrade would be in place, permanently orphaning the
+            // player with no fallback ever triggered.
+            video.addEventListener('error', function onError() {
+                video.removeEventListener('error', onError);
+                var fallback = resolveFallbackPreviewUrl(meta);
+                if (fallback) {
+                    video.src = fallback;
+                    video.load();
+                    if (options.autoplay) playWithSound(video);
+                }
+            });
+
             video.src = sourceUrl;
             video.autoplay = true;
             video.setAttribute('autoplay', '');
@@ -232,18 +248,6 @@
 
             el.parentNode.replaceChild(video, el);
 
-            // Last resort: if the full-quality split source fails to load
-            // (missing/corrupt chunk), fall back to the compressed preview
-            // rather than showing a broken player.
-            video.addEventListener('error', function onError() {
-                video.removeEventListener('error', onError);
-                var fallback = resolveFallbackPreviewUrl(meta);
-                if (fallback) {
-                    video.src = fallback;
-                    video.load();
-                    if (options.autoplay) playWithSound(video);
-                }
-            });
             var wrap = null;
             if (window.LucaVideoPlayer && window.LucaVideoPlayer.upgrade) {
                 wrap = window.LucaVideoPlayer.upgrade(video, options);
@@ -273,8 +277,18 @@
         var basePath = 'videos/uploads/' + meta.work_name + '/';
         var fullPreviewUrl = resolveFullPreviewUrl(meta);
 
-        function mount(sourceUrl) {
+        function mount(sourceUrl, earlyErrorHandler) {
             var video = document.createElement('video');
+
+            // Attach the error listener before src is ever set. A failing
+            // fetch (e.g. a missing chunk) can resolve fast enough that the
+            // 'error' event fires before a listener added after src/DOM
+            // insertion/upgrade would be in place, permanently orphaning the
+            // player with no fallback ever triggered.
+            if (earlyErrorHandler) {
+                video.addEventListener('error', earlyErrorHandler);
+            }
+
             video.src = sourceUrl;
             video.autoplay = true;
             video.setAttribute('autoplay', '');
@@ -304,23 +318,33 @@
 
         return ensureStreamWorker().then(function (workerReady) {
             if (workerReady) {
-                var video = mount(basePath + STREAM_FILENAME);
+                var video;
 
                 // If the virtual stream fails (worker evicted mid-session, a
                 // chunk 404s), drop to the compressed proxy at the same spot
-                // rather than leaving a dead player.
-                video.addEventListener('error', function onError() {
+                // rather than leaving a dead player. Uploads made before the
+                // full-length proxy existed have no fullPreviewUrl - stitch
+                // the chunks into a Blob instead so those still recover.
+                video = mount(basePath + STREAM_FILENAME, function onError() {
                     video.removeEventListener('error', onError);
-                    if (!fullPreviewUrl) return;
                     var resumeAt = video.currentTime;
                     var wasPlaying = !video.paused;
-                    video.addEventListener('loadedmetadata', function onMeta() {
-                        video.removeEventListener('loadedmetadata', onMeta);
-                        if (resumeAt > 0) video.currentTime = resumeAt;
-                        if (wasPlaying) playWithSound(video);
-                    });
-                    video.src = fullPreviewUrl;
-                    video.load();
+
+                    function recoverWith(newSrc) {
+                        video.addEventListener('loadedmetadata', function onMeta() {
+                            video.removeEventListener('loadedmetadata', onMeta);
+                            if (resumeAt > 0) video.currentTime = resumeAt;
+                            if (wasPlaying) playWithSound(video);
+                        });
+                        video.src = newSrc;
+                        video.load();
+                    }
+
+                    if (fullPreviewUrl) {
+                        recoverWith(fullPreviewUrl);
+                    } else {
+                        loadAllChunksUrl(meta, basePath).then(recoverWith).catch(function () {});
+                    }
                 });
                 return true;
             }
