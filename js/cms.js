@@ -3932,7 +3932,7 @@
                 event.dataTransfer.setData("application/json", JSON.stringify(defaults));
             });
             button.addEventListener("click", function () {
-                if (!state.selectedWork) {
+                if (!state.selectedWork || !state.selectedWork.doc) {
                     return;
                 }
 
@@ -4006,7 +4006,7 @@
         el.moveUpBtn.addEventListener("click", function () {
             var work = state.selectedWork;
             var idx = state.selectedComponentIndex;
-            if (!work || idx <= 0) return;
+            if (!work || !work.doc || idx <= 0) return;
             var tmp = work.components[idx - 1];
             work.components[idx - 1] = work.components[idx];
             work.components[idx] = tmp;
@@ -4020,7 +4020,7 @@
         el.moveDownBtn.addEventListener("click", function () {
             var work = state.selectedWork;
             var idx = state.selectedComponentIndex;
-            if (!work || idx < 0 || idx >= work.components.length - 1) return;
+            if (!work || !work.doc || idx < 0 || idx >= work.components.length - 1) return;
             var tmp = work.components[idx + 1];
             work.components[idx + 1] = work.components[idx];
             work.components[idx] = tmp;
@@ -4034,7 +4034,7 @@
         el.deleteComponentBtn.addEventListener("click", function () {
             var work = state.selectedWork;
             var idx = state.selectedComponentIndex;
-            if (!work || idx < 0) return;
+            if (!work || !work.doc || idx < 0) return;
             work.components.splice(idx, 1);
             state.selectedComponentIndex = Math.min(idx, work.components.length - 1);
             state.dirty = true;
