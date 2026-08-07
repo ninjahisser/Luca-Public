@@ -342,47 +342,6 @@
         return src.replace(/js\/i18n\.js(?:\?.*)?$/, "cms/");
     }
 
-    function getSiteHref(filename) {
-        var i18nScript = document.querySelector('script[src*="i18n.js"]');
-        var src = i18nScript ? i18nScript.getAttribute("src") : "js/i18n.js";
-        if (!src) {
-            return filename;
-        }
-
-        var match = src.match(/^(.*)js\/i18n\.js(?:\?.*)?$/);
-        var prefix = match ? match[1] : "";
-        return prefix + filename;
-    }
-
-    function normalizeNameLinks() {
-        var linksContainer = document.querySelector("#name_links div");
-        if (!linksContainer) {
-            return;
-        }
-
-        var links = [
-            { href: getSiteHref("about_me.html"), label: "About Me" },
-            { href: "https://github.com/ninjahisser", label: "GitHub", external: true },
-            { href: "https://www.instagram.com/sethvdb.design", label: "Instagram", external: true }
-        ];
-
-        linksContainer.innerHTML = "";
-
-        links.forEach(function (item) {
-            var anchor = document.createElement("a");
-            anchor.className = "def_button";
-            anchor.href = item.href;
-            anchor.textContent = item.label;
-
-            if (item.external) {
-                anchor.target = "_blank";
-                anchor.rel = "noreferrer noopener";
-            }
-
-            linksContainer.appendChild(anchor);
-        });
-    }
-
     function initCmsButton() {
         var existing = document.getElementById("cms_link_btn");
         if (existing) {
@@ -819,7 +778,6 @@
         injectStyle();
         createOverlay();
         createLanguageSwitcher();
-        normalizeNameLinks();
         initCmsButton();
         normalizeBackButton();
         initWorkPageEnhancements();
