@@ -1,0 +1,30 @@
+{
+  "source_url": "https://www.youtube.com/embed/TvBN5E24vjE",
+  "work_name": "gamebarrier-TvBN5E24vjE",
+  "total_size": 314569809,
+  "chunk_size": 104857600,
+  "num_chunks": 3,
+  "chunks": [
+    {
+      "path": "source.webm.part000",
+      "size": 104857600,
+      "index": 0
+    },
+    {
+      "path": "source.webm.part001",
+      "size": 104857600,
+      "index": 1
+    },
+    {
+      "path": "source.webm.part002",
+      "size": 104854609,
+      "index": 2
+    }
+<<<<<<< Updated upstream
+  ]
+}
+=======
+  ],
+  "index_preview": "preview_360p.mp4"
+}
+>>>>>>> Stashed changes
