@@ -91,12 +91,22 @@
 
                     <div class="tool-card">
                         <h3>Index Preview Compression</h3>
-                        <p class="muted">Regenerates ultra-light preview_360p.mp4 files for all works on the index, taken from the original video. Videos are trimmed to 15 seconds, encoded at 20fps with aggressive compression (CRF 36 + capped bitrate), and scaled down for very fast streaming. Missing sources are rebuilt from the chunked files. Results stored in videos/uploads/*/preview_360p.mp4.</p>
+                        <p class="muted">Regenerates ultra-light preview_360p.mp4 files for all works on the index, taken from the original video. Videos are trimmed to 30 seconds, encoded at 24fps with compression (CRF 30, capped at 1600kbps) and scaled down (max 960px) for very fast streaming. Missing sources are rebuilt from the chunked files. Results stored in videos/uploads/*/preview_360p.mp4.</p>
                         <div class="tool-actions">
                             <button id="compressIndexBtn" class="def_button_small" type="button">Regenerate All Previews</button>
                         </div>
                         <div id="compressIndexStatus" class="muted">Ready.</div>
                         <pre id="compressIndexOutput" class="tool-output"></pre>
+                    </div>
+
+                    <div class="tool-card">
+                        <h3>Full-Length Seek Preview Backfill</h3>
+                        <p class="muted">Generates the low-bitrate, full-length preview_full-*.mp4 proxy for any multi-chunk work that doesn't have one yet - the fallback the player seeks into when the streaming Service Worker isn't available, instead of downloading every raw chunk in full. Missing sources are rebuilt from the chunked files. Results stored in videos/uploads/*/preview_full-*.mp4.</p>
+                        <div class="tool-actions">
+                            <button id="fullPreviewBtn" class="def_button_small" type="button">Backfill Missing Previews</button>
+                        </div>
+                        <div id="fullPreviewStatus" class="muted">Ready.</div>
+                        <pre id="fullPreviewOutput" class="tool-output"></pre>
                     </div>
                 </div>
             </section>

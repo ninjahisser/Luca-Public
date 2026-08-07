@@ -187,6 +187,9 @@
         compressIndexBtn: document.getElementById("compressIndexBtn"),
         compressIndexStatus: document.getElementById("compressIndexStatus"),
         compressIndexOutput: document.getElementById("compressIndexOutput"),
+        fullPreviewBtn: document.getElementById("fullPreviewBtn"),
+        fullPreviewStatus: document.getElementById("fullPreviewStatus"),
+        fullPreviewOutput: document.getElementById("fullPreviewOutput"),
         workSearch: document.getElementById("workSearch"),
         workList: document.getElementById("workList"),
         componentList: document.getElementById("componentList"),
@@ -5032,6 +5035,114 @@
         });
     }
 
+    function setFullPreviewStatus(message, kind) {
+        if (!el.fullPreviewStatus) {
+            return;
+        }
+        el.fullPreviewStatus.textContent = message;
+        el.fullPreviewStatus.classList.toggle("is-success", kind === "success");
+        el.fullPreviewStatus.classList.toggle("is-error", kind === "error");
+        el.fullPreviewStatus.classList.toggle("is-progress", kind === "progress");
+    }
+
+    function appendFullPreviewLine(line) {
+        if (!el.fullPreviewOutput) {
+            return;
+        }
+        el.fullPreviewOutput.textContent = (el.fullPreviewOutput.textContent ? el.fullPreviewOutput.textContent + "\n" : "") + line;
+        el.fullPreviewOutput.scrollTop = el.fullPreviewOutput.scrollHeight;
+    }
+
+    function pollFullPreviewJob(jobId) {
+        return new Promise(function (resolve, reject) {
+            var attempts = 0;
+            var seen = 0;
+
+            function tick() {
+                fetch(buildApiUrl("/cms-api/full-previews/status?id=" + encodeURIComponent(jobId)))
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        attempts += 1;
+                        if (data && data.progress && data.progress.length > seen) {
+                            for (var i = seen; i < data.progress.length; i += 1) {
+                                appendFullPreviewLine(data.progress[i]);
+                            }
+                            seen = data.progress.length;
+                        }
+                        if (data && data.state === "done") {
+                            resolve(data.result || {});
+                            return;
+                        }
+                        if (data && data.state === "error") {
+                            reject(new Error(data.error || "Preview generation failed"));
+                            return;
+                        }
+                        if (attempts > 7200) {
+                            reject(new Error("Timed out waiting for preview generation."));
+                            return;
+                        }
+                        setTimeout(tick, 1000);
+                    })
+                    .catch(function () {
+                        attempts += 1;
+                        if (attempts > 60) {
+                            reject(new Error("Lost connection while polling preview generation."));
+                            return;
+                        }
+                        setTimeout(tick, 1000);
+                    });
+            }
+
+            tick();
+        });
+    }
+
+    function runFullPreviews() {
+        if (state.mode !== "api") {
+            setFullPreviewStatus("Full-Length Seek Preview Backfill needs the local CMS server. Start it with: python cms_server.py", "error");
+            return;
+        }
+
+        if (el.fullPreviewBtn) {
+            el.fullPreviewBtn.disabled = true;
+        }
+        if (el.fullPreviewOutput) {
+            el.fullPreviewOutput.textContent = "";
+        }
+        setFullPreviewStatus("Starting...", "progress");
+
+        fetch(buildApiUrl("/cms-api/full-previews"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                if (!data || !data.id) {
+                    throw new Error((data && data.error) || "Could not start job");
+                }
+                return pollFullPreviewJob(data.id);
+            })
+            .then(function (result) {
+                setFullPreviewStatus(
+                    "Done. processed=" + ((result && result.processed) || 0) + ", generated=" + ((result && result.generated) || 0) + ".",
+                    "success"
+                );
+            })
+            .catch(function (err) {
+                setFullPreviewStatus("Error: " + err.message, "error");
+            })
+            .then(function () {
+                if (el.fullPreviewBtn) {
+                    el.fullPreviewBtn.disabled = false;
+                }
+            });
+    }
+
     function runCompressIndexPreviews() {
         if (state.mode !== "api") {
             setCompressIndexStatus("Index Preview Compression needs the local CMS server. Start it with: python cms_server.py", "error");
@@ -5335,6 +5446,10 @@
 
         if (el.compressIndexBtn) {
             el.compressIndexBtn.addEventListener("click", runCompressIndexPreviews);
+        }
+
+        if (el.fullPreviewBtn) {
+            el.fullPreviewBtn.addEventListener("click", runFullPreviews);
         }
     }
     function bindCollapsibles() {

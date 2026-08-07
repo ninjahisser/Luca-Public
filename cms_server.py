@@ -49,6 +49,13 @@ try:
 except Exception:  # pragma: no cover - missing script should not break the server
     index_previews_mod = None
 
+FULL_PREVIEW_JOBS: dict[str, dict] = {}
+FULL_PREVIEW_JOBS_LOCK = threading.Lock()
+try:
+    import generate_full_previews as full_previews_mod
+except Exception:  # pragma: no cover - missing script should not break the server
+    full_previews_mod = None
+
 VIDEO_UPLOAD_JOBS: dict[str, dict] = {}
 VIDEO_UPLOAD_JOBS_LOCK = threading.Lock()
 
@@ -76,6 +83,21 @@ def _run_preview_job(job: dict) -> None:
         if index_previews_mod is None:
             raise RuntimeError("scripts/generate_index_previews.py could not be imported")
         result = index_previews_mod.generate_index_previews(progress=progress)
+        job["state"] = "done"
+        job["result"] = result
+    except Exception as exc:
+        job["state"] = "error"
+        job["error"] = str(exc)
+
+
+def _run_full_preview_job(job: dict) -> None:
+    def progress(message: str) -> None:
+        job["progress"].append(message)
+
+    try:
+        if full_previews_mod is None:
+            raise RuntimeError("scripts/generate_full_previews.py could not be imported")
+        result = full_previews_mod.generate_full_previews(progress=progress)
         job["state"] = "done"
         job["result"] = result
     except Exception as exc:
@@ -495,6 +517,22 @@ class CMSHandler(SimpleHTTPRequestHandler):
                 "error": job.get("error")
             })
             return
+
+        if parsed.path == "/cms-api/full-previews/status":
+            params = parse_qs(parsed.query)
+            job_id = (params.get("id") or [""])[0]
+            with FULL_PREVIEW_JOBS_LOCK:
+                job = FULL_PREVIEW_JOBS.get(job_id)
+            if not job:
+                self._send_json({"error": "Unknown job"}, status=404)
+                return
+            self._send_json({
+                "state": job["state"],
+                "progress": job["progress"],
+                "result": job.get("result"),
+                "error": job.get("error")
+            })
+            return
         if parsed.path == "/cms-api/upload":
             self._send_json({"error": "Use POST"}, status=405)
             return
@@ -630,6 +668,19 @@ class CMSHandler(SimpleHTTPRequestHandler):
                 PREVIEW_JOBS[job_id] = job
 
             thread = threading.Thread(target=_run_preview_job, args=(job,), daemon=True)
+            thread.start()
+
+            self._send_json({"ok": True, "id": job_id})
+            return
+
+        if parsed.path == "/cms-api/full-previews":
+            job_id = _job_id()
+            job = {"state": "running", "progress": [], "result": None, "error": None}
+            with FULL_PREVIEW_JOBS_LOCK:
+                _prune_old_jobs(FULL_PREVIEW_JOBS)
+                FULL_PREVIEW_JOBS[job_id] = job
+
+            thread = threading.Thread(target=_run_full_preview_job, args=(job,), daemon=True)
             thread.start()
 
             self._send_json({"ok": True, "id": job_id})
