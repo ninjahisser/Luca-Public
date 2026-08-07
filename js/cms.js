@@ -2738,6 +2738,14 @@
                 cmp.src = srcInput.value;
                 state.dirty = true;
                 patchPreviewComponent(idx);
+                // Same staleness class fixed for video/iframe components:
+                // componentLabel()/sourceLabel() derive the sidebar list
+                // entry's text from cmp.src for images too. The "Folder"
+                // browse button below already does a full renderComponentList()
+                // after picking a path - this direct-edit path never
+                // refreshed anything, so typing a new src left the sidebar
+                // showing whatever was there before.
+                refreshComponentListItem(idx);
             });
             srcLabel.appendChild(srcInput);
             srcRow.appendChild(srcLabel);
