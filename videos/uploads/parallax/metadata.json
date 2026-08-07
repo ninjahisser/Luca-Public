@@ -1,0 +1,40 @@
+{
+  "source_url": "https://www.youtube.com/embed/2o21uiAvtIw?si=Qab9ZeKvdHZF9Xtg&autoplay=1&mute=1",
+  "work_name": "parallax",
+  "total_size": 434550000,
+  "chunk_size": 104857600,
+  "num_chunks": 5,
+  "chunks": [
+    {
+      "path": "source.mkv.part000",
+      "size": 104857600,
+      "index": 0
+    },
+    {
+      "path": "source.mkv.part001",
+      "size": 104857600,
+      "index": 1
+    },
+    {
+      "path": "source.mkv.part002",
+      "size": 104857600,
+      "index": 2
+    },
+    {
+      "path": "source.mkv.part003",
+      "size": 104857600,
+      "index": 3
+    },
+    {
+      "path": "source.mkv.part004",
+      "size": 15119600,
+      "index": 4
+    }
+<<<<<<< Updated upstream
+  ]
+}
+=======
+  ],
+  "index_preview": "preview_360p.mp4"
+}
+>>>>>>> Stashed changes
