@@ -1504,6 +1504,11 @@ h3 {
     outline: none;
 }
 
+.lvp:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: -2px;
+}
+
 .lvp video.lvp-video {
     position: absolute;
     top: 0;
@@ -1782,6 +1787,10 @@ h3 {
     outline: none;
     cursor: pointer;
     margin: 0;
+}
+
+.lvp-vol:focus-visible {
+    box-shadow: 0 0 0 2px var(--main-color);
 }
 
 .lvp-vol::-webkit-slider-thumb {
