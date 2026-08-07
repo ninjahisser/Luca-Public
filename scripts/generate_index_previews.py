@@ -122,10 +122,29 @@ def generate_index_previews(progress=None):
         if not preview_path:
             continue
 
+        # create_index_preview always writes to the fixed name
+        # "preview_360p.mp4", but an upload made after chunk filenames
+        # started being timestamped (see artifact_stamp in
+        # download_video.download_and_split) can have an index_preview
+        # like "preview_360p-<stamp>.mp4" already on disk. Overwriting the
+        # metadata field without removing that old file just orphans it -
+        # confirmed on "troj" in this repo, where the pre-existing stamped
+        # preview was left behind (byte-identical to the regenerated one)
+        # after a previous run of this script.
+        old_preview = metadata.get("index_preview")
         metadata["index_preview"] = preview_path
         with open(metadata_path, "w", encoding="utf-8") as f:
             json.dump(metadata, f, indent=2)
             f.write("\n")
+
+        if old_preview and old_preview != preview_path:
+            old_preview_path = os.path.join(folder, old_preview)
+            try:
+                if os.path.isfile(old_preview_path):
+                    os.remove(old_preview_path)
+                    emit(f"[{entry}] removed superseded preview {old_preview}")
+            except OSError as exc:
+                emit(f"[{entry}] warning: could not remove superseded preview {old_preview}: {exc}")
 
         generated += 1
 
