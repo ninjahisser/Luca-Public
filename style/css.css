@@ -443,7 +443,7 @@ body.cv-page #seth_photo img {
 
 .about_photo_button {
     margin-top: .9rem;
-    width: fit-content;
+    width: 100%;
 }
 
 .skill_categories {
@@ -1031,24 +1031,6 @@ body.work-page #assignment_desc h3 {
 
 body.work-page .work-tools {
     margin: .35rem 0 1rem;
-}
-
-#bio figure {
-    margin: 0 10px 0 0;
-}
-
-#bio {
-    display: inline-flex;
-    margin-top: 20px;
-}
-
-#bio h2 {
-    font-family: var(--important-font);
-    font-weight: bolder;
-}
-
-#bio div {
-    width: 600px;
 }
 
 .bold {
