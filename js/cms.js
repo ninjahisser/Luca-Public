@@ -4503,6 +4503,23 @@
             parseIndex();
             renderWorkList();
 
+            // parseIndex() rebuilds state.works from scratch, so the new
+            // entry has no .doc yet - and saveAll()'s API-mode branch skips
+            // any work without one. In API mode the template only lives in
+            // fileStore until something loads it into .doc (normally
+            // clicking the work in the sidebar, via selectWork ->
+            // loadWorkDoc). Without this, clicking Save right after
+            // creating a work - a completely natural thing to do - silently
+            // never wrote the new HTML file, while index.html still got a
+            // link added to it: a dead link on the live site with nothing
+            // in the CMS UI indicating anything went wrong. Select it
+            // immediately so it's always safe to save right away, which
+            // also means the user lands straight in the editor for it.
+            var newWorkIdx = state.works.findIndex(function (w) { return basename(w.href) === filename; });
+            if (newWorkIdx !== -1) {
+                await selectWork(newWorkIdx);
+            }
+
             state.dirty = true;
             if (state.mode === "fs") {
                 setStatus("Nieuw werk aangemaakt: " + filename + " (Save Changes om index te bewaren).");
