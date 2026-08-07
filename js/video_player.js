@@ -203,6 +203,7 @@
         var intendedPlay = false;
                 var resumeOnReentry = false;
                 var observer = null;
+                var pendingSoundUnlock = null;
 
         function setPlayUI() {
             togglePlay.textContent = video.paused ? 'PLAY' : 'PAUSE';
@@ -569,14 +570,23 @@
                         video.muted = true;
                         video.play().catch(function () {});
                         setVolumeUI();
-                        var unlock = function () {
+                        // Auto-pause/resume on viewport re-entry retries this on
+                        // every scroll back into view, and each blocked attempt
+                        // used to register a fresh pair of document listeners
+                        // that nothing ever removed until an interaction finally
+                        // happened - scrolling a video in and out of view a few
+                        // times before ever clicking leaked listeners without
+                        // bound. Only one pending unlock at a time per player.
+                        if (pendingSoundUnlock) return;
+                        pendingSoundUnlock = function unlock() {
+                            pendingSoundUnlock = null;
                             video.muted = false;
                             setVolumeUI();
                             document.removeEventListener('pointerdown', unlock);
                             document.removeEventListener('keydown', unlock);
                         };
-                        document.addEventListener('pointerdown', unlock);
-                        document.addEventListener('keydown', unlock);
+                        document.addEventListener('pointerdown', pendingSoundUnlock);
+                        document.addEventListener('keydown', pendingSoundUnlock);
                     }
                 });
             }
