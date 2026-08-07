@@ -315,6 +315,29 @@ def download_and_split(url, work_name, chunk_size=CHUNK_SIZE_DEFAULT,
 
     output_dir = os.path.join(videos_dir, work_name)
     os.makedirs(output_dir, exist_ok=True)
+
+    # Every artifact this function writes is timestamped (artifact_stamp
+    # below), so re-uploading a replacement video for a work that already
+    # has one never collides with - or cleans up - the previous upload's
+    # chunks/previews. Remember what the old metadata.json referenced now,
+    # before it gets overwritten, so the new files it's about to be
+    # replaced by can be swept up once the new upload actually succeeds.
+    old_referenced_files = set()
+    old_meta_path = os.path.join(output_dir, "metadata.json")
+    if os.path.isfile(old_meta_path):
+        try:
+            with open(old_meta_path, "r", encoding="utf-8") as f:
+                old_meta = json.load(f)
+            for c in old_meta.get("chunks") or []:
+                if c.get("path"):
+                    old_referenced_files.add(c["path"])
+            if old_meta.get("index_preview"):
+                old_referenced_files.add(old_meta["index_preview"])
+            if old_meta.get("full_preview"):
+                old_referenced_files.add(old_meta["full_preview"])
+        except Exception:
+            pass
+
     artifact_stamp = str(int(time.time() * 1000))
     artifact_stem = f"source-{artifact_stamp}"
     preview_name = f"preview_360p-{artifact_stamp}.mp4"
@@ -458,6 +481,24 @@ def download_and_split(url, work_name, chunk_size=CHUNK_SIZE_DEFAULT,
         and os.path.isfile(source_artifact_path)
     ):
         os.remove(source_artifact_path)
+
+    # Now that the new metadata.json (referencing only the new, differently
+    # timestamped artifacts) is safely on disk, sweep up whatever the old
+    # one pointed to - this is a replace, not an add, and nothing else in
+    # this project ever references files by name once metadata.json has
+    # moved on from them.
+    new_referenced_files = {c["path"] for c in chunks}
+    if index_preview:
+        new_referenced_files.add(index_preview)
+    if full_preview:
+        new_referenced_files.add(full_preview)
+    for stale_name in old_referenced_files - new_referenced_files:
+        stale_path = os.path.join(output_dir, stale_name)
+        try:
+            if os.path.isfile(stale_path):
+                os.remove(stale_path)
+        except OSError as exc:
+            report(f"Warning: could not remove stale file from previous upload ({stale_name}): {exc}")
 
     report(f"Done. {len(chunks)} chunk(s), {total_size / 1024 / 1024:.1f} MB total.")
     metadata["preview_path"] = f"videos/uploads/{work_name}/metadata.json"
