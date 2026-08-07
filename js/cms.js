@@ -2815,6 +2815,14 @@
                 }
                 patchPreviewStructure();
                 if (isYt !== wasYt) renderComponentProps();
+                // Same staleness class fixed for video components' src
+                // field: componentLabel()/mediaLabel() derive the sidebar
+                // list entry's text from cmp.src for iframe components too.
+                // renderComponentProps() above only covers the case where
+                // isYt flips - most edits (switching between two non-
+                // YouTube URLs, or two different YouTube URLs) leave the
+                // sidebar showing whatever src was there before.
+                refreshComponentListItem(idx);
             });
 
             if (isYouTubeUrl(cmp.src)) {
