@@ -2868,9 +2868,23 @@
         }
 
         if (cmp.type === "video") {
+            var DEFAULT_VIDEO_UPLOAD_MSG = "Kies een video om te comprimeren en op te splitsen op de server.";
+            function videoLinkedStatusText(src) {
+                return "✅ Video gekoppeld: " + src + ". Kies een nieuwe video om te vervangen.";
+            }
+
             addInput("Video URL", cmp.src || "", function (value) {
                 cmp.src = value;
                 patchPreviewStructure();
+                // Keep the status box below in sync with a manual URL edit
+                // too, not just an actual upload - otherwise it keeps
+                // showing "linked" info for whatever src was there before,
+                // even after the field no longer points at it.
+                var isNowLinked = VIDEO_METADATA_SRC_RE.test(value || "");
+                setVideoUploadStatus(
+                    isNowLinked ? videoLinkedStatusText(value) : DEFAULT_VIDEO_UPLOAD_MSG,
+                    isNowLinked ? "success" : ""
+                );
             });
 
             var uploadWrap = document.createElement("div");
@@ -2883,8 +2897,8 @@
                 "</div>",
                 "<div id='videoUploadStatus' class='upload-status-msg" + (alreadyUploaded ? " is-success" : "") + "'>",
                 alreadyUploaded
-                    ? "  ✅ Video gekoppeld: " + escapeHtml(cmp.src) + ". Kies een nieuwe video om te vervangen."
-                    : "  Kies een video om te comprimeren en op te splitsen op de server.",
+                    ? "  " + escapeHtml(videoLinkedStatusText(cmp.src))
+                    : "  " + DEFAULT_VIDEO_UPLOAD_MSG,
                 "</div>",
                 "<div id='videoUploadProgressWrap' class='upload-progress-wrap' style='display:none'>",
                 "  <div id='videoUploadProgressBar' class='upload-progress-bar'><div id='videoUploadProgressFill' class='upload-progress-bar-fill'></div></div>",
