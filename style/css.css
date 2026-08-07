@@ -1253,7 +1253,7 @@ h3 {
 .lb-close {
     position: absolute;
     top: 18px;
-    right: 18px;
+    left: 18px;
     background: var(--background-color);
     color: var(--main-color);
     padding: 6px 10px;

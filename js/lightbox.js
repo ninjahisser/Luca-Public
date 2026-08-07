@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // gather images from the work content automatically
     const galleryImgs = Array.from(
-        document.querySelectorAll('#assignment_desc img:not(#lb-image):not(#lb-thumbs img)')
+        document.querySelectorAll('#assignment_desc img:not(#lb-image):not(#lb-thumbs img), .cv_pdf_viewer img:not(#lb-image):not(#lb-thumbs img)')
     ).filter(img => img.closest('#lightbox') === null);
     if (!galleryImgs.length) return; // nothing to do
     // Prioritize first visible images and lazy-load the rest.
