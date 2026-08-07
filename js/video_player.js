@@ -383,16 +383,14 @@
         progress.addEventListener('pointerup', endDrag);
         progress.addEventListener('pointercancel', endDrag);
 
+        // ArrowRight/ArrowLeft aren't handled here: progress is inside wrap,
+        // so a keydown while it's focused already bubbles up to wrap's own
+        // keydown listener below, which seeks by +-5s. Handling it here too
+        // used to double-fire seekBy() for every arrow press on the bar.
         progress.addEventListener('keydown', function (ev) {
             if (ev.key === 'Enter' || ev.key === ' ') {
                 ev.preventDefault();
                 seekTo(progress.getBoundingClientRect().left + progress.offsetWidth / 2);
-            } else if (ev.key === 'ArrowRight') {
-                ev.preventDefault();
-                seekBy(5);
-            } else if (ev.key === 'ArrowLeft') {
-                ev.preventDefault();
-                seekBy(-5);
             }
         });
 

@@ -1552,6 +1552,14 @@ h3 {
     pointer-events: none;
 }
 
+.lvp-center.lvp-hidden .lvp-playbtn {
+    /* .lvp-playbtn re-enables pointer-events on itself (see below) to stay
+       clickable while shown, which also wins over the hidden state here
+       unless overridden - without this the invisible button still
+       intercepts clicks meant for the video underneath. */
+    pointer-events: none;
+}
+
 .lvp-playbtn {
     pointer-events: all;
     font-family: var(--default-font);
