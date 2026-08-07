@@ -133,7 +133,13 @@ function getToolIconUrl(toolName) {
         metahuman: "https://api.iconify.design/mdi:account-outline.svg",
         filmmaking: "https://api.iconify.design/mdi:filmstrip.svg",
         videoediting: "https://api.iconify.design/mdi:movie-edit-outline.svg",
-        unrealengine5: "https://api.iconify.design/simple-icons:unrealengine.svg"
+        unrealengine5: "https://api.iconify.design/simple-icons:unrealengine.svg",
+        programming: "https://api.iconify.design/mdi:code-braces.svg",
+        gameplay: "https://api.iconify.design/mdi:gamepad-variant-outline.svg",
+        multiplayer: "https://api.iconify.design/mdi:account-group-outline.svg",
+        anticheat: "https://api.iconify.design/mdi:shield-account-outline.svg",
+        steam: "https://cdn.simpleicons.org/steam/000000",
+        acescolorspace: "https://api.iconify.design/mdi:palette-swatch-outline.svg"
     };
 
     const normalized = normalizeToolName(toolName);
