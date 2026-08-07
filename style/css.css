@@ -1838,6 +1838,23 @@ h3 {
     border-color: var(--favorite-color);
 }
 
+@media (max-width: 640px) {
+    /* The bar's fixed-width controls (volume slider, buttons, time) don't
+       fit next to each other on narrow screens - .lvp-bar has no wrap, so
+       the overflow pushed the LOOP/FULL buttons entirely off-screen and
+       unclickable. Volume is the one control mobile browsers mostly ignore
+       anyway (iOS Safari makes video.volume read-only), so drop it here to
+       reclaim the space instead of trying to shrink everything further. */
+    .lvp-volume {
+        display: none;
+    }
+
+    .lvp-bar {
+        gap: 6px;
+        padding: 10px;
+    }
+}
+
 .lvp-volume.lvp-muted .lvp-vol::-moz-range-thumb {
     background: var(--favorite-color);
     border-color: var(--favorite-color);
