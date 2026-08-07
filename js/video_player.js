@@ -338,6 +338,14 @@
                 document.exitFullscreen().catch(function () {});
             } else if (wrap.requestFullscreen) {
                 wrap.requestFullscreen().catch(function () {});
+            } else if (video.webkitEnterFullscreen) {
+                // iOS Safari has never supported the standard Fullscreen API
+                // on arbitrary elements (wrap.requestFullscreen is simply
+                // absent there) - only a <video> element's own native
+                // fullscreen player via this WebKit-specific method. Without
+                // this fallback the FULL button, F key, and double-tap all
+                // silently do nothing on iPhone/iPad.
+                video.webkitEnterFullscreen();
             }
         }
 
