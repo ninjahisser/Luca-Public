@@ -9,6 +9,7 @@ preview_360p.mp4 (roughly 1/3 resolution) and updates metadata.json with:
 import json
 import os
 import glob
+import time
 
 from download_video import PROJECT_ROOT, create_index_preview
 
@@ -100,10 +101,24 @@ def generate_index_previews(progress=None):
 
         preview_path = create_index_preview(source_file, folder, lambda m: emit(f"[{entry}] {m}"))
         if reassembled:
-            try:
-                os.remove(source_file)
-            except OSError:
-                pass
+            # Removing a just-written, potentially 100MB+ file right after
+            # ffmpeg finishes reading it can transiently fail on Windows
+            # (e.g. a brief AV/indexer lock) - confirmed in practice: one
+            # folder out of seven reassemblies in a real run left its
+            # temp source sitting on disk because a single-attempt remove
+            # silently swallowed the failure. Retry with backoff, and if it
+            # still fails, say so instead of leaving it unexplained.
+            removed = False
+            for attempt in range(5):
+                try:
+                    os.remove(source_file)
+                    removed = True
+                    break
+                except OSError:
+                    if attempt < 4:
+                        time.sleep(0.5)
+            if not removed:
+                emit(f"[{entry}] warning: could not remove temporary reassembled file {os.path.basename(source_file)} - left on disk")
         if not preview_path:
             continue
 
