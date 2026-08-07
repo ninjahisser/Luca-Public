@@ -625,9 +625,10 @@
     function buildLanguageItem(languageData) {
         var button = document.createElement("button");
         button.type = "button";
-        button.className = "lang-item";
+        button.className = "lang-item notranslate";
+        button.setAttribute("translate", "no");
         button.setAttribute("aria-label", "Translate to " + languageData.label);
-        button.innerHTML = '<span class="flag">' + languageData.flag + '</span><span>' + languageData.label + "</span>";
+        button.innerHTML = '<span class="flag notranslate" translate="no">' + languageData.flag + '</span><span class="notranslate" translate="no">' + languageData.label + "</span>";
         button.addEventListener("click", function () {
             applyRetries = 0;
             closePanel();
