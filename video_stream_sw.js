@@ -58,7 +58,12 @@ function loadMeta(basePath) {
         if (Date.now() - cached.fetchedAt < META_TTL_MS) return Promise.resolve(cached.info);
     }
 
-    var pending = fetch(basePath + 'metadata.json')
+    // no-store: metadata.json is small and mutates (a video replace via the
+    // CMS points it at new, differently-timestamped chunk/preview files and
+    // deletes the old ones) - a browser-cached stale copy here would keep
+    // requesting chunk files that no longer exist on disk instead of just
+    // showing slightly-old content, which is a strictly worse failure mode.
+    var pending = fetch(basePath + 'metadata.json', { cache: 'no-store' })
         .then(function (response) {
             if (!response.ok) throw new Error('metadata.json ' + response.status);
             return response.json();

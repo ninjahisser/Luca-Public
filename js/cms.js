@@ -996,7 +996,11 @@
         if (!video || !videoSrc || !VIDEO_METADATA_SRC_RE.test(videoSrc)) {
             return;
         }
-        fetch(buildApiUrl("/" + videoSrc.replace(/^\//, "")))
+        // no-store: metadata.json mutates whenever a video is replaced (new
+        // chunk/preview filenames, old ones deleted) - a cached copy left
+        // over from earlier in this same editor session would resolve the
+        // preview to files that no longer exist on disk.
+        fetch(buildApiUrl("/" + videoSrc.replace(/^\//, "")), { cache: "no-store" })
             .then(function (r) { return r.ok ? r.json() : null; })
             .then(function (meta) {
                 if (!meta || !meta.work_name) return;

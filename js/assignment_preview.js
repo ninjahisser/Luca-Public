@@ -467,7 +467,10 @@ function setupChunkedVideo(item, metaPath) {
         startPreviewPlayback(elX);
     }
 
-    fetch(metaPath).then(function (r) { return r.json(); }).then(function (meta) {
+    // no-store: metadata.json mutates when a video is replaced via the CMS
+    // (new chunk/preview filenames, old ones deleted) - a stale cached copy
+    // would point the homepage hover preview at files that no longer exist.
+    fetch(metaPath, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (meta) {
         function toUrl(path) {
             if (!path) return '';
             if (/^https?:\/\//i.test(path) || path.indexOf('/') === 0) return path;

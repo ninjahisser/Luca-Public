@@ -26,7 +26,11 @@
     }
 
     function fetchJson(url) {
-        return fetch(url).then(function (r) { return r.ok ? r.json() : null; });
+        // no-store: only ever used for metadata.json, which mutates when a
+        // video is replaced via the CMS (new chunk/preview filenames, old
+        // ones deleted) - a stale cached copy would point at files that no
+        // longer exist instead of just showing slightly-old content.
+        return fetch(url, { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; });
     }
 
     function mimeForChunk(path) {
