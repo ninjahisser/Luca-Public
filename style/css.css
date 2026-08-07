@@ -298,6 +298,28 @@ body.cv-page #seth_photo img {
     text-decoration: underline;
 }
 
+.cv_pdf_viewer {
+    margin: 0 0 1.75rem;
+    line-height: 0;
+    max-width: 85%;
+}
+
+.cv_pdf_viewer img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    /* #name is a fixed bar pinned to the bottom of the viewport, and its
+       height scales with viewport width (h1 font-size: calc(100vw/9.5)),
+       not just viewport height. A flat vh cap here needs re-tuning any
+       time #name's sizing or this image's own width changes, and quietly
+       drifts back into overlapping the nav buttons. This instead derives
+       from #name's actual size (~14.2vw + ~200px for its own padding/
+       button row, fitted against 1440x900 and 1920x1080) so it stays
+       correct regardless of how large this image is allowed to grow. */
+    max-height: clamp(220px, calc(100vh - 14.2vw - 202px), 900px);
+}
+
 .cv_sidebar,
 .cv_main {
     display: flex;
@@ -541,6 +563,10 @@ body.cv-page #seth_photo img {
     .cv_hero {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .cv_pdf_viewer {
+        max-width: 100%;
     }
 
     .cv_gallery {
