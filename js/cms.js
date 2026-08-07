@@ -2875,13 +2875,16 @@
 
             var uploadWrap = document.createElement("div");
             uploadWrap.className = "video-upload-box";
+            var alreadyUploaded = VIDEO_METADATA_SRC_RE.test(cmp.src || "");
             uploadWrap.innerHTML = [
                 "<div class='upload-btn-row'>",
                 "  <input id='videoUploadInput' type='file' accept='video/*' style='display:none'>",
                 "  <button id='videoUploadBtn' class='def_button_small' type='button'>📁 Video kiezen &amp; uploaden</button>",
                 "</div>",
-                "<div id='videoUploadStatus' class='upload-status-msg'>",
-                "  Kies een video om te comprimeren en op te splitsen op de server.",
+                "<div id='videoUploadStatus' class='upload-status-msg" + (alreadyUploaded ? " is-success" : "") + "'>",
+                alreadyUploaded
+                    ? "  ✅ Video gekoppeld: " + escapeHtml(cmp.src) + ". Kies een nieuwe video om te vervangen."
+                    : "  Kies een video om te comprimeren en op te splitsen op de server.",
                 "</div>",
                 "<div id='videoUploadProgressWrap' class='upload-progress-wrap' style='display:none'>",
                 "  <div id='videoUploadProgressBar' class='upload-progress-bar'><div id='videoUploadProgressFill' class='upload-progress-bar-fill'></div></div>",
