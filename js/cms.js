@@ -3299,6 +3299,22 @@
 
         function normalizeButtonHref(href) {
             if (!href || href === "#") return "#";
+
+            // Reject javascript:/vbscript:/data: regardless of exact
+            // spelling before anything else. The "contains ://" fallback
+            // below is meant to pass through things like ftp:// or a
+            // vscode:// deep link as-is, but without this it also lets
+            // javascript://some-comment%0aalert(1) through unchanged - a
+            // well-known bypass for a plain "starts with javascript:"
+            // check, and confirmed to actually execute when clicked.
+            var schemeMatch = href.match(/^[\s -]*([a-zA-Z][a-zA-Z0-9+.-]*)\s*:/);
+            if (schemeMatch) {
+                var scheme = schemeMatch[1].toLowerCase();
+                if (scheme === "javascript" || scheme === "vbscript" || scheme === "data") {
+                    return "#";
+                }
+            }
+
             if (/^(https?:|mailto:|tel:|#|\/)/.test(href)) return href;
             if (href.indexOf("://") !== -1) return href;
             return "https://" + href;
