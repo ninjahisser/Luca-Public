@@ -1,13 +1,13 @@
 {
   "source_url": "https://www.youtube.com/embed/xPRgrNNbbpU?si=Qab9ZeKvdHZF9Xtg&autoplay=1&mute=1",
   "work_name": "scentsync",
-  "total_size": 17900256,
+  "total_size": 17904349,
   "chunk_size": 104857600,
   "num_chunks": 1,
   "chunks": [
     {
-      "path": "source.mkv",
-      "size": 17900256,
+      "path": "source.mp4",
+      "size": 17904349,
       "index": 0
     }
   ],
