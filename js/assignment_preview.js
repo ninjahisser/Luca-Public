@@ -442,6 +442,31 @@ function appendToolsOverlay(item, tools) {
 function setupChunkedVideo(item, metaPath) {
     var basePath = metaPath.substring(0, metaPath.lastIndexOf('/') + 1);
     loadToolsOverlay(item);
+
+    function mountDirectPreview(directSrc) {
+        var elX = document.createElement('video');
+        elX.className = 'preview-video';
+        elX.src = directSrc;
+        elX.loop = true;
+        elX.setAttribute('loop', '');
+        elX.muted = true;
+        elX.setAttribute('muted', '');
+        elX.playsInline = true;
+        elX.preload = 'auto';
+        elX.controls = false;
+        wirePreviewReadiness(item, elX, 1500);
+        var startX = parseFloat(item.getAttribute('data-preview-start'));
+        if (startX > 0) {
+            elX.addEventListener('loadedmetadata', function onMeta() {
+                elX.removeEventListener('loadedmetadata', onMeta);
+                elX.currentTime = startX;
+            });
+        }
+        item.appendChild(elX);
+        item.classList.add('has-preview-video');
+        startPreviewPlayback(elX);
+    }
+
     fetch(metaPath).then(function (r) { return r.json(); }).then(function (meta) {
         function toUrl(path) {
             if (!path) return '';
@@ -451,53 +476,26 @@ function setupChunkedVideo(item, metaPath) {
 
         var compressed = toUrl(meta.index_preview || meta.indexPreview || meta.preview_mp4 || meta.preview);
         if (compressed) {
-            var elCompressed = document.createElement('video');
-            elCompressed.className = 'preview-video';
-            elCompressed.src = compressed;
-            elCompressed.loop = true;
-            elCompressed.setAttribute('loop', '');
-            elCompressed.muted = true;
-            elCompressed.setAttribute('muted', '');
-            elCompressed.playsInline = true;
-            elCompressed.preload = 'auto';
-            elCompressed.controls = false;
-            wirePreviewReadiness(item, elCompressed, 1500);
-            var startCompressed = parseFloat(item.getAttribute('data-preview-start'));
-            if (startCompressed > 0) {
-                elCompressed.addEventListener('loadedmetadata', function onMeta() {
-                    elCompressed.removeEventListener('loadedmetadata', onMeta);
-                    elCompressed.currentTime = startCompressed;
-                });
-            }
-            item.appendChild(elCompressed);
-            item.classList.add('has-preview-video');
-            startPreviewPlayback(elCompressed);
+            mountDirectPreview(compressed);
             return null;
         }
 
         if (meta.chunks && meta.chunks.length === 1 && /\.(mp4|webm|ogg|mov|avi)$/i.test(meta.chunks[0].path || '')) {
-            var directSrc = toUrl(meta.chunks[0].path);
-            var elDirect = document.createElement('video');
-            elDirect.className = 'preview-video';
-            elDirect.src = directSrc;
-            elDirect.loop = true;
-            elDirect.setAttribute('loop', '');
-            elDirect.muted = true;
-            elDirect.setAttribute('muted', '');
-            elDirect.playsInline = true;
-            elDirect.preload = 'auto';
-            elDirect.controls = false;
-            wirePreviewReadiness(item, elDirect, 1500);
-            var startDirect = parseFloat(item.getAttribute('data-preview-start'));
-            if (startDirect > 0) {
-                elDirect.addEventListener('loadedmetadata', function onMeta() {
-                    elDirect.removeEventListener('loadedmetadata', onMeta);
-                    elDirect.currentTime = startDirect;
-                });
-            }
-            item.appendChild(elDirect);
-            item.classList.add('has-preview-video');
-            startPreviewPlayback(elDirect);
+            mountDirectPreview(toUrl(meta.chunks[0].path));
+            return null;
+        }
+
+        // No compressed hover preview (e.g. index-preview generation failed
+        // during upload - non-fatal by design, see create_index_preview in
+        // scripts/download_video.py) and more than one raw chunk: prefer
+        // the full-length low-bitrate proxy over downloading every raw
+        // source chunk in full. Those chunks are the original quality
+        // source, up to ~100MB each with no cap on how many - fetching all
+        // of them just to drive a small looping homepage hover preview
+        // could mean hundreds of MB to multiple GB per hover.
+        var fullPreview = toUrl(meta.full_preview);
+        if (fullPreview) {
+            mountDirectPreview(fullPreview);
             return null;
         }
 
