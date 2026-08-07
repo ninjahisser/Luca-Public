@@ -5305,20 +5305,46 @@
             allJobs.push({ url: url, workName: workName, label: label });
         }
 
+        // work_video.js only ever replaces remote embeds with local ones at
+        // runtime (in the browser DOM) - it never rewrites the saved HTML,
+        // so a work's source always still contains the original YouTube/
+        // Vimeo src regardless of whether it's already been downloaded.
+        // That means the url.indexOf("videos/uploads/") check in addJob()
+        // above almost never fires for anything already downloaded, and
+        // this tool would otherwise queue every embed for re-download every
+        // single run - confirmed live: it found 52 "remote" videos on a
+        // site where the vast majority already have a local
+        // videos/uploads/<work>/ folder, and started actually re-fetching
+        // several hundred MB each before being caught. Check for an
+        // existing metadata.json for the target work name first and skip
+        // it there instead.
+        function alreadyDownloaded(workName) {
+            return fetch(buildApiUrl("/videos/uploads/" + workName + "/metadata.json"), { cache: "no-store" })
+                .then(function (r) { return r.ok; })
+                .catch(function () { return false; });
+        }
+
         var workLoadPromises = state.works.map(function (work) {
             return loadWorkDoc(work).then(function () {
                 var workSlug = slugify(basename(work.href).replace(/\.html?$/i, "")) || "video";
                 var label = work.title || workSlug;
+                var checks = [];
 
                 if (isVideoPreview(work.preview)) {
-                    addJob(work.preview, workSlug, label + " (preview)");
+                    checks.push(alreadyDownloaded(workSlug).then(function (exists) {
+                        if (!exists) addJob(work.preview, workSlug, label + " (preview)");
+                    }));
                 }
 
                 var embeds = collectWorkEmbedVideos(work);
                 embeds.forEach(function (embed) {
                     var embedSlug = workSlug + "-" + embed.id;
-                    addJob(embed.src, embedSlug, label + " (" + embed.kind + " " + embed.id + ")");
+                    checks.push(alreadyDownloaded(embedSlug).then(function (exists) {
+                        if (!exists) addJob(embed.src, embedSlug, label + " (" + embed.kind + " " + embed.id + ")");
+                    }));
                 });
+
+                return Promise.all(checks);
             }).catch(function () {});
         });
 
