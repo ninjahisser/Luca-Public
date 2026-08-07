@@ -162,6 +162,15 @@ def safe_text_path(raw_path: str) -> Path:
     return safe_workspace_path(raw_path, (".html", ".css"))
 
 
+def _looks_like_html_document(html: str) -> bool:
+    """A legitimate serialized page always ends with a closing </html>
+    tag. Guards /cms-api/save against silently overwriting index.html or
+    a work file with empty/truncated content from a client-side bug or
+    an aborted save - there is no undo for that once it hits disk."""
+    lowered = html.lower()
+    return "<html" in lowered and "</html>" in lowered
+
+
 THUMB_CACHE_DIR = ROOT / ".cms-thumb-cache"
 THUMB_MAX_DIM = 320
 VIDEO_EXTENSIONS = {".mp4", ".webm", ".ogg", ".mov", ".avi"}
@@ -740,6 +749,10 @@ class CMSHandler(SimpleHTTPRequestHandler):
             self._send_json({"error": "indexHtml must be a string"}, status=400)
             return
 
+        if not _looks_like_html_document(index_html):
+            self._send_json({"error": "Refusing to save: indexHtml does not look like a complete HTML document"}, status=400)
+            return
+
         try:
             (ROOT / "index.html").write_text(index_html, encoding="utf-8")
 
@@ -748,6 +761,8 @@ class CMSHandler(SimpleHTTPRequestHandler):
                 path_value = item.get("path")
                 html_value = item.get("html")
                 if not isinstance(path_value, str) or not isinstance(html_value, str):
+                    continue
+                if not _looks_like_html_document(html_value):
                     continue
 
                 target = safe_html_path(path_value)
