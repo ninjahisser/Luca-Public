@@ -369,6 +369,31 @@
         return scheme === "javascript" || scheme === "vbscript" || scheme === "data";
     }
 
+    // Used by both componentToNode (save) and setComponentAttributes (live
+    // preview) for the "button" and "link" component types - top-level so
+    // it's in scope for both (they're sibling functions, not nested).
+    function normalizeButtonHref(href) {
+        if (!href || href === "#") return "#";
+        if (isDangerousUrlScheme(href)) return "#";
+        if (/^(https?:|mailto:|tel:|#|\/)/.test(href)) return href;
+        if (href.indexOf("://") !== -1) return href;
+        return "https://" + href;
+    }
+
+    // "link" components (unlike "button") expose an editable Rel field, so
+    // we can't just always force rel="noopener noreferrer" the way button
+    // does - that would clobber a deliberately-chosen custom value. Instead
+    // make sure noopener is present whenever target is _blank (reverse
+    // tabnabbing: without it the opened page can navigate this tab via
+    // window.opener), while preserving whatever else the user typed.
+    function linkRelWithNoopener(cmp) {
+        var rel = (cmp.rel || "").trim();
+        if (cmp.target === "_blank" && rel.toLowerCase().indexOf("noopener") === -1) {
+            rel = rel ? rel + " noopener noreferrer" : "noopener noreferrer";
+        }
+        return rel;
+    }
+
     var RICHTEXT_BLOCKED_TAGS = ["script", "style", "iframe", "object", "embed", "link", "meta", "form", "base"];
 
     // The rich text editor field (addRichTextEditor) is a plain
@@ -1153,9 +1178,11 @@
             if (node.tagName && node.tagName.toLowerCase() !== "a") {
                 return;
             }
-            if (cmp.href) node.setAttribute("href", cmp.href);
+            if (cmp.href) node.setAttribute("href", normalizeButtonHref(cmp.href));
             if (cmp.target) node.setAttribute("target", cmp.target);
-            if (cmp.rel) node.setAttribute("rel", cmp.rel);
+            var linkRel = linkRelWithNoopener(cmp);
+            if (linkRel) node.setAttribute("rel", linkRel);
+            else node.removeAttribute("rel");
             if (cmp.className) node.setAttribute("class", cmp.className);
             node.innerHTML = cmp.html || escapeHtml(cmp.text || cmp.href || "");
             return;
@@ -3061,7 +3088,8 @@
             var link = doc.createElement("a");
             if (cmp.href) link.setAttribute("href", normalizeButtonHref(cmp.href));
             if (cmp.target) link.setAttribute("target", cmp.target);
-            if (cmp.rel) link.setAttribute("rel", cmp.rel);
+            var linkRel = linkRelWithNoopener(cmp);
+            if (linkRel) link.setAttribute("rel", linkRel);
             if (cmp.className) link.setAttribute("class", cmp.className);
             link.innerHTML = cmp.html || escapeHtml(cmp.text || cmp.href || "");
             return markNode(link);
@@ -3312,23 +3340,6 @@
                 ul.appendChild(li);
             });
             return markNode(ul);
-        }
-
-        function normalizeButtonHref(href) {
-            if (!href || href === "#") return "#";
-
-            // Reject javascript:/vbscript:/data: before anything else. The
-            // "contains ://" fallback below is meant to pass through things
-            // like ftp:// or a vscode:// deep link as-is, but without this
-            // it also lets javascript://some-comment%0aalert(1) through
-            // unchanged - a well-known bypass for a plain "starts with
-            // javascript:" check, and confirmed to actually execute when
-            // clicked.
-            if (isDangerousUrlScheme(href)) return "#";
-
-            if (/^(https?:|mailto:|tel:|#|\/)/.test(href)) return href;
-            if (href.indexOf("://") !== -1) return href;
-            return "https://" + href;
         }
 
         if (cmp.type === "button") {
