@@ -20,6 +20,12 @@ var STREAM_SUFFIX = '/__stream__.mp4';
 var MAX_SLICE = 8 * 1024 * 1024;
 
 var metaCache = new Map();
+// How long a resolved metadata.json lookup stays trusted. Long enough to
+// cover one playback session's burst of range requests without refetching
+// on every seek; short enough that replacing a video via the CMS is picked
+// up without requiring the browser (and this worker, which otherwise lives
+// on across page loads until the browser decides to kill it) to restart.
+var META_TTL_MS = 60 * 1000;
 
 self.addEventListener('install', function () {
     self.skipWaiting();
@@ -43,9 +49,14 @@ function mimeForChunk(path) {
    byte position can be resolved to (part, offset within part). */
 function loadMeta(basePath) {
     // Caches the in-flight promise as well as the result, so the burst of
-    // range requests a <video> opens with shares one metadata fetch.
+    // range requests a <video> opens with shares one metadata fetch. A
+    // resolved entry is only trusted for META_TTL_MS - past that it's
+    // refetched so a video replaced via the CMS is picked up.
     var cached = metaCache.get(basePath);
-    if (cached) return Promise.resolve(cached);
+    if (cached) {
+        if (cached.pending) return cached.pending;
+        if (Date.now() - cached.fetchedAt < META_TTL_MS) return Promise.resolve(cached.info);
+    }
 
     var pending = fetch(basePath + 'metadata.json')
         .then(function (response) {
@@ -61,7 +72,7 @@ function loadMeta(basePath) {
             });
             if (!parts.length) throw new Error('no chunks in metadata.json');
             var info = { parts: parts, total: offset, mime: mimeForChunk(parts[0].path) };
-            metaCache.set(basePath, info);
+            metaCache.set(basePath, { info: info, fetchedAt: Date.now() });
             return info;
         })
         .catch(function (err) {
@@ -69,7 +80,7 @@ function loadMeta(basePath) {
             throw err;
         });
 
-    metaCache.set(basePath, pending);
+    metaCache.set(basePath, { pending: pending });
     return pending;
 }
 
