@@ -5,7 +5,7 @@
 (function () {
     'use strict';
 
-    function loadHighRes(img) {
+    function loadHighRes(img, onDone) {
         if (img.dataset.loaded || !img.dataset.full) return;
         img.dataset.loaded = '1';
 
@@ -15,9 +15,11 @@
             img.src = img.dataset.full;
             img.onload = function () { img.style.opacity = '1'; };
             if (img.complete && img.naturalWidth > 0) img.style.opacity = '1';
+            if (onDone) onDone(true);
         };
         probe.onerror = function () {
             img.dataset.loaded = ''; // allow a later retry
+            if (onDone) onDone(false);
         };
         probe.src = img.dataset.full;
     }
@@ -73,8 +75,12 @@
         var observer = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (!entry.isIntersecting) return;
-                loadHighRes(entry.target);
-                observer.unobserve(entry.target);
+                // Only stop observing once the high-res image actually loads -
+                // on failure dataset.loaded is cleared for a retry, but that
+                // retry can only happen while still observed.
+                loadHighRes(entry.target, function (success) {
+                    if (success) observer.unobserve(entry.target);
+                });
             });
         }, { rootMargin: '600px 0px' });
 
