@@ -602,23 +602,6 @@ function sendIframeCommand(iframe, cmd) {
     } catch (e) {}
 }
 
-function pauseAllCards() {
-    return;
-}
-
-function previewCard(item) {
-    setupCardVideo(item);
-    var v = item.querySelector('.preview-video');
-    if (v && v.tagName === 'VIDEO') startPreviewPlayback(v);
-    else if (v && v.tagName === 'IFRAME') sendIframeCommand(v, 'play');
-}
-
-function pauseCard(item) {
-    var v = item.querySelector('.preview-video');
-    if (v && v.tagName === 'VIDEO') v.pause();
-    else if (v && v.tagName === 'IFRAME') sendIframeCommand(v, 'pause');
-}
-
 var allCards = Array.from(document.querySelectorAll('#assignment_list .work-card:not(.hidden-work)'));
 var activeCard = null;
 
