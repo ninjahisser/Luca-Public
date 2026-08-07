@@ -46,6 +46,25 @@ def find_ffmpeg():
         return None
 
 
+def _has_decodable_video_stream(path, ffmpeg):
+    """Quick sanity check: can ffmpeg actually decode this as video at all?
+    Without this, an upload of the wrong file type (e.g. a renamed .txt)
+    silently makes it all the way through ensure_faststart/create_index_preview
+    - both of which treat ffmpeg failures as non-fatal warnings, by design,
+    so a genuinely valid video that merely fails the faststart optimization
+    still succeeds - and the job reports "done" with a metadata.json full of
+    chunks pointing at unplayable garbage. This catches that class of input
+    before any of that runs, so it fails loudly instead."""
+    try:
+        result = subprocess.run(
+            [ffmpeg, "-v", "error", "-i", path, "-t", "0.1", "-f", "null", "-"],
+            capture_output=True,
+        )
+        return result.returncode == 0
+    except Exception:
+        return False
+
+
 def check_dependencies():
     try:
         import yt_dlp  # noqa: F401
@@ -356,6 +375,13 @@ def download_and_split(url, work_name, chunk_size=CHUNK_SIZE_DEFAULT,
         )
         source_artifact_path = source_mp4
         report(f"Downloaded: {os.path.getsize(source_mp4) / 1024 / 1024:.1f} MB")
+
+    ffmpeg_for_check = find_ffmpeg()
+    if ffmpeg_for_check and not _has_decodable_video_stream(source_mp4, ffmpeg_for_check):
+        raise RuntimeError(
+            f"'{os.path.basename(source_mp4)}' doesn't look like a valid, "
+            "decodable video (ffmpeg couldn't read a video stream from it)."
+        )
 
     faststarted_mp4 = ensure_faststart(source_mp4, output_dir, report, target_name=artifact_stem + "-fs.mp4")
     if faststarted_mp4 != source_mp4:
