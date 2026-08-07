@@ -3042,7 +3042,7 @@
 
         if (cmp.type === "link") {
             var link = doc.createElement("a");
-            if (cmp.href) link.setAttribute("href", cmp.href);
+            if (cmp.href) link.setAttribute("href", normalizeButtonHref(cmp.href));
             if (cmp.target) link.setAttribute("target", cmp.target);
             if (cmp.rel) link.setAttribute("rel", cmp.rel);
             if (cmp.className) link.setAttribute("class", cmp.className);
