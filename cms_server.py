@@ -241,12 +241,42 @@ def _generate_video_thumb(source: Path, target: Path) -> None:
     raise RuntimeError("ffmpeg produced no thumbnail frame")
 
 
+THUMB_CACHE_MAX_AGE_SECONDS = 60 * 24 * 3600  # 60 days
+
+
+def _prune_thumb_cache() -> None:
+    """The cache key includes the source's mtime+size, so replacing a
+    source file (a new image/video at the same path) never reuses its
+    old thumbnail's filename - the old one just sits there forever,
+    unbounded, since nothing else ever points back to it to know it's
+    safe to remove. Thumbnails are tiny and replacements infrequent for
+    a personal local tool, so this is a slow leak rather than an urgent
+    one - sweep by age opportunistically instead of tracking per-source
+    cache history. Entries still in active use get their mtime bumped
+    on every cache hit (see get_or_create_thumb), so this only evicts
+    thumbnails that haven't actually been served in THUMB_CACHE_MAX_AGE_SECONDS."""
+    if not THUMB_CACHE_DIR.is_dir():
+        return
+    cutoff = time.time() - THUMB_CACHE_MAX_AGE_SECONDS
+    for f in THUMB_CACHE_DIR.glob("*.jpg"):
+        try:
+            if f.stat().st_mtime < cutoff:
+                f.unlink()
+        except OSError:
+            pass
+
+
 def get_or_create_thumb(source: Path) -> Path:
     THUMB_CACHE_DIR.mkdir(exist_ok=True)
     target = _thumb_cache_path(source)
     if target.is_file() and target.stat().st_size > 0:
+        try:
+            os.utime(target, None)  # cache hit: keep this entry "fresh" for pruning
+        except OSError:
+            pass
         return target
 
+    _prune_thumb_cache()
     ext = source.suffix.lower()
     if ext in VIDEO_EXTENSIONS:
         _generate_video_thumb(source, target)
