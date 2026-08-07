@@ -115,6 +115,11 @@
 
     function buildIframeSrc(cmp) {
         var base = cmp.src || "";
+        // An iframe with a javascript:/vbscript: src executes immediately on
+        // render, no click needed - confirmed via a real browser. Unlike a
+        // link there's no sensible fallback transform for a bad src, so
+        // just drop it.
+        if (isDangerousUrlScheme(base)) return "";
         if (!base || !isYouTubeUrl(base)) return base;
         var vid = extractYouTubeVideoId(base);
         if (vid) {
@@ -350,6 +355,18 @@
             .replace(/>/g, "&gt;")
             .replace(/\"/g, "&quot;")
             .replace(/'/g, "&#39;");
+    }
+
+    // Shared by normalizeButtonHref (<a href>) and buildIframeSrc
+    // (<iframe src>). Tolerates leading whitespace/control chars and
+    // whitespace before the colon - both are known bypasses for a plain
+    // "starts with javascript:" check (javascript://comment%0acode,
+    // "\tjavascript:code", etc. all still execute).
+    function isDangerousUrlScheme(value) {
+        var match = (value || "").match(/^[\x00-\x20]*([a-zA-Z][a-zA-Z0-9+.-]*)\s*:/);
+        if (!match) return false;
+        var scheme = match[1].toLowerCase();
+        return scheme === "javascript" || scheme === "vbscript" || scheme === "data";
     }
 
     var RICHTEXT_BLOCKED_TAGS = ["script", "style", "iframe", "object", "embed", "link", "meta", "form", "base"];
@@ -3300,20 +3317,14 @@
         function normalizeButtonHref(href) {
             if (!href || href === "#") return "#";
 
-            // Reject javascript:/vbscript:/data: regardless of exact
-            // spelling before anything else. The "contains ://" fallback
-            // below is meant to pass through things like ftp:// or a
-            // vscode:// deep link as-is, but without this it also lets
-            // javascript://some-comment%0aalert(1) through unchanged - a
-            // well-known bypass for a plain "starts with javascript:"
-            // check, and confirmed to actually execute when clicked.
-            var schemeMatch = href.match(/^[\s -]*([a-zA-Z][a-zA-Z0-9+.-]*)\s*:/);
-            if (schemeMatch) {
-                var scheme = schemeMatch[1].toLowerCase();
-                if (scheme === "javascript" || scheme === "vbscript" || scheme === "data") {
-                    return "#";
-                }
-            }
+            // Reject javascript:/vbscript:/data: before anything else. The
+            // "contains ://" fallback below is meant to pass through things
+            // like ftp:// or a vscode:// deep link as-is, but without this
+            // it also lets javascript://some-comment%0aalert(1) through
+            // unchanged - a well-known bypass for a plain "starts with
+            // javascript:" check, and confirmed to actually execute when
+            // clicked.
+            if (isDangerousUrlScheme(href)) return "#";
 
             if (/^(https?:|mailto:|tel:|#|\/)/.test(href)) return href;
             if (href.indexOf("://") !== -1) return href;
