@@ -666,6 +666,42 @@ function setupAllCards() {
     activeCard = allCards[0] || null;
 }
 
+/* Mounting + autoplaying every card's video at once (setupAllCards) tanks
+   mobile performance: the layout is a single column there, so all cards
+   end up playing off-screen simultaneously. Instead, only set up + play
+   cards near the viewport, and pause (not tear down, so scrolling back is
+   instant) ones that leave it. */
+function setupCardsLazily() {
+    if (typeof IntersectionObserver === 'undefined') {
+        setupAllCards();
+        return;
+    }
+    var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            var card = entry.target;
+            if (entry.isIntersecting) {
+                loadToolsOverlay(card);
+                setupCardVideo(card);
+                var v = card.querySelector('.preview-video');
+                if (v && v.tagName === 'VIDEO') {
+                    startPreviewPlayback(v);
+                } else if (v && v.tagName === 'IFRAME') {
+                    sendIframeCommand(v, 'play');
+                }
+            } else {
+                var existing = card.querySelector('.preview-video');
+                if (existing && existing.tagName === 'VIDEO') {
+                    existing.pause();
+                } else if (existing && existing.tagName === 'IFRAME') {
+                    sendIframeCommand(existing, 'pause');
+                }
+            }
+        });
+    }, { rootMargin: '400px 0px', threshold: 0.01 });
+    allCards.forEach(function (card) { observer.observe(card); });
+    activeCard = allCards[0] || null;
+}
+
 function refreshActiveCard() {
     var card = mostCenteredCard();
     if (card) {
@@ -718,8 +754,8 @@ document.addEventListener('visibilitychange', function () {
 preconnectDomains();
 bindCardWarmupEvents();
 if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(setupAllCards, { timeout: 300 });
+    window.requestIdleCallback(setupCardsLazily, { timeout: 300 });
 } else {
-    window.setTimeout(setupAllCards, 50);
+    window.setTimeout(setupCardsLazily, 50);
 }
 window.setInterval(refreshActiveCard, 2200);
