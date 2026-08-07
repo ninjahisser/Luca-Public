@@ -1,0 +1,18 @@
+# Runtime dependencies for cms_server.py and scripts/*.py.
+# ffmpeg is also required but isn't a pip package - see find_ffmpeg() in
+# scripts/download_video.py for how it's located (PATH, FFMPEG_PATH env,
+# or the imageio-ffmpeg fallback below).
+
+# Downloads YouTube/Vimeo sources for the "Video Downloader & Splitter"
+# CMS tool. Left unpinned deliberately: yt-dlp ships frequent releases to
+# keep up with site extraction changes, and an old pinned version can
+# start failing downloads that a newer one would handle fine.
+yt-dlp
+
+# Image upload validation (cms_server.py's /cms-api/upload) and thumbnail
+# generation (scripts/generate_foto_thumbs.py).
+Pillow
+
+# Only used if ffmpeg isn't found on PATH/FFMPEG_PATH/the known local
+# install path - see find_ffmpeg(). Optional but harmless to include.
+imageio-ffmpeg

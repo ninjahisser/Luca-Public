@@ -104,11 +104,21 @@ def split_binary(filepath, chunk_size, output_base=None):
 def _find_source_file(output_dir):
     """Locate the final merged source file after a successful download."""
     candidates = []
-    for p in glob.glob(os.path.join(output_dir, "source.*")):
-        name = os.path.basename(p)
-        if re.search(r"\.f\d+\.", name) or ".temp." in name or name.endswith(".part"):
-            continue
-        candidates.append(p)
+    # glob's "." is a literal character, not "any character" - it only ever
+    # matched the legacy "source.<ext>" naming. Every real download for a
+    # long while now writes source_template as "source-<timestamp>.<ext>"
+    # (see artifact_stem in download_and_split), which that pattern never
+    # matched at all: confirmed live, a real yt-dlp download completes and
+    # merges successfully and this then still raises "no source file was
+    # found" underneath it, discarding a real result every time. Match both
+    # so older-style filenames (if any ever exist) still work too.
+    for pattern in ("source.*", "source-*"):
+        for p in glob.glob(os.path.join(output_dir, pattern)):
+            name = os.path.basename(p)
+            if re.search(r"\.f\d+\.", name) or ".temp." in name or name.endswith(".part"):
+                continue
+            if p not in candidates:
+                candidates.append(p)
     if not candidates:
         raise RuntimeError(
             "Download finished but no source file was found. "
