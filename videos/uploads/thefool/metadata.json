@@ -1,0 +1,25 @@
+{
+  "source_url": "https://player.vimeo.com/video/1124930305?autoplay=1&loop=1&background=1",
+  "work_name": "thefool",
+  "total_size": 201800179,
+  "chunk_size": 104857600,
+  "num_chunks": 2,
+  "chunks": [
+    {
+      "path": "source.mp4.part000",
+      "size": 104857600,
+      "index": 0
+    },
+    {
+      "path": "source.mp4.part001",
+      "size": 96942579,
+      "index": 1
+    }
+<<<<<<< Updated upstream
+  ]
+}
+=======
+  ],
+  "index_preview": "preview_360p.mp4"
+}
+>>>>>>> Stashed changes

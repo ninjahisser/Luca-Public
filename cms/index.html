@@ -12,6 +12,7 @@
         <div class="cms-top-actions">
             <a class="def_button_small" id="back_button" href="../index.html">⟵ Back</a>
             <button id="showWorksBtn" class="def_button_small is-hidden" type="button">Works</button>
+            <button id="toolsBtn" class="def_button_small" type="button">Tools</button>
             <button id="connectFolderBtn" class="def_button_small" type="button">Connect Folder</button>
             <button id="saveAllBtn" class="def_button_small" type="button">Save Files</button>
             <button id="newWorkBtn" class="def_button_small" type="button">Nieuw Work</button>
@@ -43,13 +44,59 @@
                         <button class="def_button_small" data-add="paragraph" type="button">+ Paragraph</button>
                         <button class="def_button_small" data-add="image" type="button">+ Image</button>
                         <input id="imageUploadPick" type="file" accept="image/*" style="display:none">
-                        <button class="def_button_small" data-add="iframe" type="button">+ Video</button>
-                        <button class="def_button_small" data-add="video" type="button">+ Video Tag</button>
+                        <button class="def_button_small" data-add="video" type="button">+ Video</button>
+                        <button class="def_button_small" data-add="iframe" type="button">+ Embed</button>
                         <button class="def_button_small" data-add="palette" type="button">+ Palette</button>
                         <button class="def_button_small" data-add="list" type="button">+ List</button>
                         <button class="def_button_small" data-add="button" type="button">+ Button</button>
                     </div>
                     <ul id="componentList" class="component-list"></ul>
+                </div>
+            </section>
+
+            <section id="toolsPanel" class="side-panel collapsible-panel is-hidden">
+                <div class="panel-header">
+                    <h2>Tools</h2>
+                    <button class="collapse-toggle" data-target="toolsPanelBody" type="button" aria-expanded="true">−</button>
+                </div>
+                <div id="toolsPanelBody" class="panel-body">
+                    <div class="tool-card">
+                        <h3>Video Downloader &amp; Splitter</h3>
+                        <p class="muted">Downloads a remote video (YouTube, Vimeo, ...) via yt-dlp and splits it into chunks up to 100MB for GitHub.</p>
+                        <label>Video URL
+                            <input id="toolVideoUrl" type="text" placeholder="https://www.youtube.com/watch?v=...">
+                        </label>
+                        <label>Work name (output folder)
+                            <input id="toolWorkName" type="text" placeholder="e.g. my-video">
+                        </label>
+                        <div class="tool-actions">
+                            <button id="toolDownloadBtn" class="def_button_small" type="button">Download &amp; Split</button>
+                            <button id="autoDownloadBtn" class="def_button_small" type="button">Download All</button>
+                        </div>
+                        <p class="muted">Download All scans every work page for remote videos (YouTube/Vimeo previews and body embeds), downloads and splits them into chunks. The custom player replaces them at runtime. Review, then click Save Files to apply.</p>
+                        <div id="toolStatus" class="muted">Ready.</div>
+                        <pre id="toolOutput" class="tool-output"></pre>
+                    </div>
+
+                    <div class="tool-card">
+                        <h3>Foto Thumbnails</h3>
+                        <p class="muted">Scans fotografie_selectie.html and generates compressed low-res JPEG thumbnails (max 480px, quality 60, progressive) under opdrachten/Fotografie/thumbs/. Rewrites the page so the grid shows thumbs first with <code>data-full</code> pointing to the high-res originals.</p>
+                        <div class="tool-actions">
+                            <button id="fotoThumbsBtn" class="def_button_small" type="button">Generate Thumbnails</button>
+                        </div>
+                        <div id="fotoThumbsStatus" class="muted">Ready.</div>
+                        <pre id="fotoThumbsOutput" class="tool-output"></pre>
+                    </div>
+
+                    <div class="tool-card">
+                        <h3>Index Preview Compression</h3>
+                        <p class="muted">Regenerates ultra-light preview_360p.mp4 files for all works on the index, taken from the original video. Videos are trimmed to 15 seconds, encoded at 20fps with aggressive compression (CRF 36 + capped bitrate), and scaled down for very fast streaming. Missing sources are rebuilt from the chunked files. Results stored in videos/uploads/*/preview_360p.mp4.</p>
+                        <div class="tool-actions">
+                            <button id="compressIndexBtn" class="def_button_small" type="button">Regenerate All Previews</button>
+                        </div>
+                        <div id="compressIndexStatus" class="muted">Ready.</div>
+                        <pre id="compressIndexOutput" class="tool-output"></pre>
+                    </div>
                 </div>
             </section>
         </aside>
@@ -65,6 +112,7 @@
                     <h2>Preview</h2>
                     <div class="panel-tools">
                         <span id="previewPath" class="muted"></span>
+                        <button id="previewViewBtn" class="def_button_small is-active" type="button">Index</button>
                         <button id="previewMobileBtn" class="def_button_small" type="button">Mobile</button>
                         <button id="previewMuteBtn" class="def_button_small" type="button">Mute</button>
                         <button id="previewFullscreenBtn" class="def_button_small" type="button">Fullscreen</button>
@@ -102,6 +150,9 @@
                             <button id="articlePreviewPicker" class="def_button_small" type="button">Foto</button>
                         </div>
                     </label>
+                    <label>Preview start time (seconds)
+                        <input id="articlePreviewStart" type="number" min="0" step="any" placeholder="0">
+                    </label>
                     <label>Main color
                         <div class="color-row">
                             <input id="articleMainColor" type="color">
@@ -125,8 +176,39 @@
                         Favorite (star on homepage)
                     </label>
                     <label class="checkline">
+                        <input id="articleHighlight" type="checkbox">
+                        Highlight tile (2x2 on homepage)
+                    </label>
+                    <label class="checkline">
                         <input id="articleVisible" type="checkbox">
                         Visible on homepage
+                    </label>
+                </div>
+            </section>
+
+            <section class="props-card collapsible-panel">
+                <div class="panel-header">
+                    <h2>Index Controls</h2>
+                    <button class="collapse-toggle" data-target="indexPropsBody" type="button" aria-expanded="true">−</button>
+                </div>
+                <div id="indexPropsBody" class="panel-body">
+                    <label>Index main color
+                        <div class="color-row">
+                            <input id="indexMainColor" type="color">
+                            <input id="indexMainColorText" type="text" placeholder="#1e00ff">
+                        </div>
+                    </label>
+                    <label>Index secondary color
+                        <div class="color-row">
+                            <input id="indexSecondaryColor" type="color">
+                            <input id="indexSecondaryColorText" type="text" placeholder="#6f5cff">
+                        </div>
+                    </label>
+                    <label>Index background color
+                        <div class="color-row">
+                            <input id="indexBackgroundColor" type="color">
+                            <input id="indexBackgroundColorText" type="text" placeholder="#000000">
+                        </div>
                     </label>
                 </div>
             </section>

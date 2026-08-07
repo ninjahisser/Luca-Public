@@ -1,0 +1,15 @@
+{
+  "source_url": "https://player.vimeo.com/video/1147840429?autoplay=1&loop=1&background=1",
+  "work_name": "thepostergenerator",
+  "total_size": 9524932,
+  "chunk_size": 104857600,
+  "num_chunks": 1,
+  "chunks": [
+    {
+      "path": "source.mp4",
+      "size": 9524932,
+      "index": 0
+    }
+  ],
+  "index_preview": "preview_360p.mp4"
+}

@@ -1,0 +1,25 @@
+{
+  "source_url": "https://www.youtube-nocookie.com/embed/DCwqVUtf-40?si=Qab9ZeKvdHZF9Xtg&autoplay=0&mute=1&playsinline=1&rel=0",
+  "work_name": "wounds-DCwqVUtf-40",
+  "total_size": 224438433,
+  "index_preview": "preview_360p.mp4",
+  "chunk_size": 104857600,
+  "num_chunks": 3,
+  "chunks": [
+    {
+      "path": "source.webm.part000",
+      "size": 104857600,
+      "index": 0
+    },
+    {
+      "path": "source.webm.part001",
+      "size": 104857600,
+      "index": 1
+    },
+    {
+      "path": "source.webm.part002",
+      "size": 14723233,
+      "index": 2
+    }
+  ]
+}

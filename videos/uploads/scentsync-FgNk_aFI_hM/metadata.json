@@ -1,0 +1,15 @@
+{
+  "source_url": "https://www.youtube-nocookie.com/embed/FgNk_aFI_hM?si=Qab9ZeKvdHZF9Xtg",
+  "work_name": "scentsync-FgNk_aFI_hM",
+  "total_size": 497456,
+  "chunk_size": 104857600,
+  "num_chunks": 1,
+  "chunks": [
+    {
+      "path": "source.webm",
+      "size": 497456,
+      "index": 0
+    }
+  ],
+  "index_preview": "preview_360p.mp4"
+}

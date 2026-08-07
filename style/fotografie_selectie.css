@@ -36,7 +36,7 @@
     color: var(--main-color);
     text-decoration: none;
     padding: 5px 15px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease;
     font-size: 0.9rem;
 }
 
@@ -47,6 +47,7 @@
 .nav_link.active {
     font-weight: 800;
     font-size: 1em;
+    background: color-mix(in srgb, var(--main-color) 10%, transparent);
 }
 
 /* Adjust main content to account for sidebar */
@@ -59,16 +60,50 @@ body.work-page #assignment_desc {
     width: 60vw;
 }
 
-/* Override work-page flex layout — fotografie uses fotos_grid instead */
+/* Override work-page flex layout — fotografie uses a grid */
 body.work-page #assignment_desc {
-    display: block;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    align-items: start;
 }
 
-body.work-page #left_side {
+/* Section titles span the full grid width */
+body.work-page #assignment_desc .section_title {
+    grid-column: 1 / -1;
+    padding-top: 18px;
+    margin-top: 44px;
+    scroll-margin-top: 24px;
+}
+
+body.work-page #assignment_desc > .centered {
+    grid-column: 1 / -1;
+    margin: 0 0 6px 0;
+}
+
+/* Photo grid cells */
+body.work-page #assignment_desc > figure.image-full {
+    width: auto;
     max-width: none;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 0;
+    flex: none;
+    margin: 0;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.06);
+    aspect-ratio: 4 / 3;
+}
+
+body.work-page #assignment_desc > figure.image-full img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: zoom-in;
+}
+
+/* The progressive loader starts the grid <img> at opacity 0 over the figure's
+   thumbnail background, then fades it in once the high-res source is ready. */
+body.work-page #assignment_desc > figure.image-full img {
+    transition: opacity 0.4s ease;
 }
 
 /* Responsive design for smaller screens */
@@ -77,18 +112,18 @@ body.work-page #left_side {
         width: 150px;
         padding: 15px 10px;
     }
-    
+
     body {
         margin-left: 150px;
     }
-    
+
     .nav_link {
         padding: 8px 10px;
         font-size: 0.8rem;
     }
-}
 
-/* Scroll margin for sections */
-.section_title {
-    scroll-margin-top: 20px;
+    body.work-page #assignment_desc {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 8px;
+    }
 }

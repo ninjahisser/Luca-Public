@@ -1,0 +1,15 @@
+{
+  "source_url": "images/uploads/1785004381826-MyInternshipIsCoolerThanYours_SethVandenBossche_Digitaal_VroemVroemAnimatie.mp4",
+  "work_name": "internship",
+  "total_size": 59148104,
+  "chunk_size": 104857600,
+  "num_chunks": 1,
+  "chunks": [
+    {
+      "path": "source.mp4",
+      "size": 59148104,
+      "index": 0
+    }
+  ],
+  "index_preview": "preview_360p.mp4"
+}

@@ -1,0 +1,15 @@
+{
+  "source_url": "https://player.vimeo.com/video/1132822432?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1",
+  "work_name": "nikeafterdark-1132822432",
+  "total_size": 2873836,
+  "chunk_size": 104857600,
+  "num_chunks": 1,
+  "chunks": [
+    {
+      "path": "source.mp4",
+      "size": 2873836,
+      "index": 0
+    }
+  ],
+  "index_preview": "preview_360p.mp4"
+}

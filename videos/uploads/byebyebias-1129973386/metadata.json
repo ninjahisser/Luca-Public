@@ -1,0 +1,15 @@
+{
+  "source_url": "https://player.vimeo.com/video/1129973386?badge=0&autopause=0&app_id=58479&autoplay=1&muted=1&loop=1",
+  "work_name": "byebyebias-1129973386",
+  "total_size": 125197,
+  "chunk_size": 104857600,
+  "num_chunks": 1,
+  "chunks": [
+    {
+      "path": "source.mp4",
+      "size": 125197,
+      "index": 0
+    }
+  ],
+  "index_preview": "preview_360p.mp4"
+}

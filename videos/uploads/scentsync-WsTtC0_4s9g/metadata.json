@@ -1,0 +1,15 @@
+{
+  "source_url": "https://www.youtube.com/embed/WsTtC0_4s9g?si=Qab9ZeKvdHZF9Xtg&autoplay=1&mute=1",
+  "work_name": "scentsync-WsTtC0_4s9g",
+  "total_size": 601891,
+  "chunk_size": 104857600,
+  "num_chunks": 1,
+  "chunks": [
+    {
+      "path": "source.webm",
+      "size": 601891,
+      "index": 0
+    }
+  ],
+  "index_preview": "preview_360p.mp4"
+}

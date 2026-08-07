@@ -1,0 +1,24 @@
+{
+  "source_url": "https://www.youtube.com/embed/DCwqVUtf-40?si=Qab9ZeKvdHZF9Xtg&autoplay=1&mute=1",
+  "work_name": "wounds",
+  "total_size": 224438433,
+  "chunk_size": 104857600,
+  "num_chunks": 3,
+  "chunks": [
+    {
+      "path": "source.webm.part000",
+      "size": 104857600,
+      "index": 0
+    },
+    {
+      "path": "source.webm.part001",
+      "size": 104857600,
+      "index": 1
+    },
+    {
+      "path": "source.webm.part002",
+      "size": 14723233,
+      "index": 2
+    }
+  ]
+}

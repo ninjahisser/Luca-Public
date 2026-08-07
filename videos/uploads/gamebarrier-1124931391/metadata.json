@@ -1,0 +1,15 @@
+{
+  "source_url": "https://player.vimeo.com/video/1124931391?badge=0&autopause=0&player_id=0&autoplay=1&loop=1&muted=0?",
+  "work_name": "gamebarrier-1124931391",
+  "total_size": 18027403,
+  "chunk_size": 104857600,
+  "num_chunks": 1,
+  "chunks": [
+    {
+      "path": "source.mp4",
+      "size": 18027403,
+      "index": 0
+    }
+  ],
+  "index_preview": "preview_360p.mp4"
+}

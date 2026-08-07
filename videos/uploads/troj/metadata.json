@@ -1,0 +1,71 @@
+{
+  "source_url": "G:\\Backup\\LUCA-2\\Luca-Public\\.cms-upload-temp\\1786034644747-SethVandenBossche_NetteThumtaku_Jurywerk_V3.mp4",
+  "work_name": "troj",
+  "total_size": 1172045709,
+  "index_preview": "preview_360p-1786034668021.mp4",
+  "full_preview": "preview_full-1786034668021.mp4",
+  "chunk_size": 104857600,
+  "num_chunks": 12,
+  "chunks": [
+    {
+      "path": "source-1786034668021.mp4.part000",
+      "size": 104857600,
+      "index": 0
+    },
+    {
+      "path": "source-1786034668021.mp4.part001",
+      "size": 104857600,
+      "index": 1
+    },
+    {
+      "path": "source-1786034668021.mp4.part002",
+      "size": 104857600,
+      "index": 2
+    },
+    {
+      "path": "source-1786034668021.mp4.part003",
+      "size": 104857600,
+      "index": 3
+    },
+    {
+      "path": "source-1786034668021.mp4.part004",
+      "size": 104857600,
+      "index": 4
+    },
+    {
+      "path": "source-1786034668021.mp4.part005",
+      "size": 104857600,
+      "index": 5
+    },
+    {
+      "path": "source-1786034668021.mp4.part006",
+      "size": 104857600,
+      "index": 6
+    },
+    {
+      "path": "source-1786034668021.mp4.part007",
+      "size": 104857600,
+      "index": 7
+    },
+    {
+      "path": "source-1786034668021.mp4.part008",
+      "size": 104857600,
+      "index": 8
+    },
+    {
+      "path": "source-1786034668021.mp4.part009",
+      "size": 104857600,
+      "index": 9
+    },
+    {
+      "path": "source-1786034668021.mp4.part010",
+      "size": 104857600,
+      "index": 10
+    },
+    {
+      "path": "source-1786034668021.mp4.part011",
+      "size": 18612109,
+      "index": 11
+    }
+  ]
+}

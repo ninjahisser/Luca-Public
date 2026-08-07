@@ -1,0 +1,15 @@
+{
+  "source_url": "https://player.vimeo.com/video/1124931529?autoplay=1&loop=1&background=1",
+  "work_name": "thehyperfoundation",
+  "total_size": 20274091,
+  "chunk_size": 104857600,
+  "num_chunks": 1,
+  "chunks": [
+    {
+      "path": "source.mp4",
+      "size": 20274091,
+      "index": 0
+    }
+  ],
+  "index_preview": "preview_360p.mp4"
+}

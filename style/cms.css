@@ -649,15 +649,41 @@ body.cms-page {
 }
 
 .picker-item .picker-video-thumb {
+    position: relative;
     width: 100%;
     height: 84px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
     background: color-mix(in srgb, var(--main-color) 8%, transparent);
     border: 1px solid color-mix(in srgb, var(--main-color) 12%, transparent);
+    overflow: hidden;
+}
+
+.picker-item .picker-video-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
+}
+
+.picker-item .picker-play-badge {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, .65);
+    pointer-events: none;
+}
+
+.picker-item .picker-video-thumb.is-icon-only .picker-play-badge {
+    position: static;
+    font-size: 2rem;
     color: color-mix(in srgb, var(--main-color) 50%, transparent);
+    text-shadow: none;
 }
 
 .picker-item img {
@@ -749,6 +775,152 @@ body.cms-page {
     background: color-mix(in srgb, #b31a1a 8%, var(--background-color));
 }
 
+.tool-card {
+    display: grid;
+    gap: 8px;
+}
+
+.tool-card h3 {
+    margin: 0;
+    font-size: .86rem;
+    font-weight: 800;
+}
+
+.tool-card p {
+    margin: 0;
+    font-size: .76rem;
+}
+
+.tool-card label {
+    display: grid;
+    gap: 4px;
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+.tool-card input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border: 1px solid color-mix(in srgb, var(--main-color) 30%, transparent);
+    background: var(--background-color);
+    color: var(--main-color);
+    font-family: var(--default-font);
+    font-size: .82rem;
+}
+
+.tool-card input:disabled {
+    opacity: .6;
+}
+
+.tool-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.tool-output {
+    margin: 0;
+    max-height: 240px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: .74rem;
+    line-height: 1.5;
+    border: 1px solid color-mix(in srgb, var(--main-color) 22%, transparent);
+    padding: 8px;
+    background: color-mix(in srgb, var(--main-color) 4%, var(--background-color));
+}
+
+#toolStatus.is-success {
+    color: #159947;
+    font-weight: 700;
+}
+
+#toolStatus.is-progress {
+    color: #df7f1d;
+    font-weight: 700;
+}
+
+#toolStatus.is-error {
+    color: #b31a1a;
+    font-weight: 700;
+}
+
+/* ── Video upload box ──────────────────────────────────────────── */
+.video-upload-box {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px dashed color-mix(in srgb, var(--main-color) 30%, transparent);
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--main-color) 3%, var(--background-color));
+}
+
+.upload-btn-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.upload-status-msg {
+    margin-top: 6px;
+    font-size: .78rem;
+    color: color-mix(in srgb, var(--main-color) 55%, transparent);
+}
+
+.upload-status-msg.is-progress {
+    color: #df7f1d;
+    font-weight: 600;
+}
+
+.upload-status-msg.is-success {
+    color: #159947;
+    font-weight: 600;
+}
+
+.upload-status-msg.is-error {
+    color: #b31a1a;
+    font-weight: 600;
+}
+
+.upload-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.upload-progress-bar {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--main-color) 15%, transparent);
+    overflow: hidden;
+}
+
+.upload-progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #df7f1d;
+    border-radius: 3px;
+    transition: width 0.2s ease;
+}
+
+.upload-progress-bar.is-done .upload-progress-bar-fill {
+    background: #159947;
+}
+
+.upload-progress-pct {
+    font-size: .75rem;
+    font-weight: 700;
+    color: #df7f1d;
+    min-width: 34px;
+    text-align: right;
+}
+
+.upload-progress-bar.is-done ~ .upload-progress-pct {
+    color: #159947;
+}
 @media (max-width: 1200px) {
     .cms-layout {
         grid-template-columns: 1fr;

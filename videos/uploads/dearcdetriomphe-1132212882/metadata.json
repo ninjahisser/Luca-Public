@@ -1,0 +1,15 @@
+{
+  "source_url": "https://player.vimeo.com/video/1132212882?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1",
+  "work_name": "dearcdetriomphe-1132212882",
+  "total_size": 8418496,
+  "chunk_size": 104857600,
+  "num_chunks": 1,
+  "chunks": [
+    {
+      "path": "source.mp4",
+      "size": 8418496,
+      "index": 0
+    }
+  ],
+  "index_preview": "preview_360p.mp4"
+}

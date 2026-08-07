@@ -152,7 +152,11 @@
         draggingWorkIndex: -1,
         previewMobile: false,
         previewMuted: false,
+        previewView: "index",
         previewScroll: { x: 0, y: 0 },
+        indexPalette: { mainColor: "#1e00ff", secondaryColor: "#6f5cff", backgroundColor: "#000000" },
+        saveInProgress: false,
+        autoSaveDirtySince: 0,
         dirty: false,
         fileStore: new Map()
     };
@@ -162,8 +166,22 @@
         saveAllBtn: document.getElementById("saveAllBtn"),
         newWorkBtn: document.getElementById("newWorkBtn"),
         showWorksBtn: document.getElementById("showWorksBtn"),
+        toolsBtn: document.getElementById("toolsBtn"),
         worksPanel: document.getElementById("worksPanel"),
         componentsPanel: document.getElementById("componentsPanel"),
+        toolsPanel: document.getElementById("toolsPanel"),
+        toolVideoUrl: document.getElementById("toolVideoUrl"),
+        toolWorkName: document.getElementById("toolWorkName"),
+        toolDownloadBtn: document.getElementById("toolDownloadBtn"),
+        autoDownloadBtn: document.getElementById("autoDownloadBtn"),
+        toolStatus: document.getElementById("toolStatus"),
+        toolOutput: document.getElementById("toolOutput"),
+        fotoThumbsBtn: document.getElementById("fotoThumbsBtn"),
+        fotoThumbsStatus: document.getElementById("fotoThumbsStatus"),
+        fotoThumbsOutput: document.getElementById("fotoThumbsOutput"),
+        compressIndexBtn: document.getElementById("compressIndexBtn"),
+        compressIndexStatus: document.getElementById("compressIndexStatus"),
+        compressIndexOutput: document.getElementById("compressIndexOutput"),
         workSearch: document.getElementById("workSearch"),
         workList: document.getElementById("workList"),
         componentList: document.getElementById("componentList"),
@@ -175,6 +193,7 @@
         articleTools: document.getElementById("articleTools"),
         articlePreview: document.getElementById("articlePreview"),
         articlePreviewPicker: document.getElementById("articlePreviewPicker"),
+        articlePreviewStart: document.getElementById("articlePreviewStart"),
         articleMainColor: document.getElementById("articleMainColor"),
         articleMainColorText: document.getElementById("articleMainColorText"),
         articleSecondaryColor: document.getElementById("articleSecondaryColor"),
@@ -182,7 +201,14 @@
         articleBackgroundColor: document.getElementById("articleBackgroundColor"),
         articleBackgroundColorText: document.getElementById("articleBackgroundColorText"),
         articleFavorite: document.getElementById("articleFavorite"),
+        articleHighlight: document.getElementById("articleHighlight"),
         articleVisible: document.getElementById("articleVisible"),
+        indexMainColor: document.getElementById("indexMainColor"),
+        indexMainColorText: document.getElementById("indexMainColorText"),
+        indexSecondaryColor: document.getElementById("indexSecondaryColor"),
+        indexSecondaryColorText: document.getElementById("indexSecondaryColorText"),
+        indexBackgroundColor: document.getElementById("indexBackgroundColor"),
+        indexBackgroundColorText: document.getElementById("indexBackgroundColorText"),
         moveUpBtn: document.getElementById("moveUpBtn"),
         moveDownBtn: document.getElementById("moveDownBtn"),
         deleteComponentBtn: document.getElementById("deleteComponentBtn"),
@@ -193,6 +219,7 @@
         previewFullscreenBtn: document.getElementById("previewFullscreenBtn"),
         previewMobileBtn: document.getElementById("previewMobileBtn"),
         previewMuteBtn: document.getElementById("previewMuteBtn"),
+        previewViewBtn: document.getElementById("previewViewBtn"),
         workPreview: document.getElementById("workPreview"),
         previewPath: document.getElementById("previewPath"),
         serverImagePicker: document.getElementById("serverImagePicker"),
@@ -236,9 +263,11 @@
 
     function setLeftMode(mode) {
         var showComponents = mode === "components";
-        el.worksPanel.classList.toggle("is-hidden", showComponents);
+        var showTools = mode === "tools";
+        el.worksPanel.classList.toggle("is-hidden", showComponents || showTools);
         el.componentsPanel.classList.toggle("is-hidden", !showComponents);
-        el.showWorksBtn.classList.toggle("is-hidden", !showComponents);
+        el.toolsPanel.classList.toggle("is-hidden", !showTools);
+        el.showWorksBtn.classList.toggle("is-hidden", !showComponents && !showTools);
     }
 
     function capturePreviewScroll() {
@@ -444,6 +473,55 @@
             return hex.length === 1 ? "0" + hex : hex;
         };
         return "#" + toHex(rgbMatch[1]) + toHex(rgbMatch[2]) + toHex(rgbMatch[3]);
+    }
+
+    function buildIndexPaletteCss(palette) {
+        if (!palette) {
+            return "";
+        }
+        return ":root{--main-color:" + palette.mainColor + " !important;--secondary-color:" + palette.secondaryColor + " !important;--background-color:" + palette.backgroundColor + " !important;}";
+    }
+
+    function applyIndexPaletteToDoc(doc) {
+        if (!doc || !doc.head) {
+            return;
+        }
+        var style = doc.getElementById("cms-index-inline-vars");
+        if (!style) {
+            style = doc.createElement("style");
+            style.id = "cms-index-inline-vars";
+            doc.head.appendChild(style);
+        }
+        style.textContent = buildIndexPaletteCss(state.indexPalette);
+    }
+
+    function parseIndexPaletteFromDoc() {
+        if (!state.indexDoc) {
+            return;
+        }
+        var style = state.indexDoc.getElementById("cms-index-inline-vars");
+        if (!style) {
+            return;
+        }
+        var cssText = style.textContent || "";
+        var main = normalizeColorValue(parseCssVar(cssText, "main-color"));
+        var secondary = normalizeColorValue(parseCssVar(cssText, "secondary-color"));
+        var background = normalizeColorValue(parseCssVar(cssText, "background-color"));
+        if (main) state.indexPalette.mainColor = main;
+        if (secondary) state.indexPalette.secondaryColor = secondary;
+        if (background) state.indexPalette.backgroundColor = background;
+    }
+
+    function renderIndexPaletteControls() {
+        if (!el.indexMainColor) {
+            return;
+        }
+        el.indexMainColor.value = state.indexPalette.mainColor;
+        el.indexMainColorText.value = state.indexPalette.mainColor;
+        el.indexSecondaryColor.value = state.indexPalette.secondaryColor;
+        el.indexSecondaryColorText.value = state.indexPalette.secondaryColor;
+        el.indexBackgroundColor.value = state.indexPalette.backgroundColor;
+        el.indexBackgroundColorText.value = state.indexPalette.backgroundColor;
     }
 
     function splitToolsList(value) {
@@ -724,6 +802,9 @@
     }
 
     function patchPreviewPalette() {
+        if (state.previewView !== "article") {
+            return;
+        }
         try {
             var doc = el.workPreview.contentDocument;
             var work = state.selectedWork;
@@ -819,6 +900,32 @@
     function buildApiUrl(path) {
         var base = state.apiBase || "";
         return base ? base + path : path;
+    }
+
+    var VIDEO_METADATA_SRC_RE = /videos\/uploads\/[^/]+\/metadata\.json/i;
+
+    // Uploaded/processed videos store `metadata.json` as the component src (so the
+    // live site can pick the best chunked/preview file at runtime via work_video.js).
+    // That path isn't itself playable, so for any editor preview we resolve it to an
+    // actual video file async and swap it in once the server responds.
+    function resolveVideoMetadataSrc(video, videoSrc) {
+        if (!video || !videoSrc || !VIDEO_METADATA_SRC_RE.test(videoSrc)) {
+            return;
+        }
+        fetch(buildApiUrl("/" + videoSrc.replace(/^\//, "")))
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (meta) {
+                if (!meta || !meta.work_name) return;
+                var base = "videos/uploads/" + meta.work_name + "/";
+                var preview = meta.index_preview || meta.preview_mp4 || meta.preview;
+                var resolved = preview ? base + preview
+                    : (meta.chunks && meta.chunks.length ? base + meta.chunks[0].path : "");
+                if (resolved && video.isConnected) {
+                    video.src = buildApiUrl("/" + resolved);
+                    video.load();
+                }
+            })
+            .catch(function () {});
     }
 
     async function detectApiBase() {
@@ -1032,6 +1139,7 @@
                 return;
             }
             video.setAttribute("src", cmp.src || "");
+            resolveVideoMetadataSrc(video, cmp.src || "");
             video.setAttribute("playsinline", "");
             if (cmp.controls === false) {
                 video.removeAttribute("controls");
@@ -1111,24 +1219,28 @@
         var parser = new DOMParser();
         state.indexDoc = parser.parseFromString(state.indexText, "text/html");
 
-        var anchors = state.indexDoc.querySelectorAll("#assignment_list a[href]");
-        state.works = Array.from(anchors).map(function (a) {
-            var li = a.querySelector("li");
-            var title = (li.querySelector(".assignment-title") || {}).textContent || a.getAttribute("href");
+        var cards = state.indexDoc.querySelectorAll("#assignment_list .work-card");
+        state.works = Array.from(cards).map(function (card) {
+            var href = card.getAttribute("href");
+            var title = (card.querySelector(".work-card-title") || {}).textContent || href;
             var cleanTitle = title.replace(/^★\s*/, "").trim();
-            var category = ((li.querySelector(".assignment-category") || {}).textContent || "").trim();
-            var desc = ((li.querySelector(".assignment-desc") || {}).textContent || "").trim();
-            var preview = li.getAttribute("data-preview") || "";
-            var favorite = li.classList.contains("favorites") || /^★/.test(title.trim());
-            var visible = li.getAttribute("data-visible") !== "false";
+            var category = (card.querySelector(".work-card-cat") || {}).textContent || "";
+            var desc = (card.querySelector(".work-card-desc") || {}).textContent || "";
+            var preview = card.getAttribute("data-preview") || "";
+            var previewStart = parseFloat(card.getAttribute("data-preview-start")) || 0;
+            var favorite = card.getAttribute("data-favorite") === "true" || card.classList.contains("is-favorite") || !!card.querySelector(".work-card-star") || /^★/.test(title.trim());
+            var visible = card.getAttribute("data-visible") !== "false";
+            var highlight = card.getAttribute("data-highlight") === "2x2" || card.classList.contains("work-card--highlight");
 
             return {
-                href: a.getAttribute("href"),
+                href: href,
                 title: cleanTitle,
                 category: category,
                 description: desc,
                 preview: preview,
+                previewStartTime: previewStart,
                 favorite: favorite,
+                highlight: highlight,
                 visible: visible,
                 tools: [],
                 htmlText: "",
@@ -1139,6 +1251,9 @@
                 components: []
             };
         });
+
+        parseIndexPaletteFromDoc();
+        renderIndexPaletteControls();
     }
 
     function renderWorkList() {
@@ -1153,7 +1268,8 @@
             var li = document.createElement("li");
             li.className = "work-item" + (state.selectedWork === work ? " active" : "");
             li.draggable = true;
-            li.innerHTML = "<div>" + (work.favorite ? "★ " : "") + escapeHtml(work.title) + "</div>";
+            var flags = (work.favorite ? "★ " : "") + (work.highlight ? "▣ " : "");
+            li.innerHTML = "<div>" + flags + escapeHtml(work.title) + "</div>";
             li.addEventListener("dragstart", function (event) {
                 state.draggingWorkIndex = idx;
                 event.dataTransfer.effectAllowed = "move";
@@ -1450,6 +1566,7 @@
         el.articleDesc.value = work.description;
         renderToolSelector(work.tools || []);
         el.articlePreview.value = work.preview;
+        el.articlePreviewStart.value = work.previewStartTime || 0;
         el.articleMainColor.value = work.palette && work.palette.mainColor ? work.palette.mainColor : "#000000";
         el.articleMainColorText.value = work.palette && work.palette.mainColor ? work.palette.mainColor : "#000000";
         el.articleSecondaryColor.value = work.palette && work.palette.secondaryColor ? work.palette.secondaryColor : "#6f5cff";
@@ -1457,6 +1574,7 @@
         el.articleBackgroundColor.value = work.palette && work.palette.backgroundColor ? work.palette.backgroundColor : "#ffffff";
         el.articleBackgroundColorText.value = work.palette && work.palette.backgroundColor ? work.palette.backgroundColor : "#ffffff";
         el.articleFavorite.checked = !!work.favorite;
+        el.articleHighlight.checked = !!work.highlight;
         el.articleVisible.checked = work.visible !== false;
         el.previewPath.textContent = work.href;
     }
@@ -2207,18 +2325,46 @@
                         button.draggable = true;
                         var ext = entry.path.split(".").pop().toLowerCase();
                         var isVideo = ["mp4", "webm", "ogg", "mov", "avi"].indexOf(ext) !== -1;
+                        var directUrl = "../" + encodeURI(entry.path) + (entry.mtime ? "?v=" + encodeURIComponent(entry.mtime) : "");
+                        var thumbUrl = state.mode === "api"
+                            ? buildApiUrl("/cms-api/thumb?path=" + encodeURIComponent(entry.path) + (entry.mtime ? "&v=" + encodeURIComponent(entry.mtime) : ""))
+                            : "";
 
                         if (isVideo) {
-                            var thumb = document.createElement("span");
-                            thumb.className = "picker-video-thumb";
-                            thumb.textContent = "\u25B6";
-                            button.appendChild(thumb);
+                            var thumbWrap = document.createElement("span");
+                            thumbWrap.className = "picker-video-thumb";
+
+                            var playBadge = document.createElement("span");
+                            playBadge.className = "picker-play-badge";
+                            playBadge.textContent = "\u25B6";
+
+                            if (thumbUrl) {
+                                var videoThumb = document.createElement("img");
+                                videoThumb.src = thumbUrl;
+                                videoThumb.alt = entry.name || "video";
+                                videoThumb.loading = "lazy";
+                                videoThumb.decoding = "async";
+                                videoThumb.addEventListener("error", function () {
+                                    videoThumb.remove();
+                                    thumbWrap.classList.add("is-icon-only");
+                                }, { once: true });
+                                thumbWrap.appendChild(videoThumb);
+                            } else {
+                                thumbWrap.classList.add("is-icon-only");
+                            }
+                            thumbWrap.appendChild(playBadge);
+                            button.appendChild(thumbWrap);
                         } else {
                             var image = document.createElement("img");
-                            image.src = "../" + encodeURI(entry.path) + (entry.mtime ? "?v=" + encodeURIComponent(entry.mtime) : "");
+                            image.src = thumbUrl || directUrl;
                             image.alt = entry.name || "image";
                             image.loading = "lazy";
                             image.decoding = "async";
+                            if (thumbUrl) {
+                                image.addEventListener("error", function () {
+                                    image.src = directUrl;
+                                }, { once: true });
+                            }
                             button.appendChild(image);
                         }
 
@@ -2338,58 +2484,94 @@
         }
     }
 
-    async function handleVideoUpload(event, component) {
+    async function handleVideoUpload(event, component, setVideoUploadStatus, setUploadProgress, appendVideoUploadLine, btnEl) {
         try {
             var file = event.target.files && event.target.files[0];
             if (!file) {
                 return;
             }
 
-            setStatus("Uploading video...", "info");
-
-            if (state.mode === "fs") {
-                var imagesDir = await state.dirHandle.getDirectoryHandle("images", { create: true });
-                var uploadsDir = await imagesDir.getDirectoryHandle("uploads", { create: true });
-                var videoMimeMap = { "video/mp4": "mp4", "video/webm": "webm", "video/ogg": "ogg", "video/quicktime": "mov", "video/x-msvideo": "avi" };
-                var ext = (file.type && videoMimeMap[file.type]) || (file.name.indexOf(".") !== -1 ? file.name.split(".").pop() : "mp4");
-                var safeName = Date.now() + "-" + slugify(file.name.replace(/\.[^/.]+$/, "")) + "." + ext;
-                var targetHandle = await uploadsDir.getFileHandle(safeName, { create: true });
-                var writable = await targetHandle.createWritable();
-                await writable.write(await file.arrayBuffer());
-                await writable.close();
-                component.src = "images/uploads/" + safeName;
-                setStatus("Video geupload: " + component.src);
-            } else if (state.mode === "api") {
-                var formData = new FormData();
-                formData.append("file", file, file.name);
-
-                var response = await fetch(buildApiUrl("/cms-api/upload"), {
-                    method: "POST",
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    var errorText = await response.text();
-                    throw new Error(errorText || ("Upload failed: " + response.status));
-                }
-
-                var result = await response.json();
-                if (!result || !result.path) {
-                    throw new Error("Upload succeeded, but no file path was returned.");
-                }
-
-                component.src = result.path;
-                setStatus("Video geupload: " + component.src);
-            } else {
-                setStatus("Upload werkt alleen met een lokale write target. Start de CMS-server of koppel een map.", "error");
-                return;
+            if (!state.selectedWork) {
+                throw new Error("Select eerst een work.");
             }
 
+            if (state.mode !== "api") {
+                throw new Error("Video-upload met compressie werkt via de lokale CMS-server. Start cms_server.py.");
+            }
+
+            var workSlug = slugify(basename(state.selectedWork.href).replace(/\.html?$/i, "")) || "video";
+            if (btnEl) {
+                btnEl.disabled = true;
+                btnEl.textContent = "⬆️ Uploaden... 0%";
+            }
+            if (setVideoUploadStatus) {
+                setVideoUploadStatus(file.name + " (" + (file.size / 1024 / 1024).toFixed(1) + " MB) uploaden...", "progress");
+            }
+            if (appendVideoUploadLine) {
+                appendVideoUploadLine("Bestand: " + file.name + " (" + (file.size / 1024 / 1024).toFixed(1) + " MB)");
+                appendVideoUploadLine("Work folder: videos/uploads/" + workSlug + "/");
+            }
+            setStatus("Video uploaden naar server...", "info");
+
+            var seenLines = 0;
+            var metadata = await startVideoUpload(file, workSlug,
+                // onProgress — server-side processing steps
+                function (line) {
+                    if (appendVideoUploadLine && typeof line === "string") {
+                        appendVideoUploadLine(line);
+                    }
+                    seenLines += 1;
+                    if (setVideoUploadStatus) {
+                        setVideoUploadStatus("Server verwerkt... (" + seenLines + " stap" + (seenLines !== 1 ? "pen" : "") + ")", "progress");
+                    }
+                },
+                // onUploadProgress — browser → server transfer %
+                function (loaded, total, pct) {
+                    if (setUploadProgress) setUploadProgress(loaded, total, pct);
+                    if (setVideoUploadStatus && pct < 100) {
+                        setVideoUploadStatus(
+                            "Uploaden: " + pct + "% — " +
+                            (loaded / 1024 / 1024).toFixed(1) + " / " +
+                            (total / 1024 / 1024).toFixed(1) + " MB",
+                            "progress"
+                        );
+                    }
+                    if (pct >= 100 && setVideoUploadStatus) {
+                        setVideoUploadStatus("Upload klaar, server comprimeert en splitst...", "progress");
+                        if (appendVideoUploadLine) appendVideoUploadLine("Upload 100% — server verwerkt nu...");
+                    }
+                }
+            );
+
+            if (!metadata || !metadata.preview_path) {
+                throw new Error("Upload gelukt, maar geen metadata pad teruggekregen.");
+            }
+
+            component.src = metadata.preview_path;
+            if (appendVideoUploadLine) {
+                if (metadata.index_preview) {
+                    appendVideoUploadLine("Index preview: " + metadata.index_preview);
+                }
+                appendVideoUploadLine("✅ Klaar! Metadata pad: " + metadata.preview_path);
+            }
+            setStatus("Video verwerkt: " + component.src, "success");
+            if (setVideoUploadStatus) {
+                setVideoUploadStatus("✅ Klaar: " + component.src, "success");
+            }
             state.dirty = true;
             patchPreviewStructure();
             renderComponentList();
+            renderComponentProps();
         } catch (error) {
-            setStatus("Upload mislukt: " + error.message);
+            setStatus("Video upload mislukt: " + error.message, "error");
+            if (setVideoUploadStatus) {
+                setVideoUploadStatus("❌ Mislukt: " + error.message, "error");
+            }
+        } finally {
+            if (btnEl) {
+                btnEl.disabled = false;
+                btnEl.textContent = "📁 Video kiezen & uploaden";
+            }
         }
     }
 
@@ -2602,10 +2784,80 @@
             });
 
             var uploadWrap = document.createElement("div");
-            uploadWrap.innerHTML = "<label>Upload video<input id='videoUploadInput' type='file' accept='video/*'></label>";
+            uploadWrap.className = "video-upload-box";
+            uploadWrap.innerHTML = [
+                "<div class='upload-btn-row'>",
+                "  <input id='videoUploadInput' type='file' accept='video/*' style='display:none'>",
+                "  <button id='videoUploadBtn' class='def_button_small' type='button'>📁 Video kiezen &amp; uploaden</button>",
+                "</div>",
+                "<div id='videoUploadStatus' class='upload-status-msg'>",
+                "  Kies een video om te comprimeren en op te splitsen op de server.",
+                "</div>",
+                "<div id='videoUploadProgressWrap' class='upload-progress-wrap' style='display:none'>",
+                "  <div id='videoUploadProgressBar' class='upload-progress-bar'><div id='videoUploadProgressFill' class='upload-progress-bar-fill'></div></div>",
+                "  <span id='videoUploadProgressPct' class='upload-progress-pct'>0%</span>",
+                "</div>",
+                "<pre id='videoUploadOutput' class='tool-output' style='display:none'></pre>"
+            ].join("\n");
             el.componentProps.appendChild(uploadWrap);
-            uploadWrap.querySelector("#videoUploadInput").addEventListener("change", function (event) {
-                handleVideoUpload(event, cmp);
+            var videoUploadInput = uploadWrap.querySelector("#videoUploadInput");
+            var videoUploadBtn = uploadWrap.querySelector("#videoUploadBtn");
+            var videoUploadStatus = uploadWrap.querySelector("#videoUploadStatus");
+            var videoUploadProgressWrap = uploadWrap.querySelector("#videoUploadProgressWrap");
+            var videoUploadProgressBar = uploadWrap.querySelector("#videoUploadProgressBar");
+            var videoUploadProgressFill = uploadWrap.querySelector("#videoUploadProgressFill");
+            var videoUploadProgressPct = uploadWrap.querySelector("#videoUploadProgressPct");
+            var videoUploadOutput = uploadWrap.querySelector("#videoUploadOutput");
+
+            videoUploadBtn.addEventListener("click", function () {
+                videoUploadInput.value = "";
+                videoUploadInput.click();
+            });
+
+            function setVideoUploadStatus(message, kind) {
+                if (videoUploadStatus) {
+                    videoUploadStatus.textContent = message;
+                    videoUploadStatus.className = "upload-status-msg" + (kind ? " is-" + kind : "");
+                }
+                if ((kind === "success" || kind === "error") && videoUploadProgressWrap) {
+                    videoUploadProgressWrap.style.display = "none";
+                }
+                if (kind === "progress" && videoUploadOutput) {
+                    videoUploadOutput.style.display = "block";
+                }
+            }
+
+            function setVideoUploadProgress(loaded, total, pct) {
+                if (!videoUploadProgressWrap) return;
+                videoUploadProgressWrap.style.display = "flex";
+                if (videoUploadProgressFill) {
+                    videoUploadProgressFill.style.width = pct + "%";
+                }
+                if (videoUploadProgressBar) {
+                    videoUploadProgressBar.classList.toggle("is-done", pct >= 100);
+                }
+                if (videoUploadProgressPct) {
+                    videoUploadProgressPct.textContent = pct + "%";
+                    videoUploadProgressPct.style.color = pct >= 100 ? "#159947" : "#df7f1d";
+                }
+                if (videoUploadBtn) {
+                    videoUploadBtn.textContent = pct < 100
+                        ? "\u2B06\uFE0F Uploaden... " + pct + "%"
+                        : "\u23F3 Server verwerkt...";
+                }
+            }
+
+            function appendVideoUploadLine(line) {
+                if (!videoUploadOutput) {
+                    return;
+                }
+                videoUploadOutput.style.display = "block";
+                videoUploadOutput.textContent += line + "\n";
+                videoUploadOutput.scrollTop = videoUploadOutput.scrollHeight;
+            }
+
+            videoUploadInput.addEventListener("change", function (event) {
+                handleVideoUpload(event, cmp, setVideoUploadStatus, setVideoUploadProgress, appendVideoUploadLine, videoUploadBtn);
             });
 
             var videoControls = document.createElement("label");
@@ -2930,7 +3182,8 @@
 
         if (cmp.type === "video") {
             var video = doc.createElement("video");
-            video.setAttribute("src", cmp.src || "");
+            var videoSrc = cmp.src || "";
+            video.setAttribute("src", videoSrc);
             video.setAttribute("playsinline", "");
             video.style.width = "100%";
             if (cmp.isShort) {
@@ -2950,6 +3203,9 @@
             }
             if (cmp.ytMute) video.setAttribute("muted", "");
             if (cmp.ytLoop) video.setAttribute("loop", "");
+
+            resolveVideoMetadataSrc(video, videoSrc);
+
             var videoWrap = doc.createElement("div");
             videoWrap.className = "cms-embed-wrap";
             videoWrap.appendChild(video);
@@ -3079,6 +3335,9 @@
     }
 
     function patchPreviewComponent(index) {
+        if (state.previewView !== "article") {
+            return;
+        }
         try {
             var doc = el.workPreview.contentDocument;
             var work = state.selectedWork;
@@ -3104,6 +3363,9 @@
     }
 
     function patchPreviewStructure() {
+        if (state.previewView !== "article") {
+            return;
+        }
         try {
             var doc = el.workPreview.contentDocument;
             var win = el.workPreview.contentWindow;
@@ -3139,6 +3401,155 @@
     }
 
     function renderPreviewFromState() {
+        if (state.previewView === "index" && state.indexDoc) {
+            renderIndexPreview();
+            return;
+        }
+        renderArticlePreview();
+    }
+
+    function renderIndexPreview() {
+        if (!state.indexDoc) {
+            renderArticlePreview();
+            return;
+        }
+        if (el.previewPath) {
+            el.previewPath.textContent = "index.html";
+        }
+        var work = state.selectedWork;
+
+        capturePreviewScroll();
+        syncIndexDoc();
+
+        var doc = state.indexDoc.cloneNode(true);
+        applyIndexPaletteToDoc(doc);
+        var head = doc.querySelector("head");
+        if (head) {
+            var base = doc.createElement("base");
+            base.setAttribute("href", buildPreviewBaseHref("index.html"));
+            head.insertBefore(base, head.firstChild);
+        }
+
+        var cards = doc.querySelectorAll("#assignment_list .work-card");
+        var selectedCard = null;
+        cards.forEach(function (card) {
+            if (work && card.getAttribute("href") === work.href) {
+                selectedCard = card;
+            }
+        });
+        if (selectedCard) {
+            selectedCard.classList.add("is-cms-selected");
+        }
+
+        applyPreviewMuteToDoc(doc, state.previewMuted);
+
+        var bridgeStyle = doc.createElement("style");
+        bridgeStyle.id = "cms-index-override";
+        bridgeStyle.textContent =
+            ".work-card.is-cms-selected{outline:3px solid rgba(255,140,0,.95);outline-offset:3px;}";
+        doc.head.appendChild(bridgeStyle);
+
+        var bridgeScript = doc.createElement("script");
+        bridgeScript.textContent =
+            "(function(){" +
+            "document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a'):null;if(a){e.preventDefault();e.stopPropagation();}},true);" +
+            "})();";
+        doc.body.appendChild(bridgeScript);
+
+        el.workPreview.addEventListener("load", function () {
+            try {
+                if (el.workPreview.contentWindow) {
+                    el.workPreview.contentWindow.scrollTo(state.previewScroll.x || 0, state.previewScroll.y || 0);
+                }
+            } catch (error) {
+                // ignore restore issues
+            }
+
+            if (state.previewMobile) {
+                el.workPreview.classList.add("is-mobile-preview");
+            } else {
+                el.workPreview.classList.remove("is-mobile-preview");
+            }
+
+            if (el.previewMuteBtn) {
+                el.previewMuteBtn.textContent = state.previewMuted ? "Unmute" : "Mute";
+                el.previewMuteBtn.classList.toggle("is-active", !!state.previewMuted);
+            }
+        }, { once: true });
+
+        el.workPreview.srcdoc = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+    }
+
+    function patchIndexPreviewCard() {
+        if (state.previewView !== "index") {
+            return;
+        }
+        var work = state.selectedWork;
+        if (!work) {
+            return;
+        }
+        try {
+            var doc = el.workPreview.contentDocument;
+            if (!doc) {
+                return;
+            }
+            var cards = doc.querySelectorAll("#assignment_list .work-card");
+            var card = null;
+            cards.forEach(function (candidate) {
+                if (candidate.getAttribute("href") === work.href) {
+                    card = candidate;
+                }
+            });
+            if (!card) {
+                return;
+            }
+            var cat = card.querySelector(".work-card-cat");
+            var title = card.querySelector(".work-card-title");
+            var desc = card.querySelector(".work-card-desc");
+            var star = card.querySelector(".work-card-star");
+            if (cat) cat.textContent = work.category || "";
+            if (title) title.textContent = work.title || "";
+            if (desc) desc.textContent = work.description || "";
+            card.setAttribute("data-preview", work.preview || "");
+            card.setAttribute("data-preview-start", String(work.previewStartTime || 0));
+            card.setAttribute("data-visible", work.visible !== false ? "true" : "false");
+            card.setAttribute("data-favorite", work.favorite ? "true" : "false");
+            card.setAttribute("data-highlight", work.highlight ? "2x2" : "1x1");
+            card.classList.toggle("hidden-work", work.visible === false);
+            card.classList.toggle("is-favorite", !!work.favorite);
+            card.classList.toggle("work-card--highlight", !!work.highlight);
+            if (work.favorite) {
+                if (!star) {
+                    star = doc.createElement("span");
+                    star.className = "work-card-star";
+                    star.setAttribute("aria-hidden", "true");
+                    star.textContent = "★";
+                    card.insertBefore(star, card.firstChild);
+                }
+            } else if (star) {
+                star.remove();
+            }
+            var bgUrl = previewBgUrl(work.preview);
+            if (bgUrl) {
+                card.setAttribute("style", '--preview-bg: url("' + bgUrl.replace(/"/g, '\\"') + '");');
+            } else {
+                card.removeAttribute("style");
+            }
+        } catch (error) {
+            // ignore
+        }
+    }
+
+    function setPreviewView(view) {
+        state.previewView = view === "article" ? "article" : "index";
+        if (el.previewViewBtn) {
+            el.previewViewBtn.textContent = state.previewView === "index" ? "Index" : "Article";
+            el.previewViewBtn.classList.toggle("is-active", state.previewView === "index");
+        }
+        renderPreviewFromState();
+    }
+
+    function renderArticlePreview() {
         var work = state.selectedWork;
         if (!work || !work.doc) {
             el.workPreview.srcdoc = "";
@@ -3315,10 +3726,8 @@
         }
 
         if (state.selectedWork && state.selectedWork.doc) {
-            el.cmsEmptyState.classList.add("is-hidden");
-            el.cmsEditorPanel.classList.remove("is-hidden");
-            el.cmsPropsPanel.classList.remove("is-hidden");
             setLeftMode("components");
+            setPreviewView("article");
         }
 
         renderWorkList();
@@ -3356,6 +3765,7 @@
             if (!state.selectedWork) return;
             state.selectedWork.title = el.articleTitle.value;
             patchPreviewTitle();
+            patchIndexPreviewCard();
             renderWorkList();
             state.dirty = true;
         });
@@ -3363,12 +3773,14 @@
         el.articleCategory.addEventListener("input", function () {
             if (!state.selectedWork) return;
             state.selectedWork.category = el.articleCategory.value;
+            patchIndexPreviewCard();
             state.dirty = true;
         });
 
         el.articleDesc.addEventListener("input", function () {
             if (!state.selectedWork) return;
             state.selectedWork.description = el.articleDesc.value;
+            patchIndexPreviewCard();
             state.dirty = true;
         });
 
@@ -3380,10 +3792,24 @@
             state.dirty = true;
         });
 
+        var previewUrlDebounce = null;
         el.articlePreview.addEventListener("input", function () {
             if (!state.selectedWork) return;
             state.selectedWork.preview = el.articlePreview.value;
+            patchIndexPreviewCard();
             state.dirty = true;
+            clearTimeout(previewUrlDebounce);
+            previewUrlDebounce = setTimeout(renderPreviewFromState, 600);
+        });
+
+        var previewStartDebounce = null;
+        el.articlePreviewStart.addEventListener("input", function () {
+            if (!state.selectedWork) return;
+            state.selectedWork.previewStartTime = parseFloat(el.articlePreviewStart.value) || 0;
+            patchIndexPreviewCard();
+            state.dirty = true;
+            clearTimeout(previewStartDebounce);
+            previewStartDebounce = setTimeout(renderPreviewFromState, 400);
         });
 
         if (el.articlePreviewPicker) {
@@ -3395,8 +3821,10 @@
                 openImagePicker(function (serverPath) {
                     state.selectedWork.preview = serverPath;
                     el.articlePreview.value = serverPath;
+                    patchIndexPreviewCard();
                     renderWorkList();
                     state.dirty = true;
+                    renderPreviewFromState();
                 });
             });
         }
@@ -3428,15 +3856,61 @@
         el.articleFavorite.addEventListener("change", function () {
             if (!state.selectedWork) return;
             state.selectedWork.favorite = el.articleFavorite.checked;
+            patchIndexPreviewCard();
             renderWorkList();
             state.dirty = true;
         });
 
+        if (el.articleHighlight) {
+            el.articleHighlight.addEventListener("change", function () {
+                if (!state.selectedWork) return;
+                state.selectedWork.highlight = el.articleHighlight.checked;
+                patchIndexPreviewCard();
+                renderWorkList();
+                state.dirty = true;
+            });
+        }
+
         el.articleVisible.addEventListener("change", function () {
             if (!state.selectedWork) return;
             state.selectedWork.visible = el.articleVisible.checked;
+            patchIndexPreviewCard();
             state.dirty = true;
         });
+
+        function applyIndexPaletteInput(kind, rawValue) {
+            var normalized = normalizeColorValue(rawValue);
+            if (!normalized) {
+                return;
+            }
+            state.indexPalette[kind] = normalized;
+            renderIndexPaletteControls();
+            state.dirty = true;
+            if (state.previewView === "index") {
+                renderIndexPreview();
+            }
+        }
+
+        if (el.indexMainColor) {
+            el.indexMainColor.addEventListener("input", function () {
+                applyIndexPaletteInput("mainColor", el.indexMainColor.value);
+            });
+            el.indexMainColorText.addEventListener("input", function () {
+                applyIndexPaletteInput("mainColor", el.indexMainColorText.value);
+            });
+            el.indexSecondaryColor.addEventListener("input", function () {
+                applyIndexPaletteInput("secondaryColor", el.indexSecondaryColor.value);
+            });
+            el.indexSecondaryColorText.addEventListener("input", function () {
+                applyIndexPaletteInput("secondaryColor", el.indexSecondaryColorText.value);
+            });
+            el.indexBackgroundColor.addEventListener("input", function () {
+                applyIndexPaletteInput("backgroundColor", el.indexBackgroundColor.value);
+            });
+            el.indexBackgroundColorText.addEventListener("input", function () {
+                applyIndexPaletteInput("backgroundColor", el.indexBackgroundColorText.value);
+            });
+        }
     }
 
     function bindComponentActions() {
@@ -3570,52 +4044,80 @@
         });
     }
 
-    function syncIndexDoc() {
-        var favUl = state.indexDoc.querySelector("#assignment_list .favorites-list");
-        var normUl = state.indexDoc.querySelector("#assignment_list .normal-list");
+    function previewBgUrl(url) {
+        if (!url) return "";
+        var vimeoMatch = url.match(/(?:player\.)?vimeo\.com\/(?:video\/)?(\d+)/);
+        if (vimeoMatch) return "https://vumbnail.com/" + vimeoMatch[1] + ".jpg";
+        var youtubeMatch = url.match(/(?:youtube\.com|youtu\.be)\/(?:embed\/|watch\?v=)?([\w-]+)/);
+        if (youtubeMatch) return "https://img.youtube.com/vi/" + youtubeMatch[1] + "/maxresdefault.jpg";
+        if (/\.(jpe?g|png|gif|webp|avif)(\?|$)/i.test(url)) {
+            if (/^https?:\/\//i.test(url)) return url;
+            return "/" + url.replace(/^\/+/, "");
+        }
+        return "";
+    }
 
-        var anchorMap = {};
-        [favUl, normUl].forEach(function (ul) {
-            if (!ul) return;
-            Array.from(ul.querySelectorAll("a[href]")).forEach(function (a) {
-                anchorMap[a.getAttribute("href")] = a;
-                a.remove();
-            });
-        });
+    function syncIndexDoc() {
+        var list = state.indexDoc.getElementById("assignment_list");
+        if (!list) return;
+
+        applyIndexPaletteToDoc(state.indexDoc);
+
+        list.innerHTML = "";
+
+        var fragment = state.indexDoc.createDocumentFragment();
 
         state.works.forEach(function (work) {
-            var anchor = anchorMap[work.href];
-            if (!anchor) {
-                return;
+            var card = state.indexDoc.createElement("a");
+            card.className = "work-card";
+            card.setAttribute("href", work.href);
+            card.setAttribute("data-preview", work.preview || "");
+            card.setAttribute("data-preview-start", String(work.previewStartTime || 0));
+            card.setAttribute("data-visible", work.visible !== false ? "true" : "false");
+            card.setAttribute("data-favorite", work.favorite ? "true" : "false");
+            card.setAttribute("data-highlight", work.highlight ? "2x2" : "1x1");
+
+            if (work.visible === false) {
+                card.classList.add("hidden-work");
+            }
+            if (work.favorite) {
+                card.classList.add("is-favorite");
+            }
+            if (work.highlight) {
+                card.classList.add("work-card--highlight");
             }
 
-            var targetUl = work.favorite ? favUl : normUl;
-            if (targetUl) {
-                targetUl.appendChild(anchor);
+            var bgUrl = previewBgUrl(work.preview);
+            if (bgUrl) {
+                card.setAttribute("style", '--preview-bg: url("' + bgUrl.replace(/"/g, '\\"') + '");');
             }
 
-            var li = anchor.querySelector("li");
-            if (!li) {
-                return;
+            var cat = state.indexDoc.createElement("span");
+            cat.className = "work-card-cat";
+            cat.textContent = work.category || "";
+
+            var title = state.indexDoc.createElement("span");
+            title.className = "work-card-title";
+            title.textContent = work.title || "";
+
+            var desc = state.indexDoc.createElement("span");
+            desc.className = "work-card-desc";
+            desc.textContent = work.description || "";
+
+            card.appendChild(cat);
+            if (work.favorite) {
+                var star = state.indexDoc.createElement("span");
+                star.className = "work-card-star";
+                star.setAttribute("aria-hidden", "true");
+                star.textContent = "★";
+                card.appendChild(star);
             }
-
-            li.setAttribute("data-preview", work.preview || "");
-
-            var cat = li.querySelector(".assignment-category");
-            if (cat) cat.textContent = work.category || "";
-
-            var title = li.querySelector(".assignment-title");
-            if (title) {
-                title.textContent = (work.favorite ? "★ " : "") + (work.title || "");
-            }
-
-            var desc = li.querySelector(".assignment-desc");
-            if (desc) desc.textContent = work.description || "";
-
-            li.classList.toggle("favorites", !!work.favorite);
-            li.setAttribute("data-visible", work.visible !== false ? "true" : "false");
-            li.classList.toggle("hidden-work", work.visible === false);
+            card.appendChild(title);
+            card.appendChild(desc);
+            fragment.appendChild(card);
         });
+
+        list.appendChild(fragment);
     }
 
     function syncWorkDoc(work) {
@@ -3658,6 +4160,32 @@
         if (backgroundConfigNode) {
             backgroundConfigNode.remove();
         }
+
+        ensureVideoRuntimeScripts(doc, work);
+    }
+
+    // A <video>/<iframe> component pointing at metadata.json only becomes
+    // playable on the live page once js/work_video.js (and its player) run.
+    // New work pages don't have those tags until a video component needs
+    // them, so make sure they're present whenever one does.
+    function ensureVideoRuntimeScripts(doc, work) {
+        var hasVideo = (work.components || []).some(function (cmp) {
+            return cmp.type === "video";
+        });
+        if (!hasVideo || !doc.body) {
+            return;
+        }
+
+        [relativePathFromWork(work.href, "js/video_player.js"), relativePathFromWork(work.href, "js/work_video.js")].forEach(function (src) {
+            var existing = Array.from(doc.querySelectorAll("script[src]")).some(function (script) {
+                return basename(script.getAttribute("src") || "") === basename(src);
+            });
+            if (!existing) {
+                var script = doc.createElement("script");
+                script.setAttribute("src", src);
+                doc.body.appendChild(script);
+            }
+        });
     }
 
     function downloadText(filename, text) {
@@ -3672,7 +4200,14 @@
         URL.revokeObjectURL(url);
     }
 
-    async function saveAll() {
+    async function saveAll(options) {
+        options = options || {};
+        var isAuto = !!options.auto;
+
+        if (state.saveInProgress) {
+            return;
+        }
+
         if ((state.mode === "fallback" || state.mode === "api") && !state.indexDoc) {
             setStatus("Importeer eerst index.html en werkbestanden.");
             return;
@@ -3689,8 +4224,9 @@
         }
 
         try {
-            setSaveButtonState("Saving...", true);
-            setStatus("Saving files...", "progress");
+            state.saveInProgress = true;
+            setSaveButtonState(isAuto ? "Auto-saving..." : "Saving...", true);
+            setStatus(isAuto ? "Auto-saving files..." : "Saving files...", "progress");
             syncIndexDoc();
             var indexOutput = "<!DOCTYPE html>\n" + state.indexDoc.documentElement.outerHTML;
 
@@ -3718,7 +4254,7 @@
 
                 setLocalTarget(getLocalWriteDescription());
                 if (verification.ok) {
-                    setStatus("Lokale files opgeslagen in " + state.apiRoot + " - index.html + " + String(apiResult.savedWorks || 0) + " work files. " + verification.details, "success");
+                    setStatus((isAuto ? "Auto-save: " : "") + "Lokale files opgeslagen in " + state.apiRoot + " - index.html + " + String(apiResult.savedWorks || 0) + " work files. " + verification.details, "success");
                 } else {
                     setStatus("Save completed, maar verificatie faalde. " + verification.details, "error");
                 }
@@ -3739,34 +4275,84 @@
                 }
 
                 setLocalTarget(getLocalWriteDescription());
-                setStatus("Lokale files opgeslagen in de gekoppelde map - index.html + " + String(savedWorks) + " work files.", "success");
+                setStatus((isAuto ? "Auto-save: " : "") + "Lokale files opgeslagen in de gekoppelde map - index.html + " + String(savedWorks) + " work files.", "success");
             }
 
             state.dirty = false;
+            state.autoSaveDirtySince = 0;
         } catch (error) {
             setStatus("Save failed: " + error.message, "error");
         } finally {
+            state.saveInProgress = false;
             setSaveButtonState("Save Files", false);
         }
     }
 
+    function bindAutoSave() {
+        window.setInterval(function () {
+            if (!state.dirty || state.saveInProgress) {
+                if (!state.dirty) {
+                    state.autoSaveDirtySince = 0;
+                }
+                return;
+            }
+
+            if (state.mode === "fallback") {
+                return;
+            }
+
+            if (state.mode === "fs" && !state.dirHandle) {
+                return;
+            }
+
+            if (state.mode === "api" && !state.indexDoc) {
+                return;
+            }
+
+            if (!state.autoSaveDirtySince) {
+                state.autoSaveDirtySince = Date.now();
+                return;
+            }
+
+            if (Date.now() - state.autoSaveDirtySince < 2500) {
+                return;
+            }
+
+            saveAll({ auto: true });
+        }, 1200);
+    }
+
     function addIndexEntry(name, filename) {
-        var normalList = state.indexDoc.querySelector(".normal-list");
-        if (!normalList) {
+        var list = state.indexDoc.getElementById("assignment_list");
+        if (!list) {
             return;
         }
 
-        var anchor = state.indexDoc.createElement("a");
-        anchor.setAttribute("href", filename);
-        var li = state.indexDoc.createElement("li");
-        li.setAttribute("data-preview", "");
-        li.setAttribute("data-visible", "true");
-        li.innerHTML =
-            "<span class='assignment-category'>Nieuwe categorie</span>" +
-            "<span class='assignment-title'>" + escapeHtml(name) + "</span>" +
-            "<div class='assignment-desc'>Nieuw werk.</div>";
-        anchor.appendChild(li);
-        normalList.appendChild(anchor);
+        var card = state.indexDoc.createElement("a");
+        card.className = "work-card";
+        card.setAttribute("href", filename);
+        card.setAttribute("data-preview", "");
+        card.setAttribute("data-preview-start", "0");
+        card.setAttribute("data-visible", "true");
+        card.setAttribute("data-favorite", "false");
+        card.setAttribute("data-highlight", "1x1");
+
+        var cat = state.indexDoc.createElement("span");
+        cat.className = "work-card-cat";
+        cat.textContent = "Nieuwe categorie";
+
+        var title = state.indexDoc.createElement("span");
+        title.className = "work-card-title";
+        title.textContent = name;
+
+        var desc = state.indexDoc.createElement("span");
+        desc.className = "work-card-desc";
+        desc.textContent = "Nieuw werk.";
+
+        card.appendChild(cat);
+        card.appendChild(title);
+        card.appendChild(desc);
+        list.appendChild(card);
     }
 
     function buildWorkTemplate(name) {
@@ -3851,6 +4437,7 @@
             state.indexText = await readFileFromHandle(indexHandle);
             parseIndex();
             renderWorkList();
+            renderPreviewFromState();
             setLocalTarget(getLocalWriteDescription());
             setStatus("Lokale map gekoppeld. Selecteer een werk links.");
         } catch (error) {
@@ -3863,6 +4450,7 @@
             state.indexText = await apiGetText("/cms-api/index");
             parseIndex();
             renderWorkList();
+            renderPreviewFromState();
             setLocalTarget(getLocalWriteDescription());
             setStatus("Bestanden automatisch geladen via lokale CMS API.");
         } catch (error) {
@@ -3883,6 +4471,7 @@
         state.indexText = indexText;
         parseIndex();
         renderWorkList();
+        renderPreviewFromState();
 
         if (state.mode === "fs" && !state.dirHandle) {
             setLocalTarget(getLocalWriteDescription());
@@ -3915,6 +4504,10 @@
 
         el.showWorksBtn.addEventListener("click", function () {
             setLeftMode("works");
+        });
+
+        el.toolsBtn.addEventListener("click", function () {
+            setLeftMode("tools");
         });
 
         el.pickerCloseBtn.addEventListener("click", closeImagePicker);
@@ -4015,6 +4608,16 @@
             });
         }
 
+        if (el.previewViewBtn) {
+            el.previewViewBtn.addEventListener("click", function () {
+                if (state.previewView === "index" && !state.selectedWork) {
+                    setStatus("Selecteer eerst een work om article preview te openen.");
+                    return;
+                }
+                setPreviewView(state.previewView === "index" ? "article" : "index");
+            });
+        }
+
         el.previewFullscreenBtn.addEventListener("click", function () {
             var wrap = el.previewBody ? el.previewBody.parentElement : null;
             if (!wrap) {
@@ -4032,6 +4635,631 @@
         });
     }
 
+    function setToolStatus(message, kind) {
+        if (!el.toolStatus) {
+            return;
+        }
+        el.toolStatus.textContent = message;
+        el.toolStatus.classList.toggle("is-success", kind === "success");
+        el.toolStatus.classList.toggle("is-error", kind === "error");
+        el.toolStatus.classList.toggle("is-progress", kind === "progress");
+    }
+
+    function pollToolJob(jobId, onProgress) {
+        return new Promise(function (resolve, reject) {
+            var attempts = 0;
+
+            function tick() {
+                fetch(buildApiUrl("/cms-api/download-video/status?id=" + encodeURIComponent(jobId)))
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        attempts += 1;
+                        if (onProgress && data && data.progress) {
+                            onProgress(data.progress);
+                        }
+                        if (data && data.state === "done") {
+                            resolve(data.metadata || {});
+                            return;
+                        }
+                        if (data && data.state === "error") {
+                            reject(new Error(data.error || "Download failed"));
+                            return;
+                        }
+                        if (attempts > 7200) {
+                            reject(new Error("Timed out waiting for download."));
+                            return;
+                        }
+                        setTimeout(tick, 1000);
+                    })
+                    .catch(function () {
+                        attempts += 1;
+                        if (attempts > 60) {
+                            reject(new Error("Lost connection while polling the download."));
+                            return;
+                        }
+                        setTimeout(tick, 1000);
+                    });
+            }
+
+            tick();
+        });
+    }
+
+    function pollVideoUploadJob(jobId, onProgress) {
+        return new Promise(function (resolve, reject) {
+            var attempts = 0;
+            var seen = 0;
+
+            function tick() {
+                fetch(buildApiUrl("/cms-api/upload-video/status?id=" + encodeURIComponent(jobId)))
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        attempts += 1;
+                        if (onProgress && data && data.progress) {
+                            for (var i = seen; i < data.progress.length; i += 1) {
+                                onProgress(data.progress[i], i);
+                            }
+                            seen = data.progress.length;
+                        }
+                        if (data && data.state === "done") {
+                            resolve(data.metadata || {});
+                            return;
+                        }
+                        if (data && data.state === "error") {
+                            reject(new Error(data.error || "Video upload failed"));
+                            return;
+                        }
+                        if (attempts > 7200) {
+                            reject(new Error("Timed out waiting for video upload."));
+                            return;
+                        }
+                        setTimeout(tick, 1000);
+                    })
+                    .catch(function () {
+                        attempts += 1;
+                        if (attempts > 60) {
+                            reject(new Error("Lost connection while polling the video upload."));
+                            return;
+                        }
+                        setTimeout(tick, 1000);
+                    });
+            }
+
+            tick();
+        });
+    }
+
+    function startVideoUpload(file, workName, onProgress, onUploadProgress) {
+        return new Promise(function (resolve, reject) {
+            var url = buildApiUrl("/cms-api/upload-video?" + new URLSearchParams({
+                workName: workName || "",
+                fileName: file.name
+            }).toString());
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", url);
+            xhr.setRequestHeader("Content-Type", "application/octet-stream");
+
+            // Upload progress: browser → server
+            xhr.upload.addEventListener("progress", function (e) {
+                if (e.lengthComputable && onUploadProgress) {
+                    onUploadProgress(e.loaded, e.total, Math.round(e.loaded / e.total * 100));
+                }
+            });
+
+            xhr.upload.addEventListener("load", function () {
+                if (onUploadProgress) onUploadProgress(file.size, file.size, 100);
+            });
+
+            xhr.addEventListener("load", function () {
+                var result;
+                try { result = JSON.parse(xhr.responseText); } catch (e) {
+                    reject(new Error("Ongeldig antwoord van server"));
+                    return;
+                }
+                if (!result || !result.ok) {
+                    reject(new Error((result && result.error) || "Server kon upload niet starten"));
+                    return;
+                }
+                pollVideoUploadJob(result.id, onProgress).then(resolve, reject);
+            });
+
+            xhr.addEventListener("error", function () {
+                reject(new Error("Netwerkfout tijdens uploaden"));
+            });
+
+            xhr.addEventListener("abort", function () {
+                reject(new Error("Upload geannuleerd"));
+            });
+
+            xhr.send(file);
+        });
+    }
+    function startToolDownload(url, workName, onProgress) {
+        return fetch(buildApiUrl("/cms-api/download-video"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: url, workName: workName })
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (result) {
+                if (!result || !result.ok) {
+                    throw new Error((result && result.error) || "Failed to start download");
+                }
+                return pollToolJob(result.id, onProgress);
+            });
+    }
+
+    function isVideoPreview(value) {
+        if (!value || typeof value !== "string") {
+            return false;
+        }
+        var v = value.trim();
+        if (v.indexOf("videos/uploads/") !== -1) {
+            return false;
+        }
+        if (/\.(jpe?g|png|gif|webp|avif|svg)(\?|#|$)/i.test(v)) {
+            return false;
+        }
+        if (/^https?:\/\//i.test(v)) {
+            return /youtube\.com|youtu\.be|vimeo\.com|(\.mp4|\.webm|\.ogg|\.mov|\.avi)(\?|#|$)/i.test(v);
+        }
+        return /(\.mp4|\.webm|\.ogg|\.mov|\.avi)(\?|#|$)/i.test(v);
+    }
+
+    function isRemoteVideoSrc(src) {
+        if (!src || typeof src !== "string") return false;
+        var v = src.trim();
+        if (!v) return false;
+        if (v.indexOf("videos/uploads/") !== -1) return false;
+        if (v.indexOf("images/uploads/") !== -1) return false;
+        if (/^https?:\/\//i.test(v)) {
+            return /youtube\.com|youtu\.be|vimeo\.com|youtube-nocookie\.com/i.test(v);
+        }
+        return false;
+    }
+
+    function extractVideoIdFromSrc(src) {
+        if (!src) return null;
+        var vm = src.match(/vimeo\.com\/video\/(\d+)/);
+        if (vm) return { kind: "vimeo", id: vm[1] };
+        var yt = src.match(/(?:youtube\.com\/(?:watch\?[^#]*v=|embed\/|shorts\/)|youtu\.be\/|youtube-nocookie\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+        if (yt) return { kind: "youtube", id: yt[1] };
+        return null;
+    }
+
+    function collectWorkEmbedVideos(work) {
+        var results = [];
+        if (!work || !work.doc) return results;
+
+        var iframes = work.doc.querySelectorAll("iframe");
+        Array.from(iframes).forEach(function (iframe) {
+            var src = iframe.getAttribute("src") || "";
+            if (isRemoteVideoSrc(src)) {
+                var idInfo = extractVideoIdFromSrc(src);
+                if (idInfo) {
+                    results.push({ src: src, id: idInfo.id, kind: idInfo.kind, element: iframe });
+                }
+            }
+        });
+
+        var videos = work.doc.querySelectorAll("video");
+        Array.from(videos).forEach(function (video) {
+            var src = video.getAttribute("src") || "";
+            var source = video.querySelector("source");
+            if (source) src = source.getAttribute("src") || src;
+            if (isRemoteVideoSrc(src)) {
+                var idInfo = extractVideoIdFromSrc(src);
+                if (idInfo) {
+                    results.push({ src: src, id: idInfo.id, kind: idInfo.kind, element: video });
+                }
+            }
+        });
+
+        return results;
+    }
+
+    function appendToolLine(line) {
+        if (!el.toolOutput) {
+            return;
+        }
+        el.toolOutput.textContent = (el.toolOutput.textContent ? el.toolOutput.textContent + "\n" : "") + line;
+        el.toolOutput.scrollTop = el.toolOutput.scrollHeight;
+    }
+
+    function setFotoThumbsStatus(message, kind) {
+        if (!el.fotoThumbsStatus) {
+            return;
+        }
+        el.fotoThumbsStatus.textContent = message;
+        el.fotoThumbsStatus.classList.toggle("is-success", kind === "success");
+        el.fotoThumbsStatus.classList.toggle("is-error", kind === "error");
+        el.fotoThumbsStatus.classList.toggle("is-progress", kind === "progress");
+    }
+
+    function appendFotoThumbsLine(line) {
+        if (!el.fotoThumbsOutput) {
+            return;
+        }
+        el.fotoThumbsOutput.textContent = (el.fotoThumbsOutput.textContent ? el.fotoThumbsOutput.textContent + "\n" : "") + line;
+        el.fotoThumbsOutput.scrollTop = el.fotoThumbsOutput.scrollHeight;
+    }
+
+    function setCompressIndexStatus(message, kind) {
+        if (!el.compressIndexStatus) {
+            return;
+        }
+        el.compressIndexStatus.textContent = message;
+        el.compressIndexStatus.classList.toggle("is-success", kind === "success");
+        el.compressIndexStatus.classList.toggle("is-error", kind === "error");
+        el.compressIndexStatus.classList.toggle("is-progress", kind === "progress");
+    }
+
+    function appendCompressIndexLine(line) {
+        if (!el.compressIndexOutput) {
+            return;
+        }
+        el.compressIndexOutput.textContent = (el.compressIndexOutput.textContent ? el.compressIndexOutput.textContent + "\n" : "") + line;
+        el.compressIndexOutput.scrollTop = el.compressIndexOutput.scrollHeight;
+    }
+
+    function pollCompressIndexJob(jobId) {
+        return new Promise(function (resolve, reject) {
+            var attempts = 0;
+            var seen = 0;
+
+            function tick() {
+                fetch(buildApiUrl("/cms-api/index-previews/status?id=" + encodeURIComponent(jobId)))
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        attempts += 1;
+                        if (data && data.progress && data.progress.length > seen) {
+                            for (var i = seen; i < data.progress.length; i += 1) {
+                                appendCompressIndexLine(data.progress[i]);
+                            }
+                            seen = data.progress.length;
+                        }
+                        if (data && data.state === "done") {
+                            resolve(data.result || {});
+                            return;
+                        }
+                        if (data && data.state === "error") {
+                            reject(new Error(data.error || "Preview generation failed"));
+                            return;
+                        }
+                        if (attempts > 7200) {
+                            reject(new Error("Timed out waiting for preview generation."));
+                            return;
+                        }
+                        setTimeout(tick, 1000);
+                    })
+                    .catch(function () {
+                        attempts += 1;
+                        if (attempts > 60) {
+                            reject(new Error("Lost connection while polling preview generation."));
+                            return;
+                        }
+                        setTimeout(tick, 1000);
+                    });
+            }
+
+            tick();
+        });
+    }
+
+    function runCompressIndexPreviews() {
+        if (state.mode !== "api") {
+            setCompressIndexStatus("Index Preview Compression needs the local CMS server. Start it with: python cms_server.py", "error");
+            return;
+        }
+
+        if (el.compressIndexBtn) {
+            el.compressIndexBtn.disabled = true;
+        }
+        if (el.compressIndexOutput) {
+            el.compressIndexOutput.textContent = "";
+        }
+        setCompressIndexStatus("Starting...", "progress");
+
+        fetch(buildApiUrl("/cms-api/index-previews"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                if (!data || !data.id) {
+                    throw new Error((data && data.error) || "Could not start job");
+                }
+                return pollCompressIndexJob(data.id);
+            })
+            .then(function (result) {
+                setCompressIndexStatus(
+                    "Done. processed=" + ((result && result.processed) || 0) + ", generated=" + ((result && result.generated) || 0) + ".",
+                    "success"
+                );
+            })
+            .catch(function (err) {
+                setCompressIndexStatus("Error: " + err.message, "error");
+            })
+            .then(function () {
+                if (el.compressIndexBtn) {
+                    el.compressIndexBtn.disabled = false;
+                }
+            });
+    }
+
+    function runFotoThumbs() {
+        if (state.mode !== "api") {
+            setFotoThumbsStatus("Foto Thumbnails needs the local CMS server. Start it with: python cms_server.py", "error");
+            return;
+        }
+
+        if (el.fotoThumbsBtn) {
+            el.fotoThumbsBtn.disabled = true;
+        }
+        if (el.fotoThumbsOutput) {
+            el.fotoThumbsOutput.textContent = "";
+        }
+        setFotoThumbsStatus("Starting...", "progress");
+
+        fetch(buildApiUrl("/cms-api/foto-thumbs"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                if (!data || !data.id) {
+                    throw new Error((data && data.error) || "Could not start job");
+                }
+                return pollFotoThumbsJob(data.id);
+            })
+            .then(function (result) {
+                var generated = (result && result.generated) || 0;
+                var updated = result ? result.updated : false;
+                setFotoThumbsStatus(
+                    "Done. " + generated + " thumbnail(s) processed, HTML updated: " + updated + ".",
+                    "success"
+                );
+            })
+            .catch(function (err) {
+                setFotoThumbsStatus("Error: " + err.message, "error");
+            })
+            .then(function () {
+                if (el.fotoThumbsBtn) {
+                    el.fotoThumbsBtn.disabled = false;
+                }
+            });
+    }
+
+    function pollFotoThumbsJob(jobId) {
+        return new Promise(function (resolve, reject) {
+            var attempts = 0;
+            var seen = 0;
+
+            function tick() {
+                fetch(buildApiUrl("/cms-api/foto-thumbs/status?id=" + encodeURIComponent(jobId)))
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        attempts += 1;
+                        if (data && data.progress && data.progress.length > seen) {
+                            for (var i = seen; i < data.progress.length; i += 1) {
+                                appendFotoThumbsLine(data.progress[i]);
+                            }
+                            seen = data.progress.length;
+                        }
+                        if (data && data.state === "done") {
+                            resolve(data.result || {});
+                            return;
+                        }
+                        if (data && data.state === "error") {
+                            reject(new Error(data.error || "Generation failed"));
+                            return;
+                        }
+                        if (attempts > 7200) {
+                            reject(new Error("Timed out waiting for thumbnail generation."));
+                            return;
+                        }
+                        setTimeout(tick, 1000);
+                    })
+                    .catch(function () {
+                        attempts += 1;
+                        if (attempts > 60) {
+                            reject(new Error("Lost connection while polling thumbnail generation."));
+                            return;
+                        }
+                        setTimeout(tick, 1000);
+                    });
+            }
+
+            tick();
+        });
+    }
+
+    function runAutoDownloadAll() {
+        if (state.mode !== "api") {
+            setToolStatus("Download All needs the local CMS server. Start it with: python cms_server.py", "error");
+            return;
+        }
+
+        if (el.autoDownloadBtn) {
+            el.autoDownloadBtn.disabled = true;
+        }
+        el.toolOutput.textContent = "";
+        setToolStatus("Loading work files...", "progress");
+
+        var allJobs = [];
+        var seen = {};
+
+        function addJob(url, workName, label) {
+            if (!url || seen[workName]) return;
+            if (url.indexOf("videos/uploads/") !== -1) return;
+            seen[workName] = true;
+            allJobs.push({ url: url, workName: workName, label: label });
+        }
+
+        var workLoadPromises = state.works.map(function (work) {
+            return loadWorkDoc(work).then(function () {
+                var workSlug = slugify(basename(work.href).replace(/\.html?$/i, "")) || "video";
+                var label = work.title || workSlug;
+
+                if (isVideoPreview(work.preview)) {
+                    addJob(work.preview, workSlug, label + " (preview)");
+                }
+
+                var embeds = collectWorkEmbedVideos(work);
+                embeds.forEach(function (embed) {
+                    var embedSlug = workSlug + "-" + embed.id;
+                    addJob(embed.src, embedSlug, label + " (" + embed.kind + " " + embed.id + ")");
+                });
+            }).catch(function () {});
+        });
+
+        Promise.all(workLoadPromises).then(function () {
+            if (!allJobs.length) {
+                setToolStatus("No remote videos to download.", "success");
+                if (el.autoDownloadBtn) el.autoDownloadBtn.disabled = false;
+                return;
+            }
+
+            setToolStatus("Processing " + allJobs.length + " video(s)...", "progress");
+
+            var done = 0;
+            var failed = [];
+            var idx = 0;
+            var concurrency = 2;
+
+            function worker() {
+                if (idx >= allJobs.length) {
+                    return Promise.resolve();
+                }
+
+                var job = allJobs[idx];
+                idx += 1;
+                var seenLines = 0;
+
+                appendToolLine("[" + job.label + "] " + job.url);
+
+                var onProgress = function (lines) {
+                    if (!lines) return;
+                    for (var i = seenLines; i < lines.length; i += 1) {
+                        appendToolLine("  " + lines[i]);
+                    }
+                    seenLines = lines.length;
+                };
+
+                return startToolDownload(job.url, job.workName, onProgress)
+                    .then(function (metadata) {
+                        done += 1;
+                        appendToolLine("[" + job.label + "] done -> " + (metadata ? metadata.preview_path : job.workName));
+                    })
+                    .catch(function (err) {
+                        failed.push(job.label + ": " + err.message);
+                        appendToolLine("[" + job.label + "] FAILED: " + err.message);
+                    })
+                    .then(worker);
+            }
+
+            var tasks = [];
+            for (var i = 0; i < concurrency && i < allJobs.length; i += 1) {
+                tasks.push(worker());
+            }
+
+            return Promise.all(tasks).then(function () {
+                if (el.autoDownloadBtn) {
+                    el.autoDownloadBtn.disabled = false;
+                }
+                renderWorkList();
+                renderArticleProps();
+                renderPreviewFromState();
+                state.dirty = true;
+                if (failed.length) {
+                    setToolStatus(done + "/" + allJobs.length + " done, " + failed.length + " failed. Click Save Files to apply.", "error");
+                } else {
+                    setToolStatus(done + "/" + allJobs.length + " videos processed. Click Save Files to apply.", "success");
+                }
+            });
+        });
+    }
+
+    function bindToolsActions() {
+        if (!el.toolDownloadBtn) {
+            return;
+        }
+
+        el.toolDownloadBtn.addEventListener("click", function () {
+            var url = (el.toolVideoUrl.value || "").trim();
+            var workName = (el.toolWorkName.value || "").trim();
+
+            if (!url) {
+                setToolStatus("Enter a video URL first.", "error");
+                return;
+            }
+
+            if (state.mode !== "api") {
+                setToolStatus("The video splitter needs the local CMS server. Start it with: python cms_server.py", "error");
+                return;
+            }
+
+            el.toolDownloadBtn.disabled = true;
+            el.toolVideoUrl.disabled = true;
+            el.toolWorkName.disabled = true;
+            el.toolOutput.textContent = "";
+            setToolStatus("Downloading...", "progress");
+
+            var seen = 0;
+            startToolDownload(url, workName, function (lines) {
+                if (!lines) {
+                    return;
+                }
+                for (var i = seen; i < lines.length; i += 1) {
+                    appendToolLine(lines[i]);
+                }
+                seen = lines.length;
+            })
+                .then(function (metadata) {
+                    setToolStatus("Done. data-preview: " + (metadata.preview_path || "unknown"), "success");
+                    if (el.toolWorkName && metadata.work_name) {
+                        el.toolWorkName.value = metadata.work_name;
+                    }
+                })
+                .catch(function (err) {
+                    setToolStatus("Error: " + err.message, "error");
+                })
+                .then(function () {
+                    el.toolDownloadBtn.disabled = false;
+                    el.toolVideoUrl.disabled = false;
+                    el.toolWorkName.disabled = false;
+                });
+        });
+
+        if (el.autoDownloadBtn) {
+            el.autoDownloadBtn.addEventListener("click", runAutoDownloadAll);
+        }
+
+        if (el.fotoThumbsBtn) {
+            el.fotoThumbsBtn.addEventListener("click", runFotoThumbs);
+        }
+
+        if (el.compressIndexBtn) {
+            el.compressIndexBtn.addEventListener("click", runCompressIndexPreviews);
+        }
+    }
     function bindCollapsibles() {
         document.querySelectorAll(".collapse-toggle").forEach(function (btn) {
             btn.addEventListener("click", function () {
@@ -4070,13 +5298,17 @@
         bindComponentActions();
         bindPreviewBridge();
         bindPreviewControls();
+        bindToolsActions();
         bindCollapsibles();
         bindBeforeUnload();
+        bindAutoSave();
 
         setLeftMode("works");
-        el.cmsEmptyState.classList.remove("is-hidden");
-        el.cmsEditorPanel.classList.add("is-hidden");
-        el.cmsPropsPanel.classList.add("is-hidden");
+        el.cmsEmptyState.classList.add("is-hidden");
+        el.cmsEditorPanel.classList.remove("is-hidden");
+        el.cmsPropsPanel.classList.remove("is-hidden");
+        setPreviewView("index");
+        renderIndexPaletteControls();
 
         if (state.mode === "api") {
             await loadIndexFromApi();
