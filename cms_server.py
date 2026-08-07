@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import mimetypes
 import os
@@ -620,6 +621,20 @@ class CMSHandler(SimpleHTTPRequestHandler):
                 content_length = int(self.headers.get("Content-Length", "0"))
                 raw_body = self.rfile.read(content_length)
                 original_name, file_bytes = parse_multipart_file(raw_body, content_type)
+
+                # The only two callers of this endpoint are both the "image"
+                # component's upload picker, but nothing validated the bytes
+                # actually decode as an image - a wrong/corrupt file would
+                # write successfully and only surface as a broken <img> once
+                # someone looks at the page. Reject it here instead.
+                try:
+                    from PIL import Image
+                    with Image.open(io.BytesIO(file_bytes)) as im:
+                        im.verify()
+                except Exception:
+                    self._send_json({"error": "Upload failed: file is not a valid image"}, status=400)
+                    return
+
                 safe_name = safe_upload_filename(original_name)
                 uploads_dir = ROOT / "images" / "uploads"
                 uploads_dir.mkdir(parents=True, exist_ok=True)
